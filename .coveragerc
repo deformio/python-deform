@@ -1,0 +1,3 @@
+[run]
+include=pydeform/*
+omit=pydeform/six.py
