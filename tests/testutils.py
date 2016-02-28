@@ -10,11 +10,15 @@ from hamcrest import (
     raises
 )
 
+from pydeform import Client
 from pydeform.utils import get_base_uri
 from pydeform.exceptions import (
     ConnectionError,
     ReadTimeout,
 )
+
+
+GLOBALS = {}
 
 
 def get_setting(name, required=True):
@@ -36,8 +40,10 @@ CONFIG = {
         # 'PROJECT': get_setting('DEFORM_PROJECT'),
         'EMAIL': get_setting('DEFORM_EMAIL'),
         'PASSWORD': get_setting('DEFORM_PASSWORD'),
-    }
+    },
+    'BASE_PATH': os.path.dirname(os.path.normpath(__file__))
 }
+CONFIG['FILES_PATH'] = os.path.join(CONFIG['BASE_PATH'], 'files')
 
 class TestCase(unittest.TestCase):
     def setUp(self):
@@ -54,6 +60,31 @@ class DeformBaseURITestCaseMixin(object):
             port=self.CONFIG['DEFORM']['PORT'],
             secure=self.CONFIG['DEFORM']['SECURE'],
         )
+
+class DeformClientTestCaseMixin(object):
+    def setUp(self):
+        super(DeformClientTestCaseMixin, self).setUp()
+        self.deform_client = Client(
+            host=self.CONFIG['DEFORM']['HOST'],
+            port=self.CONFIG['DEFORM']['PORT'],
+            secure=self.CONFIG['DEFORM']['SECURE'],
+            requests_session=self.requests_session,
+            api_base_path=self.CONFIG['DEFORM']['API_BASE_PATH'],
+        )
+
+class DeformSessionAuthClientTestCaseMixin(DeformClientTestCaseMixin):
+    def setUp(self):
+        super(DeformSessionAuthClientTestCaseMixin, self).setUp()
+
+        if not 'deform_session_auth_client' in GLOBALS:
+            GLOBALS['deform_session_auth_client'] = self.deform_client.login(
+                email=self.CONFIG['DEFORM']['EMAIL'],
+                password=self.CONFIG['DEFORM']['PASSWORD']
+            )
+        self.deform_session_auth_client = GLOBALS['deform_session_auth_client']
+
+class DeformTokenAuthClientTestCaseMixin(DeformClientTestCaseMixin):
+    pass
 
 
 def check_timeout(func, kwargs):

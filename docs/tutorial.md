@@ -5,20 +5,21 @@ from pydeform import Client
 
 deform = Client(
     host='deform.io',
+).login(
     email='example@email.com',
     password='some-password'
 )
 
 deform = Client(
     host='deform.io',
-    session_id='some-session-id'
+).auth(
+    'session',
+    'some-session-id'
 )
 
 deform = Client(
-    host='deform.io',
-    project='projectid',
-    token='some-token'
-)
+    host='deform.io'
+).token_auth('token', 'some-token').use_project('project_id')
 ```
 
 Register:

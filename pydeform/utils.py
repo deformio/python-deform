@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import datetime
+
 from requests.exceptions import RequestException
 
 from pydeform.exceptions import (
@@ -55,3 +57,62 @@ def do_http_request(requests_session,
         error_class = error_class or REQUESTS_ERROR_MAP.get(type(e)) or HTTPError
         raise error_class(requests_error=e)
     return response
+
+
+def format_date(date):
+    # todo: test me
+    return format_datetime(
+        datetime.datetime.combine(date, datetime.datetime.min.time())
+    )
+
+
+def format_datetime(date):
+    """
+    Convert datetime to UTC ISO 8601
+    """
+    # todo: test me
+    if date.utcoffset() is None:
+        return date.isoformat() + 'Z'
+
+    utc_offset_sec = date.utcoffset()
+    utc_date = date - utc_offset_sec
+    utc_date_without_offset = utc_date.replace(tzinfo=None)
+    return utc_date_without_offset.isoformat() + 'Z'
+
+
+def flatten(data, prop_bits=None, result=None):
+    if prop_bits is None:
+        prop_bits = []
+    if result is None:
+        result = {}
+
+    if not data:
+        result = _set_flatten_result(data, prop_bits, result)
+    elif isinstance(data, dict):
+        for key, value in data.items():
+            prop_bits.append((key, 'simple'))
+            flatten(value, prop_bits=prop_bits, result=result)
+            prop_bits.pop()
+    elif isinstance(data, (list, tuple)):
+        for key, value in enumerate(data):
+            prop_bits.append((key, 'index'))
+            flatten(value, prop_bits=prop_bits, result=result)
+            prop_bits.pop()
+    else:
+        result = _set_flatten_result(data, prop_bits, result)
+
+    return result
+
+
+def _set_flatten_result(data, prop_bits, result):
+    if prop_bits:
+        result_key = ''
+        for key, type_ in prop_bits:
+            if type_ == 'index':
+                result_key += '[%s]' % key
+            else:
+                result_key += '.%s' % key
+        result[result_key.lstrip('.')] = data
+    else:
+        result = data
+    return result

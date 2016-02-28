@@ -44,6 +44,14 @@ class AuthError(HTTPError):
     pass
 
 
+class ForbiddenError(HTTPError):
+    pass
+
+
+class NotFoundError(HTTPError):
+    pass
+
+
 class ConnectionError(HTTPError):
     """A Connection error occurred."""
 
@@ -67,7 +75,9 @@ class ReadTimeout(Timeout):
 
 
 STATUS_CODE_ERROR_MAP = {
-    401: AuthError
+    401: AuthError,
+    403: ForbiddenError, # todo: test me
+    404: NotFoundError, # todo: test me
 }
 
 REQUESTS_ERROR_MAP = {
