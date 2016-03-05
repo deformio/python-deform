@@ -6,12 +6,30 @@ from pydeform.resources.base import (
     UpdateListResourceMethod,
     UpsertListResourceMethod,
     RemoveListResourceMethod,
+    GetResourceMethod,
     GetOneResourceMethod,
     CreateOneResourceMethod,
     SaveOneResourceMethod,
     UpdateOneResourceMethod,
     RemoveOneResourceMethod,
 )
+from pydeform.resources.utils import PARAMS_DEFINITIONS
+
+
+class UserOneResource(BaseResource):
+    path = 'user/'
+
+    methods = {
+        'get': GetResourceMethod,
+    }
+
+
+class CurrentProjectInfoResource(BaseResource):
+    path = 'info/'
+
+    methods = {
+        'get': GetResourceMethod,
+    }
 
 
 class ProjectListResource(BaseResource):
@@ -19,22 +37,17 @@ class ProjectListResource(BaseResource):
 
     methods = {
         'get': GetListResourceMethod,
+        'search': SearchListResourceMethod,
     }
 
 
 class ProjectOneResource(BaseResource):
-    path = 'user/'
+    path = 'user/projects/'
 
     methods = {
         'get': GetOneResourceMethod,
-    }
-
-
-class UserOneResource(BaseResource):
-    path = 'user/'
-
-    methods = {
-        'get': GetOneResourceMethod,
+        'save': SaveOneResourceMethod,
+        'create': CreateOneResourceMethod,
     }
 
 
@@ -59,15 +72,27 @@ class CollectionOneResource(BaseResource):
     }
 
 
+class DocumentResourceMixin(object):
+    def get_params_definitions(self):
+        params = super(DocumentResourceMixin, self).get_params_definitions()
+        params['collection'] = PARAMS_DEFINITIONS['collection']
+        return params
+
+    def get_params_required(self):
+        params_required = super(DocumentResourceMixin, self).get_params_required_definitions()
+        params_required.append('collection')
+        return params_required
+
+
 class DocumentListResource(BaseResource):
     path = 'documents/'
 
     methods = {
-        'get': GetListResourceMethod,
-        'search': SearchListResourceMethod,
-        'update': UpdateListResourceMethod,
-        'upsert': UpsertListResourceMethod,
-        'remove': RemoveListResourceMethod,
+        'get': type('DocumentGetListResourceMethod', (DocumentResourceMixin, GetListResourceMethod), {}),
+        'search': type('DocumentSearchListResourceMethod', (DocumentResourceMixin, SearchListResourceMethod), {}),
+        'update': type('DocumentUpdateListResourceMethod', (DocumentResourceMixin, UpdateListResourceMethod), {}),
+        'upsert': type('DocumentUpsertListResourceMethod', (DocumentResourceMixin, UpsertListResourceMethod), {}),
+        'remove': type('DocumentRemoveListResourceMethod', (DocumentResourceMixin, RemoveListResourceMethod), {}),
     }
 
 
@@ -75,9 +100,9 @@ class DocumentOneResource(BaseResource):
     path = 'documents/'
 
     methods = {
-        'get': GetOneResourceMethod,
-        'create': CreateOneResourceMethod,
-        'save': SaveOneResourceMethod,
-        'update': UpdateOneResourceMethod,
-        'remove': RemoveOneResourceMethod,
+        'get': type('DocumentGetOneResourceMethod', (DocumentResourceMixin, GetOneResourceMethod), {}),
+        'create': type('DocumentCreateOneResourceMethod', (DocumentResourceMixin, CreateOneResourceMethod), {}),
+        'save': type('DocumentSaveOneResourceMethod', (DocumentResourceMixin, SaveOneResourceMethod), {}),
+        'update': type('DocumentUpdateOneResourceMethod', (DocumentResourceMixin, UpdateOneResourceMethod), {}),
+        'remove': type('DocumentRemoveOneResourceMethod', (DocumentResourceMixin, RemoveOneResourceMethod), {}),
     }

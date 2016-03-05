@@ -11,6 +11,7 @@ from pydeform.utils import (
     uri_join,
 )
 from pydeform.resources import (
+    CurrentProjectInfoResource,
     ProjectListResource,
     ProjectOneResource,
     UserOneResource,
@@ -51,20 +52,33 @@ class Client(object):
             )
         )
 
-    def auth(self, auth_type, auth_key):
+    def auth(self, auth_type, auth_key, project_id=None):
+        # todo: test me
+
         if auth_type == 'session':
             auth_header = get_session_http_auth_header(auth_key)
+            return SessionAuthClient(
+                auth_header=auth_header,
+                host=self.host,
+                port=self.port,
+                secure=self.secure,
+                requests_session=self.requests_session,
+                api_base_path=self.api_base_path,
+            )
         elif auth_type == 'token':
-            auth_header = get_token_http_auth_header(auth_key)
-
-        return AuthClient(
-            auth_header=auth_header,
-            host=self.host,
-            port=self.port,
-            secure=self.secure,
-            requests_session=self.requests_session,
-            api_base_path=self.api_base_path,
-        )
+            if not project_id:
+                raise ValueError('You should provide project_id for token authentication')
+            return ProjectClient(
+                base_uri=get_base_uri(
+                    project=project_id,
+                    host=self.host,
+                    port=self.port,
+                    secure=self.secure,
+                    api_base_path=self.api_base_path
+                ),
+                auth_header=get_token_http_auth_header(auth_key),
+                requests_session=self.requests_session
+            )
 
     def register(self, email, password, timeout=None):
         pass
@@ -73,7 +87,7 @@ class Client(object):
         pass
 
 
-class AuthClient(object):
+class SessionAuthClient(object):
     def __init__(self,
                  auth_header,
                  host,
@@ -126,6 +140,8 @@ class ProjectClient(object):
             'auth_header': auth_header,
             'requests_session': requests_session
         }
+        self.auth_header = auth_header
+        self.info = CurrentProjectInfoResource(**resource_kwargs)
         self.collections = CollectionListResource(**resource_kwargs)
         self.collection = CollectionOneResource(**resource_kwargs)
         self.documents = DocumentListResource(**resource_kwargs)

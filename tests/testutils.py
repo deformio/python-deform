@@ -90,7 +90,7 @@ class DeformTokenAuthClientTestCaseMixin(DeformClientTestCaseMixin):
     pass
 
 
-def check_timeout(func, kwargs):
+def check_timeout(func, kwargs={}):
     experiments = [
         {
             'timeout': 0,

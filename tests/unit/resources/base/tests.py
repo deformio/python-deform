@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
+import types
 
 from hamcrest import (
     assert_that,
@@ -12,6 +13,7 @@ from hamcrest import (
     has_entry,
 )
 import responses
+from mock import Mock
 
 from pydeform.utils import (
     uri_join,
@@ -24,6 +26,7 @@ from pydeform.resources.base import (
 
 from testutils import (
     TestCase,
+    check_timeout
 )
 
 
@@ -210,4 +213,258 @@ class TestResourceMethodBase__get_context(TestCase):
         )
 
 
-# todo: teset params_required
+
+class TestResourceMethodBase__call(TestCase):
+    def setUp(self):
+        super(TestResourceMethodBase__call, self).setUp()
+
+        self.base_uri = 'http://chib.me/'
+        self.auth_header = 'Token 123'
+        self.method = 'GET'
+
+    def get_instance(self, class_):
+        instance = class_(
+            base_uri=self.base_uri,
+            auth_header=self.auth_header,
+            requests_session=self.requests_session,
+        )
+        # instance.get_context = Mock(return_value=context)
+        return instance
+
+    @responses.activate
+    def test_should_raise_error_if_required_param_not_sent(self):
+        class ResourceMethod(ResourceMethodBase):
+            method = 'get'
+            params = {
+                'name': {
+                    'dest': 'query_params'
+                },
+                'surname': {
+                    'dest': 'query_params'
+                }
+            }
+            params_required = ['surname']
+
+        instance = self.get_instance(ResourceMethod)
+        assert_that(
+            calling(instance).with_args(name='gena'),
+            raises(ValueError, '^surname is required parameter$')
+        )
+
+    @responses.activate
+    def test_should_raise_error_if_required_param_not_sent(self):
+        class ResourceMethod(ResourceMethodBase):
+            method = 'get'
+            params = {
+                'name': {
+                    'dest': 'query_params'
+                },
+                'surname': {
+                    'dest': 'query_params'
+                }
+            }
+            params_required = ['surname']
+
+        instance = self.get_instance(ResourceMethod)
+        assert_that(
+            calling(instance).with_args(name='gena'),
+            raises(ValueError, '^surname is required parameter$')
+        )
+
+    @responses.activate
+    def test_should_return_result_response(self):
+        class ResourceMethod(ResourceMethodBase):
+            method = 'get'
+            params = {
+                'name': {
+                    'dest': 'query_params'
+                },
+                'surname': {
+                    'dest': 'query_params'
+                },
+            }
+            params_required = ['surname']
+
+        responses.add(
+            self.method,
+            self.base_uri,
+            json={
+                'result': {
+                    'age': 26
+                }
+            }
+        )
+
+        instance = self.get_instance(ResourceMethod)
+        assert_that(
+            instance(name='gena', surname='chibisov'),
+            equal_to({'age': 26})
+        )
+
+    @responses.activate
+    def test_should_return_generator_if_paginatable(self):
+        class ResourceMethod(ResourceMethodBase):
+            method = 'get'
+            params = {
+                'name': {
+                    'dest': 'query_params'
+                },
+                'surname': {
+                    'dest': 'query_params'
+                },
+            }
+            is_paginatable = True
+            params_required = ['surname']
+
+        page_1_result = [1, 2, 3]
+        page_2_result = [4, 5, 6]
+        responses.add(
+            self.method,
+            self.base_uri + '?page=1&name=gena&surname=chibisov',
+            json={
+                'links': {
+                    'next': 'http://next'
+                },
+                'result': page_1_result
+            },
+            match_querystring=True
+        )
+        responses.add(
+            self.method,
+            self.base_uri + '?page=2&name=gena&surname=chibisov',
+            json={
+                'result': page_2_result
+            },
+            match_querystring=True
+        )
+
+        instance = self.get_instance(ResourceMethod)
+        response = instance(name='gena', surname='chibisov')
+        assert_that(response, instance_of(types.GeneratorType))
+        assert_that(
+            [i for i in response],
+            equal_to(page_1_result + page_2_result)
+        )
+
+    @responses.activate
+    def test_should_return_page_if_paginatable_and_pagination_param_has_been_sent(self):
+        class ResourceMethod(ResourceMethodBase):
+            method = 'get'
+            params = {
+                'name': {
+                    'dest': 'query_params'
+                },
+                'surname': {
+                    'dest': 'query_params'
+                },
+            }
+            is_paginatable = True
+            params_required = ['surname']
+
+        instance = self.get_instance(ResourceMethod)
+
+        page_1_result = [1, 2, 3]
+        page_2_result = [4, 5, 6]
+        responses.add(
+            self.method,
+            self.base_uri + '?page=1&name=gena&surname=chibisov',
+            json={
+                'links': {
+                    'next': 'http://next'
+                },
+                'result': page_1_result
+            },
+            match_querystring=True
+        )
+        responses.add(
+            self.method,
+            self.base_uri + '?page=2&name=gena&surname=chibisov',
+            json={
+                'page': 2,
+                'pages': 10,
+                'per_page': 20,
+                'total': 30,
+                'result': page_2_result,
+                'another_key_that_should_not_be_in_response': 'noooooo'
+            },
+            match_querystring=True
+        )
+
+        # page param
+        assert_that(
+            instance(name='gena', surname='chibisov', page=2),
+            equal_to({
+                'page': 2,
+                'pages': 10,
+                'per_page': 20,
+                'total': 30,
+                'result': page_2_result,
+            })
+        )
+
+        # per_page param
+        per_page_result = [10, 20, 30]
+        responses.add(
+            self.method,
+            self.base_uri + '?name=gena&surname=chibisov&per_page=33',
+            json={
+                'page': 2,
+                'pages': 10,
+                'per_page': 20,
+                'total': 30,
+                'result': per_page_result,
+                'another_key_that_should_not_be_in_response': 'noooooo'
+            },
+            match_querystring=True
+        )
+        assert_that(
+            instance(name='gena', surname='chibisov', per_page=33),
+            equal_to({
+                'page': 2,
+                'pages': 10,
+                'per_page': 20,
+                'total': 30,
+                'result': per_page_result,
+            })
+        )
+
+        # page and per_page param
+        page_and_per_page_result = [100, 200, 300]
+        responses.add(
+            self.method,
+            self.base_uri + '?page=5&name=gena&surname=chibisov&per_page=33',
+            json={
+                'page': 2,
+                'pages': 10,
+                'per_page': 20,
+                'total': 30,
+                'result': page_and_per_page_result,
+                'another_key_that_should_not_be_in_response': 'noooooo'
+            },
+            match_querystring=True
+        )
+        assert_that(
+            instance(name='gena', surname='chibisov', per_page=33, page=5),
+            equal_to({
+                'page': 2,
+                'pages': 10,
+                'per_page': 20,
+                'total': 30,
+                'result': page_and_per_page_result,
+            })
+        )
+
+    def test_for_timeout(self):
+        class ResourceMethod(ResourceMethodBase):
+            method = 'get'
+
+        responses.add(
+            self.method,
+            self.base_uri,
+            json={
+                'hello': 'world',
+            }
+        )
+
+        instance = self.get_instance(ResourceMethod)
+        check_timeout(instance)

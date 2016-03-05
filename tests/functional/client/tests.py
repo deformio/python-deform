@@ -10,12 +10,15 @@ from hamcrest import (
 )
 
 from pydeform import six
-from pydeform.client import AuthClient
+from pydeform.client import (
+    SessionAuthClient,
+    ProjectClient,
+)
 
 from testutils import (
     DeformClientTestCaseMixin,
-    DeformTokenAuthClientTestCaseMixin,
     TestCase,
+    DeformSessionAuthClientTestCaseMixin,
     check_timeout
 )
 
@@ -26,7 +29,7 @@ class ClientTest__login(DeformClientTestCaseMixin, TestCase):
             email=self.CONFIG['DEFORM']['EMAIL'],
             password=self.CONFIG['DEFORM']['PASSWORD']
         )
-        assert_that(response, instance_of(AuthClient))
+        assert_that(response, instance_of(SessionAuthClient))
         assert_that(response.auth_header, starts_with('Sessionid'))
 
 
@@ -36,13 +39,29 @@ class ClientTest__auth(DeformClientTestCaseMixin, TestCase):
             auth_type='session',
             auth_key='test'
         )
-        assert_that(response, instance_of(AuthClient))
+        assert_that(response, instance_of(SessionAuthClient))
         assert_that(response.auth_header, starts_with('Sessionid'))
 
-    def test_auth_by_token(self):
+    def test_auth_by_token_without_project_id(self):
+        assert_that(
+            calling(self.deform_client.auth).with_args(
+                auth_type='token',
+                auth_key='test'
+            ),
+            raises(ValueError, '^You should provide project_id for token authentication$')
+        )
+
+    def test_auth_by_token_with_project_id(self):
         response = self.deform_client.auth(
             auth_type='token',
-            auth_key='test'
+            auth_key='test',
+            project_id='some_project'
         )
-        assert_that(response, instance_of(AuthClient))
+        assert_that(response, instance_of(ProjectClient))
         assert_that(response.auth_header, starts_with('Token'))
+
+
+class SessionAuthClientTest__user(DeformSessionAuthClientTestCaseMixin, TestCase):
+    def test_me(self):
+        pass
+        # self.deform_session_auth_client.user.get()

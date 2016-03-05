@@ -17,7 +17,7 @@ from pydeform.exceptions import NotFoundError
 PARAMS_DEFINITIONS = {
     'identity': {
         'dest': 'uri',
-        'description': 'Object identity'
+        'description': 'Identity'
     },
     'collection': {
         'dest': 'uri',
@@ -36,7 +36,8 @@ PARAMS_DEFINITIONS = {
         'description': 'Return all but the excluded field'
     },
     'data': {
-        'dest': 'payload'
+        'dest': 'payload',
+        'description': 'Data'
     },
     'search_filter': {
         'dest': 'payload',
@@ -54,9 +55,6 @@ PARAMS_DEFINITIONS = {
         'description': 'Update operation'
     },
     'page': {
-        'dest': 'query_params',
-    },
-    'per_page': {
         'dest': 'query_params',
     },
     'per_page': {

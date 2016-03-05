@@ -64,10 +64,14 @@ class ResourceMethodBase(object):
     def __call__(self,
                  timeout=None,
                  **params):
+        for param_required in self.get_params_required():
+            if param_required not in params:
+                raise ValueError('%s is required parameter' % param_required)
         context = self.get_context(params)
         context['timeout'] = timeout
         if self.is_paginatable:
             if self._pagination_is_activated(context):
+                # todo: test me
                 response = do_http_request(
                     method=self.method,
                     request_kwargs=context,
@@ -147,7 +151,11 @@ class ResourceMethodBase(object):
 
     def get_uri_params_order(self):
         # todo: test me
-        return self.uri_params_order
+        return deepcopy(self.uri_params_order)
+
+    def get_params_required(self):
+        # todo: test me
+        return deepcopy(self.params_required)
 
 
 class GetListResourceMethod(ResourceMethodBase):
@@ -190,6 +198,10 @@ class RemoveListResourceMethod(ResourceMethodBase):
     params = {
         'filter': PARAMS_DEFINITIONS['search_filter'],
     }
+
+
+class GetResourceMethod(ResourceMethodBase):
+    method = 'get'
 
 
 class GetOneResourceMethod(ResourceMethodBase):
