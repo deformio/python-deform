@@ -14,7 +14,6 @@ from pydeform.client import AuthClient
 
 from testutils import (
     DeformClientTestCaseMixin,
-    DeformSessionAuthClientTestCaseMixin,
     DeformTokenAuthClientTestCaseMixin,
     TestCase,
     check_timeout
@@ -47,15 +46,3 @@ class ClientTest__auth(DeformClientTestCaseMixin, TestCase):
         )
         assert_that(response, instance_of(AuthClient))
         assert_that(response.auth_header, starts_with('Token'))
-
-
-# class SessionAuthClientTest(DeformSessionAuthClientTestCaseMixin, TestCase):
-#     def test_user_get(self):
-#         pass
-#         # response = self.deform_session_auth_client.user.get()
-#
-#     def test_user_2(self):
-#         print self.deform_session_auth_client
-#
-#     def test_user_3(self):
-#         print self.deform_session_auth_client

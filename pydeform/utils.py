@@ -47,7 +47,7 @@ def do_http_request(requests_session,
     if request_kwargs is None:
         request_kwargs = {}
     try:
-        response = getattr(requests_session, method)(**request_kwargs)
+        response = getattr(requests_session, method.lower())(**request_kwargs)
         if not response.ok and response.status_code not in ignore_error_codes:
             response.raise_for_status()
     except RequestException as e:

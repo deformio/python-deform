@@ -22,7 +22,6 @@ class HTTPError(DeformException):
         else:
             self.error = self.requests_error.response.json().get('error')
 
-
     def __str__(self):
         return self.__repr__()
 

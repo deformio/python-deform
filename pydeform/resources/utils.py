@@ -2,42 +2,70 @@
 import datetime
 from copy import deepcopy
 from collections import defaultdict
+from collections import namedtuple
 
 from pydeform.utils import (
     uri_join,
     format_date,
     format_datetime,
     flatten,
+    do_http_request,
 )
+from pydeform.exceptions import NotFoundError
 
 
 PARAMS_DEFINITIONS = {
     'identity': {
-        'name': 'identity',
-        'dest': 'uri'
+        'dest': 'uri',
+        'description': 'Object identity'
+    },
+    'collection': {
+        'dest': 'uri',
+        'description': 'Collection'
     },
     'property': {
-        'name': 'property',
-        'default': [],
-        'dest': 'uri'
+        'dest': 'uri',
+        'description': 'Work with specified property'
     },
     'fields': {
-        'name': 'fields',
-        'default': [],
         'dest': 'query_params',
+        'description': 'Return specified fields only'
     },
     'fields_exclude': {
-        'name': 'fields_exclude',
-        'default': [],
         'dest': 'query_params',
+        'description': 'Return all but the excluded field'
     },
     'data': {
-        'name': 'data',
         'dest': 'payload'
+    },
+    'search_filter': {
+        'dest': 'payload.filter',
+        'description': 'Filter query'
+    },
+    'search_text': {
+        'dest': 'payload.text',
+        'description': 'Full text search value'
+    },
+    'update_operation': {
+        'dest': 'payload.operation',
+        'description': 'Update operation'
+    },
+    'page': {
+        'dest': 'query_params',
+    },
+    'per_page': {
+        'dest': 'query_params',
+    },
+    'per_page': {
+        'dest': 'query_params',
+    },
+    'sort': {
+        'dest': 'query_params',
     },
 }
 
 URI_PARAMS_ORDER = [
+    'collection',
     'identity',
     'property'
 ]
@@ -82,8 +110,8 @@ def get_query_params(params, definitions):
 
 
 def get_payload(params, definitions):
-    assert 'data' in definitions
-    assert definitions['data']['dest'] == 'payload'
+    if not params:
+        return
 
     with_files, prepared_data = _prepare_payload(params['data'])
     if with_files:
@@ -92,7 +120,7 @@ def get_payload(params, definitions):
         'type': 'files' if with_files else 'json',
         'data': prepared_data
     }
-    
+
 
 def _prepare_payload(data):
     if isinstance(data, datetime.datetime):
@@ -121,3 +149,31 @@ def _prepare_payload(data):
         return True, data
     else:
         return False, data
+
+
+def iterate_by_pagination(method, request_kwargs, requests_session):
+    response = {
+        'links': {
+            'next': 'yes'
+        }
+    }
+    page = 0
+    if not 'params' in request_kwargs:
+        request_kwargs['params'] = {}
+    while True:
+        if response.get('links', {}).get('next'):
+            page += 1
+            request_kwargs['params']['page'] = page
+            try:
+                response = do_http_request(
+                    method=method,
+                    request_kwargs=request_kwargs,
+                    requests_session=requests_session,
+                )
+            except NotFoundError as e:
+                break
+            response = response.json()
+            for i in response['result']:
+                yield i
+        else:
+            break

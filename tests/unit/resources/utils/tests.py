@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import datetime
 import os
+import types
 
 from hamcrest import (
     assert_that,
@@ -12,6 +13,7 @@ from hamcrest import (
     starts_with,
     has_entry,
 )
+import responses
 
 from pydeform.utils import (
     format_date,
@@ -24,6 +26,7 @@ from pydeform.resources.utils import (
     get_headers,
     get_query_params,
     get_payload,
+    iterate_by_pagination,
 )
 
 from testutils import (
@@ -287,3 +290,201 @@ class ResourcesUtilesTest__get_payload(TestCase):
     def test_file(self):
         value = open(os.path.join(self.CONFIG['FILES_PATH'], '1.txt'))
         self.expect_response(value, value, type_='files')
+
+
+class ResourcesUtilesTest__iterate_by_pagination(TestCase):
+    def setUp(self):
+        super(ResourcesUtilesTest__iterate_by_pagination, self).setUp()
+
+        self.method = 'GET'
+        self.url = 'http://chib.me/users/'
+        self.request_kwargs = {
+            'url': self.url
+        }
+
+    def get_list_from_generator(self, generator):
+        return [i for i in generator]
+
+    @responses.activate
+    def test_should_return_generator(self):
+        responses.add(
+            self.method,
+            self.url,
+            json={
+                'links': {},
+                'results': []
+            }
+        )
+
+        assert_that(
+            iterate_by_pagination(
+                method=self.method,
+                request_kwargs=self.request_kwargs,
+                requests_session=self.requests_session
+            ),
+            instance_of(types.GeneratorType)
+        )
+
+    @responses.activate
+    def test_one_page(self):
+        results = [
+            1,
+            2,
+            3
+        ]
+        responses.add(
+            self.method,
+            self.url,
+            json={
+                'links': {},
+                'result': results
+            }
+        )
+
+        response = iterate_by_pagination(
+            method=self.method,
+            request_kwargs=self.request_kwargs,
+            requests_session=self.requests_session
+        )
+        assert_that(
+            self.get_list_from_generator(response),
+            equal_to(results)
+        )
+
+    @responses.activate
+    def test_two_pages(self):
+        page_1_results = [
+            1,
+            2,
+            3
+        ]
+        page_2_results = [
+            1,
+            2,
+            3
+        ]
+        responses.add(
+            self.method,
+            self.url + '?page=1',
+            json={
+                'links': {
+                    'next': 'http://next/blablabla'
+                },
+                'result': page_1_results
+            },
+            match_querystring=True
+        )
+        responses.add(
+            self.method,
+            self.url + '?page=2',
+            json={
+                'links': {},
+                'result': page_2_results
+            },
+            match_querystring=True
+        )
+
+        response = iterate_by_pagination(
+            method=self.method,
+            request_kwargs=self.request_kwargs,
+            requests_session=self.requests_session
+        )
+        assert_that(
+            self.get_list_from_generator(response),
+            equal_to(page_1_results + page_2_results)
+        )
+
+    @responses.activate
+    def test_one_page_not_found(self):
+        responses.add(
+            self.method,
+            self.url,
+            json={'error': 'Not found'},
+            status=404
+        )
+
+        response = iterate_by_pagination(
+            method=self.method,
+            request_kwargs=self.request_kwargs,
+            requests_session=self.requests_session
+        )
+        assert_that(
+            self.get_list_from_generator(response),
+            equal_to([])
+        )
+
+    @responses.activate
+    def test_second_page_not_found(self):
+        page_1_results = [
+            1,
+            2,
+            3
+        ]
+        responses.add(
+            self.method,
+            self.url + '?page=1',
+            json={
+                'links': {
+                    'next': 'http://next/blablabla'
+                },
+                'result': page_1_results
+            },
+            match_querystring=True
+        )
+        responses.add(
+            self.method,
+            self.url + '?page=2',
+            json={
+                'error': 'Not found',
+            },
+            status=404,
+            match_querystring=True
+        )
+
+        response = iterate_by_pagination(
+            method=self.method,
+            request_kwargs=self.request_kwargs,
+            requests_session=self.requests_session
+        )
+        assert_that(
+            self.get_list_from_generator(response),
+            equal_to(page_1_results)
+        )
+
+    @responses.activate
+    def test_second_page_is_empty(self):
+        page_1_results = [
+            1,
+            2,
+            3
+        ]
+        responses.add(
+            self.method,
+            self.url + '?page=1',
+            json={
+                'links': {
+                    'next': 'http://next/blablabla'
+                },
+                'result': page_1_results
+            },
+            match_querystring=True
+        )
+        responses.add(
+            self.method,
+            self.url + '?page=2',
+            json={
+                'links': {},
+                'result': []
+            },
+            match_querystring=True
+        )
+
+        response = iterate_by_pagination(
+            method=self.method,
+            request_kwargs=self.request_kwargs,
+            requests_session=self.requests_session
+        )
+        assert_that(
+            self.get_list_from_generator(response),
+            equal_to(page_1_results)
+        )

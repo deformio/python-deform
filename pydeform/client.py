@@ -6,10 +6,18 @@ from pydeform.auth import (
     get_session_http_auth_header,
     get_token_http_auth_header,
 )
-# from pydeform.resources.projects import ProjectList, ProjectOne
 from pydeform.utils import (
     get_base_uri,
     uri_join,
+)
+from pydeform.resources import (
+    ProjectListResource,
+    ProjectOneResource,
+    UserOneResource,
+    CollectionListResource,
+    CollectionOneResource,
+    DocumentListResource,
+    DocumentOneResource,
 )
 
 
@@ -90,9 +98,9 @@ class AuthClient(object):
             'auth_header': auth_header,
             'requests_session': requests_session
         }
-        self.user = None
-        # self.projects = ProjectList(**kwargs)
-        # self.project = ProjectOne(**kwargs)
+        self.user = UserOneResource(**resource_kwargs)
+        self.projects = ProjectListResource(**resource_kwargs)
+        self.project = ProjectOneResource(**resource_kwargs)
 
     def use_project(self, project_id):
         return ProjectClient(

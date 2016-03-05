@@ -45,6 +45,7 @@ CONFIG = {
 }
 CONFIG['FILES_PATH'] = os.path.join(CONFIG['BASE_PATH'], 'files')
 
+
 class TestCase(unittest.TestCase):
     def setUp(self):
         self.CONFIG = CONFIG
@@ -72,6 +73,7 @@ class DeformClientTestCaseMixin(object):
             api_base_path=self.CONFIG['DEFORM']['API_BASE_PATH'],
         )
 
+
 class DeformSessionAuthClientTestCaseMixin(DeformClientTestCaseMixin):
     def setUp(self):
         super(DeformSessionAuthClientTestCaseMixin, self).setUp()
@@ -82,6 +84,7 @@ class DeformSessionAuthClientTestCaseMixin(DeformClientTestCaseMixin):
                 password=self.CONFIG['DEFORM']['PASSWORD']
             )
         self.deform_session_auth_client = GLOBALS['deform_session_auth_client']
+
 
 class DeformTokenAuthClientTestCaseMixin(DeformClientTestCaseMixin):
     pass
