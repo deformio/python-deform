@@ -93,8 +93,9 @@ def get_url(base_uri, params, definitions, uri_params_order):
                 uri_bits += value
             else:
                 uri_bits.append(value)
+    uri_bits.append('/')
 
-    return '%s/' % uri_join(*uri_bits).rstrip('/')
+    return uri_join(*uri_bits)
 
 
 def get_headers(auth_header, params, definitions):

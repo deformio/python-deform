@@ -48,6 +48,18 @@ class Test__uri_join(TestCase):
                 'args': ['http://chib.me', 'blog/'],
                 'expected': 'http://chib.me/blog/'
             },
+            {
+                'args': ['http://chib.me', 'hello amigo', '/blog/'],
+                'expected': 'http://chib.me/hello+amigo/blog/'
+            },
+            {
+                'args': ['http://chib.me', 1, 2, 3],
+                'expected': 'http://chib.me/1/2/3'
+            },
+            {
+                'args': ['http://chib.me', '/last-slash', '/'],
+                'expected': 'http://chib.me/last-slash/'
+            },
         ]
 
         for exp in experiments:

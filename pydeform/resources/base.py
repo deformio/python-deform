@@ -47,6 +47,7 @@ class ResourceMethodBase(object):
         'page': PARAMS_DEFINITIONS['page'],
         'per_page': PARAMS_DEFINITIONS['per_page'],
     }
+    uri_params_order = URI_PARAMS_ORDER
 
     def __init__(self,
                  base_uri,
@@ -65,8 +66,6 @@ class ResourceMethodBase(object):
                  **params):
         context = self.get_context(params)
         context['timeout'] = timeout
-        if self.action:
-            context['headers']['X-Action'] = self.action
         if self.is_paginatable:
             if self._pagination_is_activated(context):
                 response = do_http_request(
@@ -105,22 +104,16 @@ class ResourceMethodBase(object):
 
     def get_context(self, params):
         params_definitions = self.get_params_definitions()
-
-        # todo: test me
         params_by_destination = get_params_by_destination(
             params,
-            definitions=params_definitions
-        )
-        payload = get_payload(
-            params_by_destination.get('payload'),
             definitions=params_definitions
         )
         context = {
             'url': get_url(
                 base_uri=self.base_uri,
-                params=params_by_destination.get('url', {}),
+                params=params_by_destination.get('uri', {}),
                 definitions=params_definitions,
-                uri_params_order=URI_PARAMS_ORDER
+                uri_params_order=self.get_uri_params_order()
             ),
             'headers': get_headers(
                 auth_header=self.auth_header,
@@ -132,15 +125,29 @@ class ResourceMethodBase(object):
                 definitions=params_definitions,
             ),
         }
+        if self.action:
+            context['headers']['X-Action'] = self.action
+        for key, value in context.items():
+            if not value:
+                del context[key]
+        payload = get_payload(
+            params_by_destination.get('payload'),
+            definitions=params_definitions
+        )
         if payload:
             context[payload['type']] = payload['data']
         return context
 
     def get_params_definitions(self):
+        # todo: test me
         params_definitions = deepcopy(self.params)
         if self.is_paginatable:
             params_definitions.update(self.pagination_params)
         return params_definitions
+
+    def get_uri_params_order(self):
+        # todo: test me
+        return self.uri_params_order
 
 
 class GetListResourceMethod(ResourceMethodBase):

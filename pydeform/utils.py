@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import datetime
+import urllib
 
 from requests.exceptions import RequestException
 
@@ -27,15 +28,29 @@ def get_base_uri(host,
 
 
 def uri_join(*parts):
-    if parts[0].endswith('://'):
-        schema_list = [parts[0][:-1]]
+    add_last_dash = str(parts[-1])[-1] == '/'
+
+    if '://' in parts[0]:
+        base_bit = parts[0]
         parts = parts[1:]
     else:
-        schema_list = []
-    add_last_dash = parts[-1][-1] == '/'
-    response = '/'.join(schema_list + [i.strip('/') for i in parts])
+        base_bit = None
+    response = '/'.join(
+        [
+            urllib.quote_plus(str(i).strip('/'))
+            for i in parts
+        ]
+    )
+    if base_bit:
+        if base_bit.endswith('/'):
+            response = base_bit + response
+        else:
+            response = base_bit + '/' + response
     if add_last_dash:
-        response += '/'
+        if not response.endswith('/'):
+            response += '/'
+    else:
+        response = response.rstrip('/')
     return response
 
 
