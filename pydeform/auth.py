@@ -24,7 +24,7 @@ def get_session_id(base_uri, email, password, requests_session, timeout=None):
 
 
 def get_session_http_auth_header(session_id):
-    return 'Sessionid %s' % session_id
+    return 'SessionId %s' % session_id
 
 
 def get_token_http_auth_header(token):

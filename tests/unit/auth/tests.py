@@ -60,7 +60,7 @@ class Test__get_session_id(DeformBaseURITestCaseMixin, TestCase):
 
 class Test__get_session_http_auth_header(TestCase):
     def test_me(self):
-        assert_that(get_session_http_auth_header('hello'), 'Sessionid hello')
+        assert_that(get_session_http_auth_header('hello'), 'SessionId hello')
 
 
 class Test__get_token_http_auth_header(TestCase):

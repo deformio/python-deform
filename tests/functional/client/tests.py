@@ -7,6 +7,7 @@ from hamcrest import (
     calling,
     raises,
     starts_with,
+    has_entry
 )
 
 from pydeform import six
@@ -30,7 +31,7 @@ class ClientTest__login(DeformClientTestCaseMixin, TestCase):
             password=self.CONFIG['DEFORM']['PASSWORD']
         )
         assert_that(response, instance_of(SessionAuthClient))
-        assert_that(response.auth_header, starts_with('Sessionid'))
+        assert_that(response.auth_header, starts_with('SessionId'))
 
 
 class ClientTest__auth(DeformClientTestCaseMixin, TestCase):
@@ -40,7 +41,7 @@ class ClientTest__auth(DeformClientTestCaseMixin, TestCase):
             auth_key='test'
         )
         assert_that(response, instance_of(SessionAuthClient))
-        assert_that(response.auth_header, starts_with('Sessionid'))
+        assert_that(response.auth_header, starts_with('SessionId'))
 
     def test_auth_by_token_without_project_id(self):
         assert_that(
@@ -62,6 +63,9 @@ class ClientTest__auth(DeformClientTestCaseMixin, TestCase):
 
 
 class SessionAuthClientTest__user(DeformSessionAuthClientTestCaseMixin, TestCase):
-    def test_me(self):
-        pass
-        # self.deform_session_auth_client.user.get()
+    def test_get(self):
+        response = self.deform_session_auth_client.user.get()
+        assert_that(
+            response,
+            has_entry('email', self.CONFIG['DEFORM']['EMAIL'])
+        )

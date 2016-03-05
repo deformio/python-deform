@@ -148,7 +148,7 @@ class ResourcesUtilesTest__get_url(TestCase):
 class ResourcesUtilesTest__get_headers(TestCase):
     def setUp(self):
         super(ResourcesUtilesTest__get_headers, self).setUp()
-        self.auth_header = 'Sessionid hello'
+        self.auth_header = 'SessionId hello'
 
     def test_should_return_auth_header(self):
         assert_that(
