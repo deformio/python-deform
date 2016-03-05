@@ -53,8 +53,6 @@ class Client(object):
         )
 
     def auth(self, auth_type, auth_key, project_id=None):
-        # todo: test me
-
         if auth_type == 'session':
             auth_header = get_session_http_auth_header(auth_key)
             return SessionAuthClient(
@@ -140,7 +138,9 @@ class ProjectClient(object):
             'auth_header': auth_header,
             'requests_session': requests_session
         }
+        self.base_uri = base_uri
         self.auth_header = auth_header
+        self.request_session = requests_session
         self.info = CurrentProjectInfoResource(**resource_kwargs)
         self.collections = CollectionListResource(**resource_kwargs)
         self.collection = CollectionOneResource(**resource_kwargs)

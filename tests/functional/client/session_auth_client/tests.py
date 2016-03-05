@@ -18,6 +18,7 @@ from pydeform.client import (
     SessionAuthClient,
     ProjectClient,
 )
+from pydeform.utils import get_base_uri
 
 from testutils import (
     DeformClientTestCaseMixin,
@@ -25,44 +26,6 @@ from testutils import (
     DeformSessionAuthClientTestCaseMixin,
     check_timeout
 )
-
-
-class ClientTest__login(DeformClientTestCaseMixin, TestCase):
-    def test_login(self):
-        response = self.deform_client.login(
-            email=self.CONFIG['DEFORM']['EMAIL'],
-            password=self.CONFIG['DEFORM']['PASSWORD']
-        )
-        assert_that(response, instance_of(SessionAuthClient))
-        assert_that(response.auth_header, starts_with('SessionId'))
-
-
-class ClientTest__auth(DeformClientTestCaseMixin, TestCase):
-    def test_auth_by_session(self):
-        response = self.deform_client.auth(
-            auth_type='session',
-            auth_key='test'
-        )
-        assert_that(response, instance_of(SessionAuthClient))
-        assert_that(response.auth_header, starts_with('SessionId'))
-
-    def test_auth_by_token_without_project_id(self):
-        assert_that(
-            calling(self.deform_client.auth).with_args(
-                auth_type='token',
-                auth_key='test'
-            ),
-            raises(ValueError, '^You should provide project_id for token authentication$')
-        )
-
-    def test_auth_by_token_with_project_id(self):
-        response = self.deform_client.auth(
-            auth_type='token',
-            auth_key='test',
-            project_id='some_project'
-        )
-        assert_that(response, instance_of(ProjectClient))
-        assert_that(response.auth_header, starts_with('Token'))
 
 
 class SessionAuthClientTest__user(DeformSessionAuthClientTestCaseMixin, TestCase):
@@ -152,3 +115,23 @@ class SessionAuthClientTest__project(DeformSessionAuthClientTestCaseMixin, TestC
             '_id': 'new-project',
             'name': 'New project'
         }))
+
+
+class SessionAuthClientTest__use_project(DeformSessionAuthClientTestCaseMixin, TestCase):
+    def test_me(self):
+        response = self.deform_session_auth_client.use_project('some-project')
+        assert_that(response, instance_of(ProjectClient))
+        assert_that(
+            response.base_uri,
+            equal_to(get_base_uri(
+                project='some-project',
+                host=self.deform_session_auth_client.host,
+                port=self.deform_session_auth_client.port,
+                secure=self.deform_session_auth_client.secure,
+                api_base_path=self.deform_session_auth_client.api_base_path
+            ))
+        )
+        assert_that(
+            response.auth_header,
+            equal_to(self.deform_session_auth_client.auth_header)
+        )
