@@ -2,7 +2,7 @@
 from pydeform.resources.base import (
     BaseResource,
     GetListResourceMethod,
-    SearchListResourceMethod,
+    FindListResourceMethod,
     UpdateListResourceMethod,
     UpsertListResourceMethod,
     RemoveListResourceMethod,
@@ -24,20 +24,12 @@ class UserOneResource(BaseResource):
     }
 
 
-class CurrentProjectInfoResource(BaseResource):
-    path = 'info/'
-
-    methods = {
-        'get': GetResourceMethod,
-    }
-
-
 class ProjectListResource(BaseResource):
     path = 'user/projects/'
 
     methods = {
-        'get': GetListResourceMethod,
-        'search': SearchListResourceMethod,
+        'all': GetListResourceMethod,
+        'find': FindListResourceMethod,
     }
 
 
@@ -51,12 +43,20 @@ class ProjectOneResource(BaseResource):
     }
 
 
+class CurrentProjectInfoResource(BaseResource):
+    path = 'info/'
+
+    methods = {
+        'get': GetResourceMethod,
+    }
+
+
 class CollectionListResource(BaseResource):
     path = 'collections/'
 
     methods = {
-        'get': GetListResourceMethod,
-        'search': SearchListResourceMethod,
+        'all': GetListResourceMethod,
+        'find': FindListResourceMethod,
     }
 
 
@@ -88,8 +88,8 @@ class DocumentListResource(BaseResource):
     path = 'documents/'
 
     methods = {
-        'get': type('DocumentGetListResourceMethod', (DocumentResourceMixin, GetListResourceMethod), {}),
-        'search': type('DocumentSearchListResourceMethod', (DocumentResourceMixin, SearchListResourceMethod), {}),
+        'all': type('DocumentGetListResourceMethod', (DocumentResourceMixin, GetListResourceMethod), {}),
+        'find': type('DocumentFindListResourceMethod', (DocumentResourceMixin, FindListResourceMethod), {}),
         'update': type('DocumentUpdateListResourceMethod', (DocumentResourceMixin, UpdateListResourceMethod), {}),
         'upsert': type('DocumentUpsertListResourceMethod', (DocumentResourceMixin, UpsertListResourceMethod), {}),
         'remove': type('DocumentRemoveListResourceMethod', (DocumentResourceMixin, RemoveListResourceMethod), {}),

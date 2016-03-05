@@ -281,12 +281,12 @@ class ResourcesUtilesTest__get_payload(TestCase):
                 'name': 'data',
                 'dest': 'payload',
             },
-            'search_filter': {
+            'find_filter': {
                 'dest': 'payload',
                 'payload_property': 'filter',
                 'description': 'Filter query'
             },
-            'search_text': {
+            'find_text': {
                 'dest': 'payload',
                 'payload_property': 'text',
                 'description': 'Full text search value'
@@ -315,10 +315,10 @@ class ResourcesUtilesTest__get_payload(TestCase):
         assert_that(
             get_payload(
                 {
-                    'search_filter': {
+                    'find_filter': {
                         'some': 'value'
                     },
-                    'search_text': {
+                    'find_text': {
                         'another_some': 'another_value'
                     },
                 },

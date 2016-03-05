@@ -60,7 +60,7 @@ class TestResourceMethodBase__initialization(TestCase):
 
     def test_initialization_with_action(self):
         class ResourceMethod(ResourceMethodBase):
-            action = 'search'
+            action = 'find'
 
         instance = ResourceMethod(
             base_uri=self.base_uri,
@@ -68,7 +68,7 @@ class TestResourceMethodBase__initialization(TestCase):
             requests_session=self.requests_session,
         )
         assert_that(instance.method, equal_to('post'))
-        assert_that(instance.action, equal_to('search'))
+        assert_that(instance.action, equal_to('find'))
 
 
 class TestResourceMethodBase__get_context(TestCase):
@@ -96,7 +96,7 @@ class TestResourceMethodBase__get_context(TestCase):
 
     def test_simple_action(self):
         class ResourceMethod(ResourceMethodBase):
-            action = 'search'
+            action = 'find'
 
         instance = self.get_instance(ResourceMethod)
         response = instance.get_context({})
@@ -105,7 +105,7 @@ class TestResourceMethodBase__get_context(TestCase):
             response,
             has_entry('headers', {
                 'Authorization': self.auth_header,
-                'X-Action': 'search'
+                'X-Action': 'find'
             })
         )
 
@@ -454,17 +454,50 @@ class TestResourceMethodBase__call(TestCase):
             })
         )
 
+    @responses.activate
+    def test_with_return_create_status(self):
+        class ResourceMethod(ResourceMethodBase):
+            method = 'put'
+            return_create_status = True
+
+        responses.add(
+            'PUT',
+            self.base_uri,
+            json={
+                'result': 'world',
+            },
+            status=201
+        )
+        instance = self.get_instance(ResourceMethod)
+        assert_that(
+            instance(),
+            equal_to({
+                'created': True,
+                'result': 'world'
+            })
+        )
+
+        # test when not created
+        responses.reset()
+        responses.add(
+            'PUT',
+            self.base_uri,
+            json={
+                'result': 'world',
+            },
+            status=200
+        )
+        assert_that(
+            instance(),
+            equal_to({
+                'created': False,
+                'result': 'world'
+            })
+        )
+
     def test_for_timeout(self):
         class ResourceMethod(ResourceMethodBase):
             method = 'get'
-
-        responses.add(
-            self.method,
-            self.base_uri,
-            json={
-                'hello': 'world',
-            }
-        )
 
         instance = self.get_instance(ResourceMethod)
         check_timeout(instance)

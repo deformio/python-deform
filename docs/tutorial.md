@@ -45,7 +45,7 @@ Projects (for session authorization):
 
 ```python
 # getting all projects
-deform.projects.find()
+deform.projects.all()
 
 # creating a project
 deform.project.create('some_project', name='Some project')
@@ -78,9 +78,9 @@ deform = Client(
 )
 
 # getting all collections (literally all, generator!!!)
-deform.collections.find()
+deform.collections.all()
 
-# searching for the collections
+# find the collections
 deform.collections.find({'name': {'$in': ['users', 'venues']}})
 
 # creating a collection
@@ -138,12 +138,12 @@ Documents retrieve:
 
 ```python
 # getting all documents
-deform.documents.find()
+deform.documents.all()
 
 # getting a document by _id
 deform.document.get('kfc')
 
-# searching for the documents
+# find the documents
 deform.documents.find({'rating': 10})
 
 # counting

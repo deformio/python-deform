@@ -7,7 +7,9 @@ from hamcrest import (
     calling,
     raises,
     starts_with,
-    has_entry
+    has_entry,
+    is_not,
+    empty
 )
 
 from pydeform import six
@@ -68,4 +70,57 @@ class SessionAuthClientTest__user(DeformSessionAuthClientTestCaseMixin, TestCase
         assert_that(
             response,
             has_entry('email', self.CONFIG['DEFORM']['EMAIL'])
+        )
+
+
+class SessionAuthClientTest__projects(DeformSessionAuthClientTestCaseMixin, TestCase):
+    def test_get(self):
+        response = self.deform_session_auth_client.projects.all()
+        projects = [i for i in response]
+        assert_that(projects, is_not([]))
+
+    def test_find(self):
+        response = self.deform_session_auth_client.projects.find(
+            filter={'name': self.CONFIG['DEFORM']['PROJECT_NAME']}
+        )
+        projects = [i for i in response]
+        assert_that(projects, is_not([]))
+        assert_that(
+            projects[0],
+            has_entry('_id', self.CONFIG['DEFORM']['PROJECT']),
+            has_entry('name', self.CONFIG['DEFORM']['PROJECT_NAME']),
+        )
+
+    def test_find__full_text(self):
+        response = self.deform_session_auth_client.projects.find(
+            text=self.CONFIG['DEFORM']['PROJECT_NAME']
+        )
+        projects = [i for i in response]
+        assert_that(projects, is_not([]))
+        assert_that(
+            projects[0],
+            has_entry('_id', self.CONFIG['DEFORM']['PROJECT']),
+            has_entry('name', self.CONFIG['DEFORM']['PROJECT_NAME']),
+        )
+
+
+class SessionAuthClientTest__project(DeformSessionAuthClientTestCaseMixin, TestCase):
+    def test_get(self):
+        response = self.deform_session_auth_client.project.get(
+            identity=self.CONFIG['DEFORM']['PROJECT']
+        )
+        assert_that(
+            response,
+            has_entry('_id', self.CONFIG['DEFORM']['PROJECT']),
+            has_entry('name', self.CONFIG['DEFORM']['PROJECT_NAME']),
+        )
+
+    def _test_save(self):
+        response = self.deform_session_auth_client.project.get(
+            identity=self.CONFIG['DEFORM']['PROJECT']
+        )
+        assert_that(
+            response,
+            has_entry('_id', self.CONFIG['DEFORM']['PROJECT']),
+            has_entry('name', self.CONFIG['DEFORM']['PROJECT_NAME']),
         )

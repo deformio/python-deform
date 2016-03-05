@@ -39,12 +39,12 @@ PARAMS_DEFINITIONS = {
         'dest': 'payload',
         'description': 'Data'
     },
-    'search_filter': {
+    'find_filter': {
         'dest': 'payload',
         'payload_property': 'filter',
         'description': 'Filter query'
     },
-    'search_text': {
+    'find_text': {
         'dest': 'payload',
         'payload_property': 'text',
         'description': 'Full text search value'

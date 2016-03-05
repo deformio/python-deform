@@ -48,6 +48,7 @@ class ResourceMethodBase(object):
         'per_page': PARAMS_DEFINITIONS['per_page'],
     }
     uri_params_order = URI_PARAMS_ORDER
+    return_create_status = False
 
     def __init__(self,
                  base_uri,
@@ -90,7 +91,15 @@ class ResourceMethodBase(object):
                 request_kwargs=context,
                 requests_session=self.requests_session,
             )
-            return response.json()['result']
+            result = response.json()['result']
+            if self.return_create_status:
+                # todo: test me
+                return {
+                    'created': response.status_code == 201,
+                    'result': result
+                }
+            else:
+                return result
 
     def _pagination_is_activated(self, context):
         for pagination_param in self.pagination_params:
@@ -168,12 +177,12 @@ class GetListResourceMethod(ResourceMethodBase):
     }
 
 
-class SearchListResourceMethod(ResourceMethodBase):
-    action = 'search'
+class FindListResourceMethod(ResourceMethodBase):
+    action = 'find'
     is_paginatable = True
     params = {
-        'filter': PARAMS_DEFINITIONS['search_filter'],
-        'text': PARAMS_DEFINITIONS['search_text'],
+        'filter': PARAMS_DEFINITIONS['find_filter'],
+        'text': PARAMS_DEFINITIONS['find_text'],
         'fields': PARAMS_DEFINITIONS['fields'],
         'fields_exclude': PARAMS_DEFINITIONS['fields_exclude'],
         'sort': PARAMS_DEFINITIONS['sort'],
@@ -183,7 +192,7 @@ class SearchListResourceMethod(ResourceMethodBase):
 class UpdateListResourceMethod(ResourceMethodBase):
     action = 'update'
     params = {
-        'filter': PARAMS_DEFINITIONS['search_filter'],
+        'filter': PARAMS_DEFINITIONS['find_filter'],
         'operation': PARAMS_DEFINITIONS['update_operation']
     }
     params_required = ['operation']
@@ -196,7 +205,7 @@ class UpsertListResourceMethod(UpdateListResourceMethod):
 class RemoveListResourceMethod(ResourceMethodBase):
     method = 'delete'
     params = {
-        'filter': PARAMS_DEFINITIONS['search_filter'],
+        'filter': PARAMS_DEFINITIONS['find_filter'],
     }
 
 
@@ -233,6 +242,7 @@ class SaveOneResourceMethod(ResourceMethodBase):
         'data': PARAMS_DEFINITIONS['data'],
     }
     params_required = ['identity', 'data']
+    return_create_status = True
 
 
 class UpdateOneResourceMethod(ResourceMethodBase):
