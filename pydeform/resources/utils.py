@@ -39,15 +39,18 @@ PARAMS_DEFINITIONS = {
         'dest': 'payload'
     },
     'search_filter': {
-        'dest': 'payload.filter',
+        'dest': 'payload',
+        'payload_property': 'filter',
         'description': 'Filter query'
     },
     'search_text': {
-        'dest': 'payload.text',
+        'dest': 'payload',
+        'payload_property': 'text',
         'description': 'Full text search value'
     },
     'update_operation': {
-        'dest': 'payload.operation',
+        'dest': 'payload',
+        'payload_property': 'operation',
         'description': 'Update operation'
     },
     'page': {
@@ -113,16 +116,32 @@ def get_payload(params, definitions):
     if not params:
         return
 
-    with_files, prepared_data = _prepare_payload(params['data'])
-    if with_files:
-        prepared_data = flatten(prepared_data)
+    params_has_files = False
+    final_data = {}
+
+    for key, value in params.items():
+        with_files, prepared_data = prepare_payload(value)
+        if with_files:
+            params_has_files = True
+        payload_property = definitions.get(key).get('payload_property')
+        if payload_property:
+            final_data[payload_property] = prepared_data
+        else:
+            final_data = prepared_data
+
+    if params_has_files:
+        final_data = flatten(final_data)
+    else:
+        final_data = {
+            'payload': final_data
+        }
     return {
         'type': 'files' if with_files else 'json',
-        'data': prepared_data
+        'data': final_data
     }
 
 
-def _prepare_payload(data):
+def prepare_payload(data):
     if isinstance(data, datetime.datetime):
         return False, format_datetime(data)
     elif isinstance(data, datetime.date):
@@ -131,7 +150,7 @@ def _prepare_payload(data):
         items = []
         items_with_files = False
         for i in data:
-            with_files, response = _prepare_payload(i)
+            with_files, response = prepare_payload(i)
             items.append(response)
             if with_files and not items_with_files:
                 items_with_files = True
@@ -140,7 +159,7 @@ def _prepare_payload(data):
         items = []
         items_with_files = False
         for key, value in data.items():
-            with_files, response = _prepare_payload(value)
+            with_files, response = prepare_payload(value)
             items.append((key, response))
             if with_files and not items_with_files:
                 items_with_files = True

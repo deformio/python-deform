@@ -26,6 +26,7 @@ from pydeform.resources.utils import (
     get_headers,
     get_query_params,
     get_payload,
+    prepare_payload,
     iterate_by_pagination,
 )
 
@@ -199,18 +200,8 @@ class ResourcesUtilesTest__get_query_params(TestCase):
         )
 
 
-class ResourcesUtilesTest__get_payload(TestCase):
-    def setUp(self):
-        super(ResourcesUtilesTest__get_payload, self).setUp()
-
-        self.definitions = {
-            'data': {
-                'name': 'data',
-                'dest': 'payload',
-            }
-        }
-
-    def expect_response(self, value, expected, type_='json'):
+class ResourcesUtilesTest__prepare_payload(TestCase):
+    def expect_response(self, value, expected, with_files=False):
         experiments = [
             {
                 'value': value,
@@ -243,20 +234,9 @@ class ResourcesUtilesTest__get_payload(TestCase):
         ]
 
         for exp in experiments:
-            expected_prepared = exp['expected']
-            if type_ == 'files':
-                expected_prepared = flatten(expected_prepared)
             assert_that(
-                get_payload(
-                    params={
-                        'data': exp['value']
-                    },
-                    definitions=self.definitions
-                ),
-                equal_to({
-                    'type': type_,
-                    'data': expected_prepared
-                })
+                prepare_payload(exp['value']),
+                equal_to((with_files, exp['expected']))
             )
 
     def test_none(self):
@@ -289,7 +269,94 @@ class ResourcesUtilesTest__get_payload(TestCase):
 
     def test_file(self):
         value = open(os.path.join(self.CONFIG['FILES_PATH'], '1.txt'))
-        self.expect_response(value, value, type_='files')
+        self.expect_response(value, value, with_files=True)
+
+
+class ResourcesUtilesTest__get_payload(TestCase):
+    def setUp(self):
+        super(ResourcesUtilesTest__get_payload, self).setUp()
+
+        self.definitions = {
+            'data': {
+                'name': 'data',
+                'dest': 'payload',
+            },
+            'search_filter': {
+                'dest': 'payload',
+                'payload_property': 'filter',
+                'description': 'Filter query'
+            },
+            'search_text': {
+                'dest': 'payload',
+                'payload_property': 'text',
+                'description': 'Full text search value'
+            },
+        }
+
+    def test_no_params(self):
+        for i in [None, {}]:
+            assert_that(
+                get_payload(i, self.definitions),
+                equal_to(None)
+            )
+
+    def test_full_payload_param(self):
+        assert_that(
+            get_payload({'data': {'some': 'value'}}, self.definitions),
+            equal_to({
+                'type': 'json',
+                'data': {
+                    'payload': {'some': 'value'}
+                }
+            })
+        )
+
+    def test_payload_property_params(self):
+        assert_that(
+            get_payload(
+                {
+                    'search_filter': {
+                        'some': 'value'
+                    },
+                    'search_text': {
+                        'another_some': 'another_value'
+                    },
+                },
+                self.definitions
+            ),
+            equal_to({
+                'type': 'json',
+                'data': {
+                    'payload': {
+                        'filter': {
+                            'some': 'value',
+                        },
+                        'text': {
+                            'another_some': 'another_value',
+                        }
+                    }
+                }
+            })
+        )
+
+    def test_params_with_files(self):
+        params = {
+            'data': {
+                'user': {
+                    'name': 'gena'
+                },
+                'avatar': {
+                    'big': open(os.path.join(self.CONFIG['FILES_PATH'], '1.txt'))
+                }
+            }
+        }
+        assert_that(
+            get_payload(params, self.definitions),
+            equal_to({
+                'type': 'files',
+                'data': flatten(prepare_payload(params['data'])[1])
+            })
+        )
 
 
 class ResourcesUtilesTest__iterate_by_pagination(TestCase):
