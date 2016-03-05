@@ -11,6 +11,7 @@ from hamcrest import (
     is_not,
     empty
 )
+import responses
 
 from pydeform import six
 from pydeform.client import (
@@ -115,12 +116,39 @@ class SessionAuthClientTest__project(DeformSessionAuthClientTestCaseMixin, TestC
             has_entry('name', self.CONFIG['DEFORM']['PROJECT_NAME']),
         )
 
-    def _test_save(self):
-        response = self.deform_session_auth_client.project.get(
-            identity=self.CONFIG['DEFORM']['PROJECT']
+    def test_save(self):
+        response = self.deform_session_auth_client.project.save(
+            identity=self.CONFIG['DEFORM']['PROJECT'],
+            data={
+                'name': self.CONFIG['DEFORM']['PROJECT_NAME']
+            }
         )
+        assert_that(response['created'], equal_to(False))
         assert_that(
-            response,
+            response['result'],
             has_entry('_id', self.CONFIG['DEFORM']['PROJECT']),
             has_entry('name', self.CONFIG['DEFORM']['PROJECT_NAME']),
         )
+
+    @responses.activate
+    def test_create(self):
+        responses.add(
+            self.deform_session_auth_client.project.create.method.upper(),
+            self.deform_session_auth_client.project.create.base_uri,
+            json={
+                'result': {
+                    '_id': 'new-project',
+                    'name': 'New project'
+                }
+            },
+            status=201
+        )
+
+        response = self.deform_session_auth_client.project.create(data={
+            '_id': 'new-project',
+            'name': 'New project'
+        })
+        assert_that(response, equal_to({
+            '_id': 'new-project',
+            'name': 'New project'
+        }))

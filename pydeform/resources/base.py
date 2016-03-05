@@ -18,12 +18,12 @@ from pydeform.resources.utils import (
 
 
 class BaseResource(object):
-    path = ''
+    path = []
     methods = {}
 
     def __init__(self, base_uri, auth_header, requests_session):
         kwargs = {
-            'base_uri': uri_join(base_uri, self.path),
+            'base_uri': uri_join(base_uri, *self.path + ['/']),
             'auth_header': auth_header,
             'requests_session': requests_session
         }
@@ -72,7 +72,6 @@ class ResourceMethodBase(object):
         context['timeout'] = timeout
         if self.is_paginatable:
             if self._pagination_is_activated(context):
-                # todo: test me
                 response = do_http_request(
                     method=self.method,
                     request_kwargs=context,
@@ -93,7 +92,6 @@ class ResourceMethodBase(object):
             )
             result = response.json()['result']
             if self.return_create_status:
-                # todo: test me
                 return {
                     'created': response.status_code == 201,
                     'result': result

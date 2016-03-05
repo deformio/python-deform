@@ -17,7 +17,7 @@ from pydeform.resources.utils import PARAMS_DEFINITIONS
 
 
 class UserOneResource(BaseResource):
-    path = 'user/'
+    path = ['user']
 
     methods = {
         'get': GetResourceMethod,
@@ -25,7 +25,7 @@ class UserOneResource(BaseResource):
 
 
 class ProjectListResource(BaseResource):
-    path = 'user/projects/'
+    path = ['user', 'projects']
 
     methods = {
         'all': GetListResourceMethod,
@@ -34,7 +34,7 @@ class ProjectListResource(BaseResource):
 
 
 class ProjectOneResource(BaseResource):
-    path = 'user/projects/'
+    path = ['user', 'projects']
 
     methods = {
         'get': GetOneResourceMethod,
@@ -44,7 +44,7 @@ class ProjectOneResource(BaseResource):
 
 
 class CurrentProjectInfoResource(BaseResource):
-    path = 'info/'
+    path = ['info']
 
     methods = {
         'get': GetResourceMethod,
@@ -52,7 +52,7 @@ class CurrentProjectInfoResource(BaseResource):
 
 
 class CollectionListResource(BaseResource):
-    path = 'collections/'
+    path = ['collections']
 
     methods = {
         'all': GetListResourceMethod,
@@ -61,7 +61,7 @@ class CollectionListResource(BaseResource):
 
 
 class CollectionOneResource(BaseResource):
-    path = 'collections/'
+    path = ['collections']
 
     methods = {
         'get': GetOneResourceMethod,
@@ -85,7 +85,7 @@ class DocumentResourceMixin(object):
 
 
 class DocumentListResource(BaseResource):
-    path = 'documents/'
+    path = ['documents']
 
     methods = {
         'all': type('DocumentGetListResourceMethod', (DocumentResourceMixin, GetListResourceMethod), {}),
@@ -97,7 +97,7 @@ class DocumentListResource(BaseResource):
 
 
 class DocumentOneResource(BaseResource):
-    path = 'documents/'
+    path = ['documents']
 
     methods = {
         'get': type('DocumentGetOneResourceMethod', (DocumentResourceMixin, GetOneResourceMethod), {}),
