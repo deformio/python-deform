@@ -36,6 +36,14 @@ class ProjectClientTestBase__collection(object):
             })
         )
 
+    def test_get_not_existing_collection(self):
+        assert_that(
+            calling(getattr(self, self.project_client_attr).collection.get).with_args(
+                identity='not_existing_collection',
+            ),
+            raises(NotFoundError, '^Collection not found\.$')
+        )
+
     def test_get_property(self):
         response = getattr(self, self.project_client_attr).collection.get(
             identity='_users',
@@ -47,6 +55,15 @@ class ProjectClientTestBase__collection(object):
                 'required': True,
                 'type': 'boolean',
             })
+        )
+
+    def test_get_not_existing_property(self):
+        assert_that(
+            calling(getattr(self, self.project_client_attr).collection.get).with_args(
+                identity='_users',
+                property=['schema', 'properties', 'sosisa']
+            ),
+            raises(NotFoundError, '^Collection property not found\.$')
         )
 
     def test_create(self):

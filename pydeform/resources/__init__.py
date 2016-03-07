@@ -59,7 +59,7 @@ class CollectionListResource(BaseResource):
 
 
 class CollectionOneResource(BaseResource):
-    path = ['collections']
+    path = ['collections', '{identity}', '{property}']
 
     methods = {
         'get': GetOneResourceMethod,
@@ -70,28 +70,32 @@ class CollectionOneResource(BaseResource):
     }
 
 
-class DocumentListResourceMixin(object):
+class DocumentBaseMixin(object):
     def get_params_definitions(self):
-        params = super(DocumentListResourceMixin, self).get_params_definitions()
+        params = super(DocumentBaseMixin, self).get_params_definitions()
         params['fields'] = PARAMS_DEFINITIONS['fields']
         params['fields_exclude'] = PARAMS_DEFINITIONS['fields_exclude']
         return params
 
 
-class DocumentOneResourceMixin(object):
+class DocumentListResourceMixin(DocumentBaseMixin):
+    pass
+
+
+class DocumentOneResourceMixin(DocumentBaseMixin):
     def get_params_definitions(self):
         params = super(DocumentOneResourceMixin, self).get_params_definitions()
         params['collection'] = PARAMS_DEFINITIONS['collection']
         return params
 
     def get_params_required(self):
-        params_required = super(DocumentOneResourceMixin, self).get_params_required_definitions()
+        params_required = super(DocumentOneResourceMixin, self).get_params_required()
         params_required.append('collection')
         return params_required
 
 
 class DocumentListResource(BaseResource):
-    path = ['documents']
+    path = ['collections', '{collection}', 'documents']
 
     methods = {
         'find': type('DocumentFindListResourceMethod', (DocumentListResourceMixin, FindListResourceMethod), {}),
@@ -102,7 +106,7 @@ class DocumentListResource(BaseResource):
 
 
 class DocumentOneResource(BaseResource):
-    path = ['documents']
+    path = ['collections', '{collection}', 'documents', '{identity}', '{property}']
 
     methods = {
         'get': type('DocumentGetOneResourceMethod', (DocumentOneResourceMixin, GetOneResourceMethod), {}),

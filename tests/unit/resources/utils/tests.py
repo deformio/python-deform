@@ -80,14 +80,9 @@ class ResourcesUtilesTest__get_url(TestCase):
         super(ResourcesUtilesTest__get_url, self).setUp()
 
         self.base_uri = 'https://chib.me/'
-        self.uri_params_order = [
-            'project',
-            'identity',
-            'property'
-        ]
         self.definitions = {
-            'project': {
-                'name': 'project',
+            'collection': {
+                'name': 'collection',
                 'dest': 'uri'
             },
             'identity': {
@@ -100,48 +95,26 @@ class ResourcesUtilesTest__get_url(TestCase):
             }
         }
 
-    def test_should_respect_position_with_after(self):
+    def test_me(self):
         assert_that(
             get_url(
                 base_uri=self.base_uri,
-                params={
-                    'property': 'three',
-                    'project': 'one',
-                    'identity': 'two',
-                },
-                definitions=self.definitions,
-                uri_params_order=self.uri_params_order,
-            ),
-            equal_to('https://chib.me/one/two/three/')
-        )
-
-    def test_should_not_fail_if_not_all_after_params_included(self):
-        assert_that(
-            get_url(
-                base_uri=self.base_uri,
-                params={
-                    'property': 'two',
-                    'identity': 'one',
-                },
-                definitions=self.definitions,
-                uri_params_order=self.uri_params_order,
-            ),
-            equal_to('https://chib.me/one/two/')
-        )
-
-    def test_should_convert_lists_to_divided_by_dash_strings(self):
-        assert_that(
-            get_url(
-                base_uri=self.base_uri,
+                path=[
+                    'collections',
+                    '{collection}',
+                    'documents',
+                    '{should_skip_me_because_no_such_param}',
+                    '{identity}',
+                    '{property}'
+                ],
                 params={
                     'property': ['four', 'five'],
-                    'project': 'one',
-                    'identity': ['two', 'three'],
+                    'collection': '_users',
+                    'identity': 'someid',
                 },
                 definitions=self.definitions,
-                uri_params_order=self.uri_params_order,
             ),
-            equal_to('https://chib.me/one/two/three/four/five/')
+            equal_to('https://chib.me/collections/_users/documents/someid/four/five/')
         )
 
 

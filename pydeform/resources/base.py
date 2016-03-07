@@ -7,7 +7,6 @@ from pydeform.utils import (
 )
 from pydeform.resources.utils import (
     PARAMS_DEFINITIONS,
-    URI_PARAMS_ORDER,
     get_params_by_destination,
     get_url,
     get_payload,
@@ -23,7 +22,8 @@ class BaseResource(object):
 
     def __init__(self, base_uri, auth_header, requests_session, request_defaults):
         kwargs = {
-            'base_uri': uri_join(base_uri, *self.path + ['/']),
+            'base_uri': base_uri,
+            'path': self.path,
             'auth_header': auth_header,
             'requests_session': requests_session,
             'request_defaults': request_defaults,
@@ -48,15 +48,16 @@ class ResourceMethodBase(object):
         'page': PARAMS_DEFINITIONS['page'],
         'per_page': PARAMS_DEFINITIONS['per_page'],
     }
-    uri_params_order = URI_PARAMS_ORDER
     return_create_status = False
 
     def __init__(self,
                  base_uri,
+                 path,
                  auth_header,
                  requests_session,
                  request_defaults):
         self.base_uri = base_uri
+        self.path = path
         self.auth_header = auth_header
         self.requests_session = requests_session
         self.request_defaults = request_defaults
@@ -131,9 +132,9 @@ class ResourceMethodBase(object):
         context = {
             'url': get_url(
                 base_uri=self.base_uri,
+                path=self.path,
                 params=params_by_destination.get('uri', {}),
                 definitions=params_definitions,
-                uri_params_order=self.get_uri_params_order()
             ),
             'headers': get_headers(
                 auth_header=self.auth_header,
@@ -166,10 +167,6 @@ class ResourceMethodBase(object):
         if self.is_paginatable:
             params_definitions.update(self.pagination_params)
         return params_definitions
-
-    def get_uri_params_order(self):
-        # todo: test me
-        return deepcopy(self.uri_params_order)
 
     def get_params_required(self):
         # todo: test me

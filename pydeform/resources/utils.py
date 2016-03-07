@@ -65,13 +65,6 @@ PARAMS_DEFINITIONS = {
     },
 }
 
-URI_PARAMS_ORDER = [
-    'collection',
-    'identity',
-    'property'
-]
-
-
 def get_params_by_destination(params, definitions):
     response = defaultdict(dict)
     for param_key, param_value in params.items():
@@ -81,11 +74,17 @@ def get_params_by_destination(params, definitions):
     return response
 
 
-def get_url(base_uri, params, definitions, uri_params_order):
+def get_url(base_uri, path, params, definitions):
+    # todo: retest me
     uri_bits = [base_uri]
 
-    for param_name in uri_params_order:
-        value = params.get(param_name)
+    for path_item in path:
+        if path_item.startswith('{'):
+            path_item_var_name = path_item.strip('{}')
+            value = params.get(path_item_var_name)
+        else:
+            value = path_item
+
         if value:
             if isinstance(value, list):
                 uri_bits += value
