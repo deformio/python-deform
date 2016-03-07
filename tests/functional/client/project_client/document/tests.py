@@ -13,7 +13,7 @@ from hamcrest import (
     contains
 )
 
-from pydeform.exceptions import NotFoundError
+from pydeform.exceptions import NotFoundError, ValidationError
 
 from testutils import (
     TestCase,
@@ -374,6 +374,45 @@ class ProjectClientTestBase__document(object):
             collection='venues'
         )
         assert_that(response, equal_to(None))
+
+    def test_schema_validation(self):
+        getattr(self, self.project_client_attr).collection.save(
+            identity='venues',
+            data={
+                'name': 'Venues',
+                'schema': {
+                    'properties': {
+                        'name': {
+                            'type': 'string',
+                            'required': True
+                        }
+                    }
+                }
+            }
+        )
+
+        assert_that(
+            calling(getattr(self, self.project_client_attr).document.save).with_args(
+                collection='venues',
+                data={
+                    '_id': 'subway'
+                }
+            ),
+            raises(ValidationError, '^name is required$')
+        )
+
+        response = getattr(self, self.project_client_attr).document.save(
+            collection='venues',
+            data={
+                '_id': 'subway',
+                'name': 'Subway'
+            }
+        )
+        assert_that(
+            response['result'],
+            has_entry('name', 'Subway')
+        )
+
 
 
 class SessionProjectClientTest__document(ProjectClientTestBase__document,

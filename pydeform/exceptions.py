@@ -51,6 +51,10 @@ class NotFoundError(HTTPError):
     pass
 
 
+class ValidationError(HTTPError):
+    pass
+
+
 class ConnectionError(HTTPError):
     """A Connection error occurred."""
 
@@ -77,6 +81,7 @@ STATUS_CODE_ERROR_MAP = {
     401: AuthError,
     403: ForbiddenError, # todo: test me
     404: NotFoundError, # todo: test me
+    422: ValidationError  # todo: test me
 }
 
 REQUESTS_ERROR_MAP = {
