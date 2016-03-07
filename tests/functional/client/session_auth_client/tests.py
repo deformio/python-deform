@@ -109,7 +109,7 @@ class SessionAuthClientTest__project(DeformSessionAuthClientTestCaseMixin, TestC
     def test_create(self):
         responses.add(
             self.deform_session_auth_client.project.create.method.upper(),
-            self.deform_session_auth_client.project.create.base_uri,
+            self.deform_session_auth_client.project.create.get_context({})['url'],
             json={
                 'result': {
                     '_id': 'new-project',

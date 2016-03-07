@@ -33,7 +33,7 @@ class ProjectListResource(BaseResource):
 
 
 class ProjectOneResource(BaseResource):
-    path = ['user', 'projects']
+    path = ['user', 'projects', '{identity}']
 
     methods = {
         'get': GetOneResourceMethod,
