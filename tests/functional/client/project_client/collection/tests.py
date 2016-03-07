@@ -36,6 +36,19 @@ class ProjectClientTestBase__collection(object):
             })
         )
 
+    def test_get_property(self):
+        response = getattr(self, self.project_client_attr).collection.get(
+            identity='_users',
+            property=['schema', 'properties', 'is_active']
+        )
+        assert_that(
+            response,
+            has_entries({
+                'required': True,
+                'type': 'boolean',
+            })
+        )
+
     def test_create(self):
         try:
             getattr(self, self.project_client_attr).collection.remove(identity='venues')
@@ -134,6 +147,64 @@ class ProjectClientTestBase__collection(object):
                 'name': 'Venues saved with identity',
                 '_id': 'venues',
                 'is_system': False,
+            })
+        )
+
+    def test_save_property(self):
+        try:
+            getattr(self, self.project_client_attr).collection.remove(identity='venues')
+        except NotFoundError:
+            pass
+
+        getattr(self, self.project_client_attr).collection.create(
+            data={
+                '_id': 'venues',
+                'name': 'Venues',
+            }
+        )
+
+        response = getattr(self, self.project_client_attr).collection.save(
+            identity='venues',
+            property=['schema', 'properties', 'name'],
+            data={
+                'type': 'string'
+            }
+        )
+        assert_that(response['created'], equal_to(True))
+        assert_that(response['result'], equal_to({'type': 'string'}))
+
+        response = getattr(self, self.project_client_attr).collection.get(
+            identity='venues',
+            property=['schema', 'properties']
+        )
+        assert_that(
+            response,
+            has_entry('name', {'type': 'string'})
+        )
+
+        # should replace property
+        response = getattr(self, self.project_client_attr).collection.save(
+            identity='venues',
+            property=['schema', 'properties'],
+            data={
+                'surname': {
+                    'type': 'string'
+                }
+            }
+        )
+        assert_that(response['created'], equal_to(False))
+        assert_that(response['result'], equal_to({'surname': {'type': 'string'}}))
+
+        response = getattr(self, self.project_client_attr).collection.get(
+            identity='venues',
+            property=['schema', 'properties']
+        )
+        assert_that(
+            response,
+            equal_to({
+                'surname': {
+                    'type': 'string'
+                }
             })
         )
 
