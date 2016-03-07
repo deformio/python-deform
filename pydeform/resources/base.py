@@ -21,11 +21,12 @@ class BaseResource(object):
     path = []
     methods = {}
 
-    def __init__(self, base_uri, auth_header, requests_session):
+    def __init__(self, base_uri, auth_header, requests_session, request_defaults):
         kwargs = {
             'base_uri': uri_join(base_uri, *self.path + ['/']),
             'auth_header': auth_header,
-            'requests_session': requests_session
+            'requests_session': requests_session,
+            'request_defaults': request_defaults,
         }
         for method_name, method_factory in self.methods.items():
             setattr(self, method_name, method_factory(**kwargs))
@@ -53,10 +54,12 @@ class ResourceMethodBase(object):
     def __init__(self,
                  base_uri,
                  auth_header,
-                 requests_session):
+                 requests_session,
+                 request_defaults):
         self.base_uri = base_uri
         self.auth_header = auth_header
         self.requests_session = requests_session
+        self.request_defaults = request_defaults
         if not any([self.method, self.action]):
             raise ValueError('You should specify method or action')
         if self.action:
@@ -76,21 +79,27 @@ class ResourceMethodBase(object):
                     method=self.method,
                     request_kwargs=context,
                     requests_session=self.requests_session,
+                    request_defaults=self.request_defaults,
                 )
                 return self._prepare_paginated_response(response.json())
             else:
                 return iterate_by_pagination(
                     method=self.method,
                     request_kwargs=context,
-                    requests_session=self.requests_session
+                    requests_session=self.requests_session,
+                    request_defaults=self.request_defaults,
                 )
         else:
             response = do_http_request(
                 method=self.method,
                 request_kwargs=context,
                 requests_session=self.requests_session,
+                request_defaults=self.request_defaults,
             )
-            result = response.json()['result']
+            if response.content:
+                result = response.json()['result']
+            else:
+                result = None
             if self.return_create_status:
                 return {
                     'created': response.status_code == 201,
@@ -136,8 +145,6 @@ class ResourceMethodBase(object):
                 definitions=params_definitions,
             ),
         }
-        if self.action:
-            context['headers']['X-Action'] = self.action
         for key, value in context.items():
             if not value:
                 del context[key]
@@ -145,8 +152,12 @@ class ResourceMethodBase(object):
             params_by_destination.get('payload'),
             definitions=params_definitions
         )
+        if self.action:
+            context['headers']['X-Action'] = self.action
         if payload:
             context[payload['type']] = payload['data']
+        else:
+            context['headers']['Content-Type'] = 'application/json'
         return context
 
     def get_params_definitions(self):
@@ -181,8 +192,6 @@ class FindListResourceMethod(ResourceMethodBase):
     params = {
         'filter': PARAMS_DEFINITIONS['find_filter'],
         'text': PARAMS_DEFINITIONS['find_text'],
-        'fields': PARAMS_DEFINITIONS['fields'],
-        'fields_exclude': PARAMS_DEFINITIONS['fields_exclude'],
         'sort': PARAMS_DEFINITIONS['sort'],
     }
 
@@ -216,8 +225,6 @@ class GetOneResourceMethod(ResourceMethodBase):
     params = {
         'identity': PARAMS_DEFINITIONS['identity'],
         'property': PARAMS_DEFINITIONS['property'],
-        'fields': PARAMS_DEFINITIONS['fields'],
-        'fields_exclude': PARAMS_DEFINITIONS['fields_exclude'],
     }
     params_required = ['identity']
 
@@ -225,7 +232,6 @@ class GetOneResourceMethod(ResourceMethodBase):
 class CreateOneResourceMethod(ResourceMethodBase):
     method = 'post'
     params = {
-        'identity': PARAMS_DEFINITIONS['identity'],
         'property': PARAMS_DEFINITIONS['property'],
         'data': PARAMS_DEFINITIONS['data'],
     }
@@ -239,7 +245,7 @@ class SaveOneResourceMethod(ResourceMethodBase):
         'property': PARAMS_DEFINITIONS['property'],
         'data': PARAMS_DEFINITIONS['data'],
     }
-    params_required = ['identity', 'data']
+    params_required = ['data']
     return_create_status = True
 
 

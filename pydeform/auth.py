@@ -2,9 +2,15 @@
 from pydeform.utils import uri_join, do_http_request
 
 
-def get_session_id(base_uri, email, password, requests_session, timeout=None):
+def get_session_id(base_uri,
+                   email,
+                   password,
+                   requests_session,
+                   request_defaults=None,
+                   timeout=None):
     response = do_http_request(
         requests_session=requests_session,
+        request_defaults=request_defaults,
         method='post',
         request_kwargs={
             'url': uri_join(base_uri, '/user/'),

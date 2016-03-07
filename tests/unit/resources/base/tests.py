@@ -11,6 +11,7 @@ from hamcrest import (
     raises,
     starts_with,
     has_entry,
+    has_entries,
 )
 import responses
 from mock import Mock
@@ -42,7 +43,8 @@ class TestResourceMethodBase__initialization(TestCase):
             calling(ResourceMethodBase).with_args(
                 base_uri=self.base_uri,
                 auth_header=self.auth_header,
-                requests_session=self.requests_session
+                requests_session=self.requests_session,
+                request_defaults=self.request_defaults,
             ),
             raises(ValueError, '^You should specify method or action$')
         )
@@ -54,7 +56,8 @@ class TestResourceMethodBase__initialization(TestCase):
         instance = ResourceMethod(
             base_uri=self.base_uri,
             auth_header=self.auth_header,
-            requests_session=self.requests_session
+            requests_session=self.requests_session,
+            request_defaults=self.request_defaults
         )
         assert_that(instance.method, equal_to('get'))
 
@@ -66,6 +69,7 @@ class TestResourceMethodBase__initialization(TestCase):
             base_uri=self.base_uri,
             auth_header=self.auth_header,
             requests_session=self.requests_session,
+            request_defaults=self.request_defaults
         )
         assert_that(instance.method, equal_to('post'))
         assert_that(instance.action, equal_to('find'))
@@ -83,6 +87,7 @@ class TestResourceMethodBase__get_context(TestCase):
             base_uri=self.base_uri,
             auth_header=self.auth_header,
             requests_session=self.requests_session,
+            request_defaults=self.request_defaults
         )
 
     def test_simple(self):
@@ -92,7 +97,16 @@ class TestResourceMethodBase__get_context(TestCase):
         instance = self.get_instance(ResourceMethod)
         response = instance.get_context({})
         assert_that(response, has_entry('url', self.base_uri))
-        assert_that(response, has_entry('headers', {'Authorization': self.auth_header}))
+        assert_that(
+            response,
+            has_entry(
+                'headers',
+                has_entries({
+                    'Authorization': self.auth_header,
+                    'Content-Type': 'application/json'
+                })
+            )
+        )
 
     def test_simple_action(self):
         class ResourceMethod(ResourceMethodBase):
@@ -103,10 +117,14 @@ class TestResourceMethodBase__get_context(TestCase):
         assert_that(response, has_entry('url', self.base_uri))
         assert_that(
             response,
-            has_entry('headers', {
-                'Authorization': self.auth_header,
-                'X-Action': 'find'
-            })
+            has_entry(
+                'headers',
+                has_entries({
+                    'Authorization': self.auth_header,
+                    'X-Action': 'find',
+                    'Content-Type': 'application/json'
+                })
+            )
         )
 
     def test_with_uri_params_defined(self):
@@ -227,8 +245,8 @@ class TestResourceMethodBase__call(TestCase):
             base_uri=self.base_uri,
             auth_header=self.auth_header,
             requests_session=self.requests_session,
+            request_defaults=self.request_defaults
         )
-        # instance.get_context = Mock(return_value=context)
         return instance
 
     @responses.activate
@@ -299,6 +317,23 @@ class TestResourceMethodBase__call(TestCase):
         assert_that(
             instance(name='gena', surname='chibisov'),
             equal_to({'age': 26})
+        )
+
+    @responses.activate
+    def test_should_none_if_response_body_is_empty(self):
+        class ResourceMethod(ResourceMethodBase):
+            method = 'get'
+
+        responses.add(
+            self.method,
+            self.base_uri,
+            body=''
+        )
+
+        instance = self.get_instance(ResourceMethod)
+        assert_that(
+            instance(),
+            equal_to(None)
         )
 
     @responses.activate

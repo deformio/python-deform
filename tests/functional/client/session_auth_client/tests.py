@@ -38,12 +38,12 @@ class SessionAuthClientTest__user(DeformSessionAuthClientTestCaseMixin, TestCase
 
 
 class SessionAuthClientTest__projects(DeformSessionAuthClientTestCaseMixin, TestCase):
-    def test_get(self):
-        response = self.deform_session_auth_client.projects.all()
+    def test_find(self):
+        response = self.deform_session_auth_client.projects.find()
         projects = [i for i in response]
         assert_that(projects, is_not([]))
 
-    def test_find(self):
+    def test_find__with_filter(self):
         response = self.deform_session_auth_client.projects.find(
             filter={'name': self.CONFIG['DEFORM']['PROJECT_NAME']}
         )
@@ -52,6 +52,9 @@ class SessionAuthClientTest__projects(DeformSessionAuthClientTestCaseMixin, Test
         assert_that(
             projects[0],
             has_entry('_id', self.CONFIG['DEFORM']['PROJECT']),
+        )
+        assert_that(
+            projects[0],
             has_entry('name', self.CONFIG['DEFORM']['PROJECT_NAME']),
         )
 
@@ -64,6 +67,9 @@ class SessionAuthClientTest__projects(DeformSessionAuthClientTestCaseMixin, Test
         assert_that(
             projects[0],
             has_entry('_id', self.CONFIG['DEFORM']['PROJECT']),
+        )
+        assert_that(
+            projects[0],
             has_entry('name', self.CONFIG['DEFORM']['PROJECT_NAME']),
         )
 
@@ -76,6 +82,9 @@ class SessionAuthClientTest__project(DeformSessionAuthClientTestCaseMixin, TestC
         assert_that(
             response,
             has_entry('_id', self.CONFIG['DEFORM']['PROJECT']),
+        )
+        assert_that(
+            response,
             has_entry('name', self.CONFIG['DEFORM']['PROJECT_NAME']),
         )
 
@@ -90,6 +99,9 @@ class SessionAuthClientTest__project(DeformSessionAuthClientTestCaseMixin, TestC
         assert_that(
             response['result'],
             has_entry('_id', self.CONFIG['DEFORM']['PROJECT']),
+        )
+        assert_that(
+            response['result'],
             has_entry('name', self.CONFIG['DEFORM']['PROJECT_NAME']),
         )
 

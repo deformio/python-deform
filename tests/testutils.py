@@ -39,6 +39,7 @@ CONFIG = {
         'SECURE': get_setting('DEFORM_SECURE'),
         'PROJECT': get_setting('DEFORM_PROJECT'),
         'PROJECT_NAME': get_setting('DEFORM_PROJECT_NAME'),
+        'PROJECT_TOKEN': get_setting('DEFORM_PROJECT_TOKEN'),
         'EMAIL': get_setting('DEFORM_EMAIL'),
         'PASSWORD': get_setting('DEFORM_PASSWORD'),
     },
@@ -51,6 +52,9 @@ class TestCase(unittest.TestCase):
     def setUp(self):
         self.CONFIG = CONFIG
         self.requests_session = requests.Session()
+        self.request_defaults = {
+            'verify': False
+        }
 
 
 class DeformBaseURITestCaseMixin(object):
@@ -63,6 +67,7 @@ class DeformBaseURITestCaseMixin(object):
             secure=self.CONFIG['DEFORM']['SECURE'],
         )
 
+
 class DeformClientTestCaseMixin(object):
     def setUp(self):
         super(DeformClientTestCaseMixin, self).setUp()
@@ -71,6 +76,7 @@ class DeformClientTestCaseMixin(object):
             port=self.CONFIG['DEFORM']['PORT'],
             secure=self.CONFIG['DEFORM']['SECURE'],
             requests_session=self.requests_session,
+            request_defaults=self.request_defaults,
             api_base_path=self.CONFIG['DEFORM']['API_BASE_PATH'],
         )
 
@@ -87,8 +93,26 @@ class DeformSessionAuthClientTestCaseMixin(DeformClientTestCaseMixin):
         self.deform_session_auth_client = GLOBALS['deform_session_auth_client']
 
 
-class DeformTokenAuthClientTestCaseMixin(DeformClientTestCaseMixin):
-    pass
+class DeformSessionProjectClientTestCaseMixin(DeformSessionAuthClientTestCaseMixin):
+    def setUp(self):
+        super(DeformSessionProjectClientTestCaseMixin, self).setUp()
+
+        self.deform_session_project_client = self.deform_session_auth_client.use_project(
+            self.CONFIG['DEFORM']['PROJECT']
+        )
+
+
+class DeformTokenProjectClientTestCaseMixin(DeformClientTestCaseMixin):
+    def setUp(self):
+        super(DeformTokenProjectClientTestCaseMixin, self).setUp()
+
+        if not 'deform_token_project_client' in GLOBALS:
+            GLOBALS['deform_token_project_client'] = self.deform_client.auth(
+                auth_type='token',
+                auth_key=self.CONFIG['DEFORM']['PROJECT_TOKEN'],
+                project_id=self.CONFIG['DEFORM']['PROJECT']
+            )
+        self.deform_token_project_client = GLOBALS['deform_token_project_client']
 
 
 def check_timeout(func, kwargs={}):

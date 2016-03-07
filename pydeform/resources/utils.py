@@ -169,7 +169,10 @@ def prepare_payload(data):
         return False, data
 
 
-def iterate_by_pagination(method, request_kwargs, requests_session):
+def iterate_by_pagination(method,
+                          request_kwargs,
+                          requests_session,
+                          request_defaults):
     response = {
         'links': {
             'next': 'yes'
@@ -187,6 +190,7 @@ def iterate_by_pagination(method, request_kwargs, requests_session):
                     method=method,
                     request_kwargs=request_kwargs,
                     requests_session=requests_session,
+                    request_defaults=request_defaults,
                 )
             except NotFoundError as e:
                 break

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from copy import deepcopy
 import datetime
 import urllib
 
@@ -57,12 +58,22 @@ def uri_join(*parts):
 def do_http_request(requests_session,
                     method='get',
                     request_kwargs=None,
+                    request_defaults=None,
                     ignore_error_codes=[]):
     # todo: test me
     if request_kwargs is None:
         request_kwargs = {}
+
+    if request_defaults:
+        final_request_kwargs = deepcopy(request_kwargs)
+        for key, value in request_defaults.items():
+            if key not in final_request_kwargs:
+                final_request_kwargs[key] = value
+    else:
+        final_request_kwargs = request_kwargs
+
     try:
-        response = getattr(requests_session, method.lower())(**request_kwargs)
+        response = getattr(requests_session, method.lower())(**final_request_kwargs)
         if not response.ok and response.status_code not in ignore_error_codes:
             response.raise_for_status()
     except RequestException as e:

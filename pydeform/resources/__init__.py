@@ -28,7 +28,6 @@ class ProjectListResource(BaseResource):
     path = ['user', 'projects']
 
     methods = {
-        'all': GetListResourceMethod,
         'find': FindListResourceMethod,
     }
 
@@ -55,7 +54,6 @@ class CollectionListResource(BaseResource):
     path = ['collections']
 
     methods = {
-        'all': GetListResourceMethod,
         'find': FindListResourceMethod,
     }
 
@@ -72,14 +70,22 @@ class CollectionOneResource(BaseResource):
     }
 
 
-class DocumentResourceMixin(object):
+class DocumentListResourceMixin(object):
     def get_params_definitions(self):
-        params = super(DocumentResourceMixin, self).get_params_definitions()
+        params = super(DocumentListResourceMixin, self).get_params_definitions()
+        params['fields'] = PARAMS_DEFINITIONS['fields']
+        params['fields_exclude'] = PARAMS_DEFINITIONS['fields_exclude']
+        return params
+
+
+class DocumentOneResourceMixin(object):
+    def get_params_definitions(self):
+        params = super(DocumentOneResourceMixin, self).get_params_definitions()
         params['collection'] = PARAMS_DEFINITIONS['collection']
         return params
 
     def get_params_required(self):
-        params_required = super(DocumentResourceMixin, self).get_params_required_definitions()
+        params_required = super(DocumentOneResourceMixin, self).get_params_required_definitions()
         params_required.append('collection')
         return params_required
 
@@ -88,11 +94,10 @@ class DocumentListResource(BaseResource):
     path = ['documents']
 
     methods = {
-        'all': type('DocumentGetListResourceMethod', (DocumentResourceMixin, GetListResourceMethod), {}),
-        'find': type('DocumentFindListResourceMethod', (DocumentResourceMixin, FindListResourceMethod), {}),
-        'update': type('DocumentUpdateListResourceMethod', (DocumentResourceMixin, UpdateListResourceMethod), {}),
-        'upsert': type('DocumentUpsertListResourceMethod', (DocumentResourceMixin, UpsertListResourceMethod), {}),
-        'remove': type('DocumentRemoveListResourceMethod', (DocumentResourceMixin, RemoveListResourceMethod), {}),
+        'find': type('DocumentFindListResourceMethod', (DocumentListResourceMixin, FindListResourceMethod), {}),
+        'update': type('DocumentUpdateListResourceMethod', (DocumentListResourceMixin, UpdateListResourceMethod), {}),
+        'upsert': type('DocumentUpsertListResourceMethod', (DocumentListResourceMixin, UpsertListResourceMethod), {}),
+        'remove': type('DocumentRemoveListResourceMethod', (DocumentListResourceMixin, RemoveListResourceMethod), {}),
     }
 
 
@@ -100,9 +105,9 @@ class DocumentOneResource(BaseResource):
     path = ['documents']
 
     methods = {
-        'get': type('DocumentGetOneResourceMethod', (DocumentResourceMixin, GetOneResourceMethod), {}),
-        'create': type('DocumentCreateOneResourceMethod', (DocumentResourceMixin, CreateOneResourceMethod), {}),
-        'save': type('DocumentSaveOneResourceMethod', (DocumentResourceMixin, SaveOneResourceMethod), {}),
-        'update': type('DocumentUpdateOneResourceMethod', (DocumentResourceMixin, UpdateOneResourceMethod), {}),
-        'remove': type('DocumentRemoveOneResourceMethod', (DocumentResourceMixin, RemoveOneResourceMethod), {}),
+        'get': type('DocumentGetOneResourceMethod', (DocumentOneResourceMixin, GetOneResourceMethod), {}),
+        'create': type('DocumentCreateOneResourceMethod', (DocumentOneResourceMixin, CreateOneResourceMethod), {}),
+        'save': type('DocumentSaveOneResourceMethod', (DocumentOneResourceMixin, SaveOneResourceMethod), {}),
+        'update': type('DocumentUpdateOneResourceMethod', (DocumentOneResourceMixin, UpdateOneResourceMethod), {}),
+        'remove': type('DocumentRemoveOneResourceMethod', (DocumentOneResourceMixin, RemoveOneResourceMethod), {}),
     }

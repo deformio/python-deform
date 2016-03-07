@@ -31,7 +31,8 @@ class Test__get_session_id(DeformBaseURITestCaseMixin, TestCase):
                 base_uri=self.DEFORM_BASE_URI,
                 email='wrong-' + self.CONFIG['DEFORM']['EMAIL'],
                 password='wrong-' + self.CONFIG['DEFORM']['PASSWORD'],
-                requests_session=self.requests_session
+                requests_session=self.requests_session,
+                request_defaults=self.request_defaults
             ),
             raises(AuthError, '^Wrong credentials provided.$')
         )
@@ -44,6 +45,7 @@ class Test__get_session_id(DeformBaseURITestCaseMixin, TestCase):
                 email='wrong-' + self.CONFIG['DEFORM']['EMAIL'],
                 password='wrong-' + self.CONFIG['DEFORM']['PASSWORD'],
                 requests_session=self.requests_session,
+                request_defaults=self.request_defaults
             )
         )
 
@@ -52,7 +54,8 @@ class Test__get_session_id(DeformBaseURITestCaseMixin, TestCase):
             base_uri=self.DEFORM_BASE_URI,
             email=self.CONFIG['DEFORM']['EMAIL'],
             password=self.CONFIG['DEFORM']['PASSWORD'],
-            requests_session=self.requests_session
+            requests_session=self.requests_session,
+            request_defaults=self.request_defaults
         )
         assert_that(response, not_none)
         assert_that(response, instance_of(six.text_type))

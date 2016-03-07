@@ -28,11 +28,13 @@ class Client(object):
                  port=None,
                  secure=True,
                  requests_session=None,
+                 request_defaults=None,
                  api_base_path='/api/'):
         self.host = host
         self.port = port
         self.secure = secure
         self.requests_session = requests_session or requests.Session()
+        self.request_defaults = request_defaults
         self.api_base_path = api_base_path
 
     def login(self, email, password, timeout=None):
@@ -61,6 +63,7 @@ class Client(object):
                 port=self.port,
                 secure=self.secure,
                 requests_session=self.requests_session,
+                request_defaults=self.request_defaults,
                 api_base_path=self.api_base_path,
             )
         elif auth_type == 'token':
@@ -75,7 +78,8 @@ class Client(object):
                     api_base_path=self.api_base_path
                 ),
                 auth_header=get_token_http_auth_header(auth_key),
-                requests_session=self.requests_session
+                requests_session=self.requests_session,
+                request_defaults=self.request_defaults,
             )
 
     def register(self, email, password, timeout=None):
@@ -92,11 +96,13 @@ class SessionAuthClient(object):
                  port,
                  secure,
                  requests_session,
+                 request_defaults,
                  api_base_path):
         self.host = host
         self.port = port
         self.secure = secure
         self.requests_session = requests_session
+        self.request_defaults = request_defaults
         self.auth_header = auth_header
         self.api_base_path = api_base_path
         self.base_uri = get_base_uri(
@@ -108,7 +114,8 @@ class SessionAuthClient(object):
         resource_kwargs = {
             'base_uri': self.base_uri,
             'auth_header': auth_header,
-            'requests_session': requests_session
+            'requests_session': requests_session,
+            'request_defaults': request_defaults
         }
         self.user = UserOneResource(**resource_kwargs)
         self.projects = ProjectListResource(**resource_kwargs)
@@ -124,7 +131,8 @@ class SessionAuthClient(object):
                 api_base_path=self.api_base_path
             ),
             auth_header=self.auth_header,
-            requests_session=self.requests_session
+            requests_session=self.requests_session,
+            request_defaults=self.request_defaults,
         )
 
 
@@ -132,15 +140,18 @@ class ProjectClient(object):
     def __init__(self,
                  base_uri,
                  auth_header,
-                 requests_session):
+                 requests_session,
+                 request_defaults):
         resource_kwargs = {
             'base_uri': base_uri,
             'auth_header': auth_header,
-            'requests_session': requests_session
+            'requests_session': requests_session,
+            'request_defaults': request_defaults
         }
         self.base_uri = base_uri
         self.auth_header = auth_header
         self.request_session = requests_session
+        self.request_defaults = request_defaults
         self.info = CurrentProjectInfoResource(**resource_kwargs)
         self.collections = CollectionListResource(**resource_kwargs)
         self.collection = CollectionOneResource(**resource_kwargs)

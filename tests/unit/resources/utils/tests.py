@@ -387,7 +387,8 @@ class ResourcesUtilesTest__iterate_by_pagination(TestCase):
             iterate_by_pagination(
                 method=self.method,
                 request_kwargs=self.request_kwargs,
-                requests_session=self.requests_session
+                requests_session=self.requests_session,
+                request_defaults=self.request_defaults
             ),
             instance_of(types.GeneratorType)
         )
@@ -411,7 +412,8 @@ class ResourcesUtilesTest__iterate_by_pagination(TestCase):
         response = iterate_by_pagination(
             method=self.method,
             request_kwargs=self.request_kwargs,
-            requests_session=self.requests_session
+            requests_session=self.requests_session,
+            request_defaults=self.request_defaults
         )
         assert_that(
             self.get_list_from_generator(response),
@@ -454,7 +456,8 @@ class ResourcesUtilesTest__iterate_by_pagination(TestCase):
         response = iterate_by_pagination(
             method=self.method,
             request_kwargs=self.request_kwargs,
-            requests_session=self.requests_session
+            requests_session=self.requests_session,
+            request_defaults=self.request_defaults
         )
         assert_that(
             self.get_list_from_generator(response),
@@ -473,7 +476,8 @@ class ResourcesUtilesTest__iterate_by_pagination(TestCase):
         response = iterate_by_pagination(
             method=self.method,
             request_kwargs=self.request_kwargs,
-            requests_session=self.requests_session
+            requests_session=self.requests_session,
+            request_defaults=self.request_defaults
         )
         assert_that(
             self.get_list_from_generator(response),
@@ -511,7 +515,8 @@ class ResourcesUtilesTest__iterate_by_pagination(TestCase):
         response = iterate_by_pagination(
             method=self.method,
             request_kwargs=self.request_kwargs,
-            requests_session=self.requests_session
+            requests_session=self.requests_session,
+            request_defaults=self.request_defaults
         )
         assert_that(
             self.get_list_from_generator(response),
@@ -549,7 +554,8 @@ class ResourcesUtilesTest__iterate_by_pagination(TestCase):
         response = iterate_by_pagination(
             method=self.method,
             request_kwargs=self.request_kwargs,
-            requests_session=self.requests_session
+            requests_session=self.requests_session,
+            request_defaults=self.request_defaults
         )
         assert_that(
             self.get_list_from_generator(response),
