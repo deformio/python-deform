@@ -42,6 +42,7 @@ class TestResourceMethodBase__initialization(TestCase):
         assert_that(
             calling(ResourceMethodBase).with_args(
                 base_uri=self.base_uri,
+                path=[],
                 auth_header=self.auth_header,
                 requests_session=self.requests_session,
                 request_defaults=self.request_defaults,
@@ -55,6 +56,7 @@ class TestResourceMethodBase__initialization(TestCase):
 
         instance = ResourceMethod(
             base_uri=self.base_uri,
+            path=[],
             auth_header=self.auth_header,
             requests_session=self.requests_session,
             request_defaults=self.request_defaults
@@ -67,6 +69,7 @@ class TestResourceMethodBase__initialization(TestCase):
 
         instance = ResourceMethod(
             base_uri=self.base_uri,
+            path=[],
             auth_header=self.auth_header,
             requests_session=self.requests_session,
             request_defaults=self.request_defaults
@@ -82,9 +85,10 @@ class TestResourceMethodBase__get_context(TestCase):
         self.base_uri = 'http://chib.me/'
         self.auth_header = 'Token 123'
 
-    def get_instance(self, class_):
+    def get_instance(self, class_, path=[]):
         return class_(
             base_uri=self.base_uri,
+            path=path,
             auth_header=self.auth_header,
             requests_session=self.requests_session,
             request_defaults=self.request_defaults
@@ -140,7 +144,7 @@ class TestResourceMethodBase__get_context(TestCase):
             }
             uri_params_order = ['collection', 'identity']
 
-        instance = self.get_instance(ResourceMethod)
+        instance = self.get_instance(ResourceMethod, path=['{collection}', '{identity}'])
         assert_that(
             instance.get_context({
                 'identity': 100,
@@ -150,7 +154,7 @@ class TestResourceMethodBase__get_context(TestCase):
         )
 
         # let's change the order
-        instance.uri_params_order = ['identity', 'collection']
+        instance = self.get_instance(ResourceMethod, path=['{identity}', '{collection}'])
         assert_that(
             instance.get_context({
                 'identity': 100,
@@ -240,9 +244,10 @@ class TestResourceMethodBase__call(TestCase):
         self.auth_header = 'Token 123'
         self.method = 'GET'
 
-    def get_instance(self, class_):
+    def get_instance(self, class_, path=[]):
         instance = class_(
             base_uri=self.base_uri,
+            path=path,
             auth_header=self.auth_header,
             requests_session=self.requests_session,
             request_defaults=self.request_defaults
