@@ -40,14 +40,16 @@ class ProjectClientTestBase__documents(object):
                 collection='venues',
                 data={
                     '_id': 'subway',
-                    'name': 'Subway'
+                    'name': 'Subway',
+                    'address': 'Moscow'
                 }
             )['result'],
             'mcdonalds': getattr(self, self.project_client_attr).document.save(
                 collection='venues',
                 data={
                     '_id': 'mcdonalds',
-                    'name': 'McDonalds'
+                    'name': 'McDonalds',
+                    'address': 'London'
                 }
             )['result']
         }
@@ -102,6 +104,36 @@ class ProjectClientTestBase__documents(object):
         response = self.convert_generator_to_list(response)
         assert_that(len(response), equal_to(1))
         assert_that(response[0], equal_to(self.documents['subway']))
+
+    def test_find__with_fields(self):
+        response = getattr(self, self.project_client_attr).documents.find(
+            collection='venues',
+            fields=['name']
+        )
+        response = self.convert_generator_to_list(response)
+        expected = [
+            {'_id': i['_id'], 'name': i['name']}
+            for i in self.documents.values()
+        ]
+        assert_that(
+            response,
+            contains_inanyorder(*expected)
+        )
+
+    def test_find__with_fields_exclude(self):
+        response = getattr(self, self.project_client_attr).documents.find(
+            collection='venues',
+            fields_exclude=['name']
+        )
+        response = self.convert_generator_to_list(response)
+        expected = [
+            {'_id': i['_id'], 'address': i['address']}
+            for i in self.documents.values()
+        ]
+        assert_that(
+            response,
+            contains_inanyorder(*expected)
+        )
 
     def test_count(self):
         response = getattr(self, self.project_client_attr).documents.count(
