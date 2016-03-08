@@ -38,6 +38,12 @@ class SessionAuthClientTest__user(DeformSessionAuthClientTestCaseMixin, TestCase
 
 
 class SessionAuthClientTest__projects(DeformSessionAuthClientTestCaseMixin, TestCase):
+    def test_find_is_paginatable(self):
+        assert_that(
+            self.deform_session_auth_client.projects.find.is_paginatable,
+            equal_to(True)
+        )
+
     def test_find(self):
         response = self.deform_session_auth_client.projects.find()
         projects = [i for i in response]
@@ -72,6 +78,26 @@ class SessionAuthClientTest__projects(DeformSessionAuthClientTestCaseMixin, Test
             projects[0],
             has_entry('name', self.CONFIG['DEFORM']['PROJECT_NAME']),
         )
+
+    def test_count(self):
+        response = self.deform_session_auth_client.projects.count()
+        expected = self.deform_session_auth_client.projects.find(per_page=1)['total']
+        assert_that(response, equal_to(expected))
+
+    def test_count__filter(self):
+        response = self.deform_session_auth_client.projects.count(
+            filter={'name': self.CONFIG['DEFORM']['PROJECT_NAME']}
+        )
+        assert_that(response, equal_to(1))
+
+    def test_count__full_text(self):
+        response = self.deform_session_auth_client.projects.count(
+            filter={
+                'name': self.CONFIG['DEFORM']['PROJECT_NAME'],
+            },
+            text=self.CONFIG['DEFORM']['PROJECT_NAME']
+        )
+        assert_that(response, equal_to(1))
 
 
 class SessionAuthClientTest__project(DeformSessionAuthClientTestCaseMixin, TestCase):

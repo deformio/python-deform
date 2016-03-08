@@ -28,6 +28,12 @@ class ProjectClientTestBase__collections(object):
     def convert_generator_to_list(self, generator):
         return [i for i in generator]
 
+    def test_find_is_paginatable(self):
+        assert_that(
+            getattr(self, self.project_client_attr).collections.find.is_paginatable,
+            equal_to(True)
+        )
+
     def test_find(self):
         response = getattr(self, self.project_client_attr).collections.find()
         response = self.convert_generator_to_list(response)
@@ -51,6 +57,25 @@ class ProjectClientTestBase__collections(object):
         response = self.convert_generator_to_list(response)
         assert_that(len(response), equal_to(1))
         assert_that(response[0], has_entry('_id', '_users'))
+
+    def test_count(self):
+        response = getattr(self, self.project_client_attr).collections.count()
+        expected = getattr(self, self.project_client_attr).collections.find(per_page=1)['total']
+        assert_that(response, equal_to(expected))
+
+    def test_count__filter(self):
+        response = getattr(self, self.project_client_attr).collections.count(
+            filter={
+                'name': 'Users'
+            }
+        )
+        assert_that(response, equal_to(1))
+
+    def test_count__text(self):
+        response = getattr(self, self.project_client_attr).collections.count(
+            text='Users'
+        )
+        assert_that(response, equal_to(1))
 
 
 class SessionProjectClientTest__collections(DeformSessionProjectClientTestCaseMixin,

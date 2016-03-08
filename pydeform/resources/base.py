@@ -193,6 +193,33 @@ class FindListResourceMethod(ResourceMethodBase):
     }
 
 
+class CountListResourceMethod(ResourceMethodBase):
+    action = 'find'
+    params = {
+        'filter': PARAMS_DEFINITIONS['find_filter'],
+        'text': PARAMS_DEFINITIONS['find_text'],
+    }
+
+    def __call__(self,
+                 timeout=None,
+                 **params):
+        context = self.get_context(params)
+        context['timeout'] = timeout
+        if 'params' not in context:
+            context['params'] = {}
+        context['params']['per_page'] = 1
+        context['params']['fields'] = '_id'
+
+        response = do_http_request(
+            method=self.method,
+            request_kwargs=context,
+            requests_session=self.requests_session,
+            request_defaults=self.request_defaults,
+        )
+        response = response.json()
+        return response['total']
+
+
 class UpdateListResourceMethod(ResourceMethodBase):
     action = 'update'
     params = {
@@ -207,7 +234,7 @@ class UpsertListResourceMethod(UpdateListResourceMethod):
 
 
 class RemoveListResourceMethod(ResourceMethodBase):
-    method = 'delete'
+    action = 'delete'
     params = {
         'filter': PARAMS_DEFINITIONS['find_filter'],
     }
