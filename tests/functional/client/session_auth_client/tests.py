@@ -79,6 +79,23 @@ class SessionAuthClientTest__projects(DeformSessionAuthClientTestCaseMixin, Test
             has_entry('name', self.CONFIG['DEFORM']['PROJECT_NAME']),
         )
 
+    def test_find_sort(self):
+        response_1 = self.deform_session_auth_client.projects.find(
+            sort=['_id']
+        )
+        response_1 = [i for i in response_1]
+        response_2 = self.deform_session_auth_client.projects.find(
+            sort=['-_id']
+        )
+        response_2 = [i for i in response_2]
+        for i, item in enumerate(response_1):
+            j = (i + 1) * -1
+            assert_that(
+                item,
+                equal_to(response_2[j]),
+                'item %s and %s does not equal' % (i, j)
+            )
+
     def test_count(self):
         response = self.deform_session_auth_client.projects.count()
         expected = self.deform_session_auth_client.projects.find(per_page=1)['total']

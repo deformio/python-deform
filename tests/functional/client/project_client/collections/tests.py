@@ -58,6 +58,23 @@ class ProjectClientTestBase__collections(object):
         assert_that(len(response), equal_to(1))
         assert_that(response[0], has_entry('_id', '_users'))
 
+    def test_find_sort(self):
+        response_1 = getattr(self, self.project_client_attr).collections.find(
+            sort=['name']
+        )
+        response_1 = self.convert_generator_to_list(response_1)
+        response_2 = getattr(self, self.project_client_attr).collections.find(
+            sort=['-name']
+        )
+        response_2 = self.convert_generator_to_list(response_2)
+        for i, item in enumerate(response_1):
+            j = (i + 1) * -1
+            assert_that(
+                item,
+                equal_to(response_2[j]),
+                'item %s and %s does not equal' % (i, j)
+            )
+
     def test_count(self):
         response = getattr(self, self.project_client_attr).collections.count()
         expected = getattr(self, self.project_client_attr).collections.find(per_page=1)['total']
