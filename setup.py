@@ -41,11 +41,20 @@ def get_package_data(package):
 version = get_version('pydeform/')
 
 
+if sys.argv[-1] == 'publish':
+    os.system("python setup.py sdist upload")
+    os.system("python setup.py bdist_wheel upload")
+    print("You probably want to also tag the version now:")
+    print("  git tag -a %s -m 'version %s'" % (version, version))
+    print("  git push --tags")
+    sys.exit()
+
+
 setup(
     name='python-deform',
     version=version,
     url='https://github.com/deformio/python-deform/',
-    license='BSD',
+    license='MIT',
     description='Python client for Deform.io',
     author='Gennady Chibisov',
     author_email='web-chib@ya.ru',
