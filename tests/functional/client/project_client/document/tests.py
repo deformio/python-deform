@@ -398,7 +398,7 @@ class ProjectClientTestBase__document(object):
                     '_id': 'subway'
                 }
             ),
-            raises(ValidationError, '^name is required$')
+            raises(ValidationError, '^Validation error$')
         )
 
         response = getattr(self, self.project_client_attr).document.save(

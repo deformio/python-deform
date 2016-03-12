@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from pydeform.resources.base import (
     BaseResource,
+    ResourceMethodBase,
     GetListResourceMethod,
     FindListResourceMethod,
     CountListResourceMethod,
@@ -8,6 +9,7 @@ from pydeform.resources.base import (
     UpsertListResourceMethod,
     RemoveListResourceMethod,
     GetResourceMethod,
+    UpdateResourceMethod,
     GetOneResourceMethod,
     CreateOneResourceMethod,
     SaveOneResourceMethod,
@@ -17,11 +19,49 @@ from pydeform.resources.base import (
 from pydeform.resources.utils import PARAMS_DEFINITIONS
 
 
-class UserOneResource(BaseResource):
+class NonAuthUserResourceCreateMethod(ResourceMethodBase):
+    method = 'post'
+    params = {
+        'email': PARAMS_DEFINITIONS['login_email'],
+        'password': PARAMS_DEFINITIONS['login_password'],
+    }
+    params_required = ['email', 'password']
+
+
+class NonAuthUserResourceLoginMethod(ResourceMethodBase):
+    action = 'login'
+    params = {
+        'email': PARAMS_DEFINITIONS['login_email'],
+        'password': PARAMS_DEFINITIONS['login_password'],
+    }
+    params_required = ['email', 'password']
+
+
+class NonAuthUserResourceConfirmMethod(ResourceMethodBase):
+    action = 'confirm'
+    params = {
+        'code': PARAMS_DEFINITIONS['confirm_code'],
+    }
+    params_required = ['code']
+
+
+class NonAuthUserResource(BaseResource):
+    path = ['user']
+
+    methods = {
+        'create': NonAuthUserResourceCreateMethod,
+        'confirm': NonAuthUserResourceConfirmMethod,
+        'login': NonAuthUserResourceLoginMethod,
+    }
+
+
+class SessionUserResource(BaseResource):
     path = ['user']
 
     methods = {
         'get': GetResourceMethod,
+        'logout': type('SessionUserResourceLogout', (ResourceMethodBase,), {'action': 'logout'}),
+        'update': UpdateResourceMethod
     }
 
 

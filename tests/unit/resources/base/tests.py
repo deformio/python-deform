@@ -362,10 +362,12 @@ class TestResourceMethodBase__call(TestCase):
             self.method,
             self.base_uri + '?page=1&name=gena&surname=chibisov',
             json={
-                'links': {
-                    'next': 'http://next'
-                },
-                'result': page_1_result
+                'result': {
+                    'links': {
+                        'next': 'http://next'
+                    },
+                    'items': page_1_result
+                }
             },
             match_querystring=True
         )
@@ -373,7 +375,9 @@ class TestResourceMethodBase__call(TestCase):
             self.method,
             self.base_uri + '?page=2&name=gena&surname=chibisov',
             json={
-                'result': page_2_result
+                'result': {
+                    'items': page_2_result
+                }
             },
             match_querystring=True
         )
@@ -409,10 +413,12 @@ class TestResourceMethodBase__call(TestCase):
             self.method,
             self.base_uri + '?page=1&name=gena&surname=chibisov',
             json={
-                'links': {
-                    'next': 'http://next'
-                },
-                'result': page_1_result
+                'result': {
+                    'links': {
+                        'next': 'http://next'
+                    },
+                    'items': page_1_result
+                }
             },
             match_querystring=True
         )
@@ -420,12 +426,14 @@ class TestResourceMethodBase__call(TestCase):
             self.method,
             self.base_uri + '?page=2&name=gena&surname=chibisov',
             json={
-                'page': 2,
-                'pages': 10,
-                'per_page': 20,
-                'total': 30,
-                'result': page_2_result,
-                'another_key_that_should_not_be_in_response': 'noooooo'
+                'result': {
+                    'page': 2,
+                    'pages': 10,
+                    'per_page': 20,
+                    'total': 30,
+                    'items': page_2_result,
+                    'another_key_that_should_not_be_in_response': 'noooooo'
+                }
             },
             match_querystring=True
         )
@@ -438,7 +446,7 @@ class TestResourceMethodBase__call(TestCase):
                 'pages': 10,
                 'per_page': 20,
                 'total': 30,
-                'result': page_2_result,
+                'items': page_2_result,
             })
         )
 
@@ -448,12 +456,14 @@ class TestResourceMethodBase__call(TestCase):
             self.method,
             self.base_uri + '?name=gena&surname=chibisov&per_page=33',
             json={
-                'page': 2,
-                'pages': 10,
-                'per_page': 20,
-                'total': 30,
-                'result': per_page_result,
-                'another_key_that_should_not_be_in_response': 'noooooo'
+                'result': {
+                    'page': 2,
+                    'pages': 10,
+                    'per_page': 20,
+                    'total': 30,
+                    'items': per_page_result,
+                    'another_key_that_should_not_be_in_response': 'noooooo'
+                }
             },
             match_querystring=True
         )
@@ -464,7 +474,7 @@ class TestResourceMethodBase__call(TestCase):
                 'pages': 10,
                 'per_page': 20,
                 'total': 30,
-                'result': per_page_result,
+                'items': per_page_result,
             })
         )
 
@@ -474,12 +484,14 @@ class TestResourceMethodBase__call(TestCase):
             self.method,
             self.base_uri + '?page=5&name=gena&surname=chibisov&per_page=33',
             json={
-                'page': 2,
-                'pages': 10,
-                'per_page': 20,
-                'total': 30,
-                'result': page_and_per_page_result,
-                'another_key_that_should_not_be_in_response': 'noooooo'
+                'result': {
+                    'page': 2,
+                    'pages': 10,
+                    'per_page': 20,
+                    'total': 30,
+                    'items': page_and_per_page_result,
+                    'another_key_that_should_not_be_in_response': 'noooooo'
+                }
             },
             match_querystring=True
         )
@@ -490,7 +502,7 @@ class TestResourceMethodBase__call(TestCase):
                 'pages': 10,
                 'per_page': 20,
                 'total': 30,
-                'result': page_and_per_page_result,
+                'items': page_and_per_page_result,
             })
         )
 

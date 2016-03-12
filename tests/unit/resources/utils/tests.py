@@ -351,8 +351,10 @@ class ResourcesUtilesTest__iterate_by_pagination(TestCase):
             self.method,
             self.url,
             json={
-                'links': {},
-                'results': []
+                'result': {
+                    'links': {},
+                    'items': []
+                }
             }
         )
 
@@ -377,8 +379,10 @@ class ResourcesUtilesTest__iterate_by_pagination(TestCase):
             self.method,
             self.url,
             json={
-                'links': {},
-                'result': results
+                'result': {
+                    'links': {},
+                    'items': results
+                }
             }
         )
 
@@ -409,10 +413,12 @@ class ResourcesUtilesTest__iterate_by_pagination(TestCase):
             self.method,
             self.url + '?page=1',
             json={
-                'links': {
-                    'next': 'http://next/blablabla'
-                },
-                'result': page_1_results
+                'result': {
+                    'links': {
+                        'next': 'http://next/blablabla'
+                    },
+                    'items': page_1_results
+                }
             },
             match_querystring=True
         )
@@ -420,8 +426,10 @@ class ResourcesUtilesTest__iterate_by_pagination(TestCase):
             self.method,
             self.url + '?page=2',
             json={
-                'links': {},
-                'result': page_2_results
+                'result': {
+                    'links': {},
+                    'items': page_2_results
+                }
             },
             match_querystring=True
         )
@@ -442,7 +450,7 @@ class ResourcesUtilesTest__iterate_by_pagination(TestCase):
         responses.add(
             self.method,
             self.url,
-            json={'error': 'Not found'},
+            json={'not': 'found'},
             status=404
         )
 
@@ -468,19 +476,19 @@ class ResourcesUtilesTest__iterate_by_pagination(TestCase):
             self.method,
             self.url + '?page=1',
             json={
-                'links': {
-                    'next': 'http://next/blablabla'
-                },
-                'result': page_1_results
+                'result': {
+                    'links': {
+                        'next': 'http://next/blablabla'
+                    },
+                    'items': page_1_results
+                }
             },
             match_querystring=True
         )
         responses.add(
             self.method,
             self.url + '?page=2',
-            json={
-                'error': 'Not found',
-            },
+            json={'not': 'found'},
             status=404,
             match_querystring=True
         )
@@ -507,10 +515,12 @@ class ResourcesUtilesTest__iterate_by_pagination(TestCase):
             self.method,
             self.url + '?page=1',
             json={
-                'links': {
-                    'next': 'http://next/blablabla'
-                },
-                'result': page_1_results
+                'result': {
+                    'links': {
+                        'next': 'http://next/blablabla'
+                    },
+                    'items': page_1_results
+                }
             },
             match_querystring=True
         )
@@ -518,8 +528,10 @@ class ResourcesUtilesTest__iterate_by_pagination(TestCase):
             self.method,
             self.url + '?page=2',
             json={
-                'links': {},
-                'result': []
+                'result': {
+                    'links': {},
+                    'items': []
+                }
             },
             match_querystring=True
         )

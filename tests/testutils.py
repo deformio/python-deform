@@ -53,7 +53,7 @@ class TestCase(unittest.TestCase):
         self.CONFIG = CONFIG
         self.requests_session = requests.Session()
         self.request_defaults = {
-            'verify': False
+            'verify': False,
         }
 
 

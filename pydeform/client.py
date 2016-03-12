@@ -14,7 +14,8 @@ from pydeform.resources import (
     CurrentProjectInfoResource,
     ProjectListResource,
     ProjectOneResource,
-    UserOneResource,
+    NonAuthUserResource,
+    SessionUserResource,
     CollectionListResource,
     CollectionOneResource,
     DocumentListResource,
@@ -36,6 +37,17 @@ class Client(object):
         self.requests_session = requests_session or requests.Session()
         self.request_defaults = request_defaults
         self.api_base_path = api_base_path
+        self.user = NonAuthUserResource(
+            base_uri=get_base_uri(
+                host=self.host,
+                port=self.port,
+                secure=self.secure,
+                api_base_path=self.api_base_path
+            ),
+            auth_header=None,
+            requests_session=requests_session,
+            request_defaults=request_defaults
+        )
 
     def login(self, email, password, timeout=None):
         return self.auth(
@@ -85,7 +97,7 @@ class Client(object):
     def register(self, email, password, timeout=None):
         pass
 
-    def confirm(self, code, timeout=None):
+    def confirm_email(self, code, timeout=None):
         pass
 
 
@@ -117,7 +129,7 @@ class SessionAuthClient(object):
             'requests_session': requests_session,
             'request_defaults': request_defaults
         }
-        self.user = UserOneResource(**resource_kwargs)
+        self.user = SessionUserResource(**resource_kwargs)
         self.projects = ProjectListResource(**resource_kwargs)
         self.project = ProjectOneResource(**resource_kwargs)
 

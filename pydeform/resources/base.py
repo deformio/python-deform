@@ -82,7 +82,7 @@ class ResourceMethodBase(object):
                     requests_session=self.requests_session,
                     request_defaults=self.request_defaults,
                 )
-                return self._prepare_paginated_response(response.json())
+                return self._prepare_paginated_response(response.json()['result'])
             else:
                 return iterate_by_pagination(
                     method=self.method,
@@ -120,7 +120,7 @@ class ResourceMethodBase(object):
             'pages': response['pages'],
             'per_page': response['per_page'],
             'total': response['total'],
-            'result': response['result'],
+            'items': response['items'],
         }
 
     def get_context(self, params):
@@ -217,7 +217,7 @@ class CountListResourceMethod(ResourceMethodBase):
             request_defaults=self.request_defaults,
         )
         response = response.json()
-        return response['total']
+        return response['result']['total']
 
 
 class UpdateListResourceMethod(ResourceMethodBase):
@@ -273,7 +273,16 @@ class SaveOneResourceMethod(ResourceMethodBase):
     return_create_status = True
 
 
-class UpdateOneResourceMethod(ResourceMethodBase):
+class UpdateResourceMethod(ResourceMethodBase):
+    method = 'patch'
+
+    params = {
+        'data': PARAMS_DEFINITIONS['data'],
+    }
+    params_required = ['data']
+
+
+class UpdateOneResourceMethod(UpdateResourceMethod):
     method = 'patch'
     params = {
         'identity': PARAMS_DEFINITIONS['identity'],

@@ -19,6 +19,7 @@ from pydeform.client import (
     ProjectClient,
 )
 from pydeform.utils import get_base_uri
+from pydeform.exceptions import AuthError
 
 from testutils import (
     DeformClientTestCaseMixin,
@@ -35,6 +36,32 @@ class SessionAuthClientTest__user(DeformSessionAuthClientTestCaseMixin, TestCase
             response,
             has_entry('email', self.CONFIG['DEFORM']['EMAIL'])
         )
+
+    def test_logout(self):
+        deform_session_auth_client = self.deform_client.login(
+            email=self.CONFIG['DEFORM']['EMAIL'],
+            password=self.CONFIG['DEFORM']['PASSWORD']
+        )
+        response = deform_session_auth_client.user.logout()
+        assert_that(response, equal_to(None))
+        assert_that(
+            calling(deform_session_auth_client.user.get),
+            raises(AuthError, '^Not authorized$')
+        )
+
+    def test_update(self):
+        with responses.RequestsMock() as rsps:
+            rsps.add(
+                self.deform_session_auth_client.user.update.method.upper(),
+                self.deform_session_auth_client.user.update.get_context({})['url'],
+                json={
+                    'result': {
+                        'email': self.CONFIG['DEFORM']['EMAIL']
+                    }
+                },
+                status=200
+            )
+            self.deform_session_auth_client.user.update(data={'some': 'data'})
 
 
 class SessionAuthClientTest__projects(DeformSessionAuthClientTestCaseMixin, TestCase):

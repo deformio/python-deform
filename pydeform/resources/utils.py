@@ -15,6 +15,21 @@ from pydeform.exceptions import NotFoundError
 
 
 PARAMS_DEFINITIONS = {
+    'login_email': {
+        'dest': 'payload',
+        'payload_property': 'email',
+        'description': 'User email'
+    },
+    'login_password': {
+        'dest': 'payload',
+        'payload_property': 'password',
+        'description': 'User password'
+    },
+    'confirm_code': {
+        'dest': 'payload',
+        'payload_property': 'code',
+        'description': 'Email confirmation code'
+    },
     'identity': {
         'dest': 'uri',
         'description': 'Identity'
@@ -172,7 +187,7 @@ def iterate_by_pagination(method,
                           request_kwargs,
                           requests_session,
                           request_defaults):
-    response = {
+    response_result = {
         'links': {
             'next': 'yes'
         }
@@ -181,7 +196,7 @@ def iterate_by_pagination(method,
     if not 'params' in request_kwargs:
         request_kwargs['params'] = {}
     while True:
-        if response.get('links', {}).get('next'):
+        if response_result.get('links', {}).get('next'):
             page += 1
             request_kwargs['params']['page'] = page
             try:
@@ -193,8 +208,8 @@ def iterate_by_pagination(method,
                 )
             except NotFoundError as e:
                 break
-            response = response.json()
-            for i in response['result']:
+            response_result = response.json()['result']
+            for i in response_result['items']:
                 yield i
         else:
             break
