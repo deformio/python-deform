@@ -59,6 +59,10 @@ Run tests.
 
 Commit changes with message "Version 0.0.2"
 
+Publish to pypi:
+
+    $ python setup.py publish
+
 Add new tag version for commit:
 
     $ git tag 0.0.2
@@ -66,7 +70,3 @@ Add new tag version for commit:
 Push to master with tags:
 
     $ git push origin master --tags
-
-Publish to pypi:
-
-    $ python setup.py publish
