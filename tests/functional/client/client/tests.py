@@ -36,7 +36,7 @@ class ClientTest__user(DeformClientTestCaseMixin, TestCase):
             email=self.CONFIG['DEFORM']['EMAIL'],
             password=self.CONFIG['DEFORM']['PASSWORD']
         )
-        assert_that(response, has_entry('sessionId', is_not(None)))
+        assert_that(response, instance_of(six.text_type))
 
     def test_login__email_not_exists(self):
         assert_that(

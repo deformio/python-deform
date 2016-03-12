@@ -86,9 +86,12 @@ class DeformSessionAuthClientTestCaseMixin(DeformClientTestCaseMixin):
         super(DeformSessionAuthClientTestCaseMixin, self).setUp()
 
         if not 'deform_session_auth_client' in GLOBALS:
-            GLOBALS['deform_session_auth_client'] = self.deform_client.login(
-                email=self.CONFIG['DEFORM']['EMAIL'],
-                password=self.CONFIG['DEFORM']['PASSWORD']
+            GLOBALS['deform_session_auth_client'] = self.deform_client.auth(
+                'session',
+                self.deform_client.user.login(
+                    email=self.CONFIG['DEFORM']['EMAIL'],
+                    password=self.CONFIG['DEFORM']['PASSWORD']
+                )
             )
         self.deform_session_auth_client = GLOBALS['deform_session_auth_client']
 

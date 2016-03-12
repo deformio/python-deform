@@ -49,6 +49,7 @@ class ResourceMethodBase(object):
         'per_page': PARAMS_DEFINITIONS['per_page'],
     }
     return_create_status = False
+    result_property = None
 
     def __init__(self,
                  base_uri,
@@ -103,10 +104,13 @@ class ResourceMethodBase(object):
             if response.content:
                 try:
                     result = response.json()['result']
+                    if self.result_property:
+                        result = result[self.result_property]
                 except ValueError:
                     result = response.content
             else:
                 result = None
+
             if self.return_create_status:
                 return {
                     'created': response.status_code == 201,

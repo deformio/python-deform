@@ -49,28 +49,10 @@ class Client(object):
             request_defaults=request_defaults
         )
 
-    def login(self, email, password, timeout=None):
-        return self.auth(
-            'session',
-            auth_key=get_session_id(
-                base_uri=get_base_uri(
-                    host=self.host,
-                    port=self.port,
-                    secure=self.secure,
-                    api_base_path=self.api_base_path
-                ),
-                email=email,
-                password=password,
-                requests_session=self.requests_session,
-                timeout=timeout
-            )
-        )
-
     def auth(self, auth_type, auth_key, project_id=None):
         if auth_type == 'session':
-            auth_header = get_session_http_auth_header(auth_key)
             return SessionAuthClient(
-                auth_header=auth_header,
+                auth_header=get_session_http_auth_header(auth_key),
                 host=self.host,
                 port=self.port,
                 secure=self.secure,
@@ -93,12 +75,6 @@ class Client(object):
                 requests_session=self.requests_session,
                 request_defaults=self.request_defaults,
             )
-
-    def register(self, email, password, timeout=None):
-        pass
-
-    def confirm_email(self, code, timeout=None):
-        pass
 
 
 class SessionAuthClient(object):

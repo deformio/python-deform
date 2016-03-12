@@ -38,9 +38,12 @@ class SessionAuthClientTest__user(DeformSessionAuthClientTestCaseMixin, TestCase
         )
 
     def test_logout(self):
-        deform_session_auth_client = self.deform_client.login(
-            email=self.CONFIG['DEFORM']['EMAIL'],
-            password=self.CONFIG['DEFORM']['PASSWORD']
+        deform_session_auth_client = self.deform_client.auth(
+            'session',
+            self.deform_client.login(
+                email=self.CONFIG['DEFORM']['EMAIL'],
+                password=self.CONFIG['DEFORM']['PASSWORD']
+            )
         )
         response = deform_session_auth_client.user.logout()
         assert_that(response, equal_to(None))

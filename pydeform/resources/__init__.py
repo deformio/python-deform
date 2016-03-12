@@ -36,6 +36,7 @@ class NonAuthUserResourceLoginMethod(ResourceMethodBase):
         'password': PARAMS_DEFINITIONS['login_password'],
     }
     params_required = ['email', 'password']
+    result_property = 'sessionId'
 
 
 class NonAuthUserResourceConfirmMethod(ResourceMethodBase):
