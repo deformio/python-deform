@@ -97,8 +97,14 @@ class ResourceMethodBase(object):
                 requests_session=self.requests_session,
                 request_defaults=self.request_defaults,
             )
+            if context.get('stream'):
+                return response.raw
+
             if response.content:
-                result = response.json()['result']
+                try:
+                    result = response.json()['result']
+                except ValueError:
+                    result = response.content
             else:
                 result = None
             if self.return_create_status:
@@ -251,6 +257,16 @@ class GetOneResourceMethod(ResourceMethodBase):
         'property': PARAMS_DEFINITIONS['property'],
     }
     params_required = ['identity']
+
+
+class GetFileResourceMethod(GetOneResourceMethod):
+    method = 'get'
+
+    def get_context(self, params):
+        context = super(GetFileResourceMethod, self).get_context(params)
+        context['stream'] = True
+        context['url'] = uri_join(context['url'], 'content/')
+        return context
 
 
 class CreateOneResourceMethod(ResourceMethodBase):

@@ -69,6 +69,9 @@ def do_http_request(requests_session,
         for key, value in request_defaults.items():
             if key not in final_request_kwargs:
                 final_request_kwargs[key] = value
+        if 'files' in request_kwargs:
+            # save file descriptors
+            final_request_kwargs['files'] = request_kwargs['files']
     else:
         final_request_kwargs = request_kwargs
 

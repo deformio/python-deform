@@ -9,6 +9,7 @@ from pydeform.resources.base import (
     UpsertListResourceMethod,
     RemoveListResourceMethod,
     GetResourceMethod,
+    GetFileResourceMethod,
     UpdateResourceMethod,
     GetOneResourceMethod,
     CreateOneResourceMethod,
@@ -144,6 +145,7 @@ class DocumentOneResource(BaseResource):
 
     methods = {
         'get': type('DocumentGetOneResourceMethod', (DocumentResourceMixin, GetOneResourceMethod), {}),
+        'get_file': type('DocumentGetOneResourceMethod', (DocumentResourceMixin, GetFileResourceMethod), {}),
         'create': type('DocumentCreateOneResourceMethod', (DocumentResourceMixin, CreateOneResourceMethod), {}),
         'save': type('DocumentSaveOneResourceMethod', (DocumentResourceMixin, SaveOneResourceMethod), {}),
         'update': type('DocumentUpdateOneResourceMethod', (DocumentResourceMixin, UpdateOneResourceMethod), {}),

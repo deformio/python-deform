@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+import os
+import hashlib
+
 from hamcrest import (
     assert_that,
     not_none,
@@ -413,6 +416,102 @@ class ProjectClientTestBase__document(object):
             has_entry('name', 'Subway')
         )
 
+    def test_file(self):
+        # remove all files
+        getattr(self, self.project_client_attr).documents.remove(
+            collection='_files'
+        )
+
+        getattr(self, self.project_client_attr).collection.save(
+            identity='venues',
+            data={
+                'name': 'Venues',
+                'schema': {
+                    'properties': {
+                        'name': {
+                            'type': 'string'
+                        },
+                        'info': {
+                            'type': 'file'
+                        },
+                        'logo': {
+                            'type': 'file',
+                        }
+                    }
+                }
+            }
+        )
+        text_file = open(os.path.join(self.CONFIG['FILES_PATH'], '1.txt'), 'rt')
+        image_file = open(os.path.join(self.CONFIG['FILES_PATH'], '1.png'), 'rb')
+
+        # test upload
+        response = getattr(self, self.project_client_attr).document.save(
+            identity='subway',
+            collection='venues',
+            data={
+                'name': 'subway',
+                'info': text_file,
+                'logo': image_file,
+            }
+        )
+        result = response['result']
+
+        text_file.seek(0)
+        image_file.seek(0)
+        text_file_content = text_file.read()
+        image_file_content = image_file.read()
+
+        assert_that(
+            result,
+            has_entries({
+                'info': has_entries({
+                    'name': '1.txt',
+                    'content_type': 'text/plain',
+                    'md5': hashlib.md5(text_file_content).hexdigest()
+                }),
+                'logo': has_entries({
+                    'name': '1.png',
+                    'content_type': 'image/png',
+                    'md5': hashlib.md5(image_file_content).hexdigest()
+                })
+            })
+        )
+
+        # test download
+        info_content_response = getattr(self, self.project_client_attr).document.get(
+            identity='subway',
+            collection='venues',
+            property=['info', 'content']
+        )
+        assert_that(info_content_response, equal_to(text_file_content))
+
+        logo_content_response = getattr(self, self.project_client_attr).document.get(
+            identity='subway',
+            collection='venues',
+            property=['logo', 'content']
+        )
+        assert_that(logo_content_response, equal_to(image_file_content))
+
+        # test getting file object
+        info_content_stream_response = getattr(
+            self,
+            self.project_client_attr
+        ).document.get_file(
+            identity='subway',
+            collection='venues',
+            property=['info'],
+        )
+        assert_that(info_content_stream_response.read(), equal_to(text_file_content))
+
+        logo_content_stream_response = getattr(
+            self,
+            self.project_client_attr
+        ).document.get_file(
+            identity='subway',
+            collection='venues',
+            property=['logo'],
+        )
+        assert_that(logo_content_stream_response.read(), equal_to(image_file_content))
 
 
 class SessionProjectClientTest__document(ProjectClientTestBase__document,
