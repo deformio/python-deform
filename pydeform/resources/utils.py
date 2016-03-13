@@ -144,6 +144,9 @@ def get_payload(params, definitions):
 
     if params_has_files:
         final_data = flatten(final_data)
+        for key, value in final_data.items():
+            if not isinstance(value, file):
+                final_data[key] = (None, value)
     else:
         final_data = {
             'payload': final_data

@@ -323,11 +323,13 @@ class ResourcesUtilesTest__get_payload(TestCase):
                 }
             }
         }
+        expected_data = flatten(prepare_payload(params['data'])[1])
+        expected_data['user.name'] = (None, expected_data['user.name'])
         assert_that(
             get_payload(params, self.definitions),
             equal_to({
                 'type': 'files',
-                'data': flatten(prepare_payload(params['data'])[1])
+                'data': expected_data
             })
         )
 

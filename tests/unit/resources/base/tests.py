@@ -227,11 +227,13 @@ class TestResourceMethodBase__get_context(TestCase):
                 'avatar': open(os.path.join(self.CONFIG['FILES_PATH'], '1.txt'))
             }
         }
+        expected = flatten(data)
+        expected['user.name'] = (None, expected['user.name'])
         assert_that(
             instance.get_context({
                 'data': data,
             }),
-            has_entry('files', flatten(data))
+            has_entry('files', expected)
         )
 
 

@@ -429,13 +429,16 @@ class ProjectClientTestBase__document(object):
                 'schema': {
                     'properties': {
                         'name': {
-                            'type': 'string'
+                            'type': 'string',
+                            'required': True
                         },
                         'info': {
-                            'type': 'file'
+                            'type': 'file',
+                            'required': True
                         },
                         'logo': {
                             'type': 'file',
+                            'required': True
                         }
                     }
                 }
@@ -464,6 +467,7 @@ class ProjectClientTestBase__document(object):
         assert_that(
             result,
             has_entries({
+                'name': 'subway',
                 'info': has_entries({
                     'name': '1.txt',
                     'content_type': 'text/plain',
