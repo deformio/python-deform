@@ -1,25 +1,18 @@
 # -*- coding: utf-8 -*-
+import responses
 from hamcrest import (
     assert_that,
-    equal_to,
-    instance_of,
     calling,
-    raises,
+    equal_to,
     has_entry,
+    instance_of,
     is_not,
+    raises
 )
-import responses
-
-from pydeform.client import (
-    ProjectClient,
-)
-from pydeform.utils import get_base_uri
+from pydeform.client import ProjectClient
 from pydeform.exceptions import AuthError
-
-from testutils import (
-    TestCase,
-    DeformSessionAuthClientTestCaseMixin,
-)
+from pydeform.utils import get_base_uri
+from testutils import DeformSessionAuthClientTestCaseMixin, TestCase
 
 
 class SessionAuthClientTest__user(

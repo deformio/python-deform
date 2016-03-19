@@ -1,19 +1,16 @@
 # -*- coding: utf-8 -*-
 from copy import deepcopy
 
-from pydeform.utils import (
-    uri_join,
-    do_http_request,
-)
 from pydeform.resources.utils import (
     PARAMS_DEFINITIONS,
-    get_params_by_destination,
-    get_url,
-    get_payload,
     get_headers,
+    get_params_by_destination,
+    get_payload,
     get_query_params,
-    iterate_by_pagination,
+    get_url,
+    iterate_by_pagination
 )
+from pydeform.utils import do_http_request, uri_join
 
 
 class BaseResource(object):

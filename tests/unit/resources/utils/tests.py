@@ -3,32 +3,19 @@ import datetime
 import os
 import types
 
-from hamcrest import (
-    assert_that,
-    equal_to,
-    instance_of,
-    has_entry,
-)
 import responses
-
-from pydeform.utils import (
-    format_date,
-    format_datetime,
-    flatten,
-)
+from hamcrest import assert_that, equal_to, has_entry, instance_of
 from pydeform.resources.utils import (
-    get_params_by_destination,
-    get_url,
     get_headers,
-    get_query_params,
+    get_params_by_destination,
     get_payload,
-    prepare_payload,
+    get_query_params,
+    get_url,
     iterate_by_pagination,
+    prepare_payload
 )
-
-from testutils import (
-    TestCase,
-)
+from pydeform.utils import flatten, format_date, format_datetime
+from testutils import TestCase
 
 
 class ResourcesUtilesTest__get_params_by_destination(TestCase):

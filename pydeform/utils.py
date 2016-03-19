@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
-from copy import deepcopy
 import datetime
 import urllib
+from copy import deepcopy
 
 from requests.exceptions import RequestException
 
 from pydeform.exceptions import (
-    HTTPError,
+    REQUESTS_ERROR_MAP,
     STATUS_CODE_ERROR_MAP,
-    REQUESTS_ERROR_MAP
+    HTTPError
 )
 
 

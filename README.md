@@ -45,7 +45,17 @@ Running the specific test case:
 
 ### Codestyle
 
-    $ tox -e lint
+Checking for pep:
+
+    $ tox -e flake8
+
+Checking for imports:
+
+    $ tox -e isort
+
+If you have any problems with imports just run automatic manual fix:
+
+    $ tox -e isort-fix
 
 ### Documentation
 

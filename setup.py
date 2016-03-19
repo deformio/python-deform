@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from setuptools import setup
-import re
 import os
+import re
 import sys
+
+from setuptools import setup
 
 
 def get_version(package):

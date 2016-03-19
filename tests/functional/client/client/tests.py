@@ -1,29 +1,17 @@
 # -*- coding: utf-8 -*-
+import responses
 from hamcrest import (
     assert_that,
-    instance_of,
     calling,
-    raises,
-    starts_with,
     has_entry,
+    instance_of,
+    raises,
+    starts_with
 )
-import responses
-
 from pydeform import six
-from pydeform.client import (
-    SessionAuthClient,
-    ProjectClient,
-)
-from pydeform.exceptions import (
-    NotFoundError,
-    AuthError,
-    ConflictError,
-)
-
-from testutils import (
-    DeformClientTestCaseMixin,
-    TestCase,
-)
+from pydeform.client import ProjectClient, SessionAuthClient
+from pydeform.exceptions import AuthError, ConflictError, NotFoundError
+from testutils import DeformClientTestCaseMixin, TestCase
 
 
 class ClientTest__user(DeformClientTestCaseMixin, TestCase):

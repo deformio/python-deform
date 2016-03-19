@@ -2,30 +2,19 @@
 import os
 import types
 
+import responses
 from hamcrest import (
     assert_that,
-    equal_to,
-    instance_of,
     calling,
-    raises,
-    has_entry,
+    equal_to,
     has_entries,
+    has_entry,
+    instance_of,
+    raises
 )
-import responses
-
-from pydeform.utils import (
-    uri_join,
-    flatten,
-)
-
-from pydeform.resources.base import (
-    ResourceMethodBase,
-)
-
-from testutils import (
-    TestCase,
-    check_timeout
-)
+from pydeform.resources.base import ResourceMethodBase
+from pydeform.utils import flatten, uri_join
+from testutils import TestCase, check_timeout
 
 
 class TestResourceMethodBase__initialization(TestCase):

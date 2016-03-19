@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
-from requests.exceptions import (
-    ConnectionError as RequestsConnectionError,
-    ConnectTimeout as RequestsConnectTimeout,
-    ReadTimeout as RequestsReadTimeout,
-)
+from requests.exceptions import ConnectionError as RequestsConnectionError
+from requests.exceptions import ConnectTimeout as RequestsConnectTimeout
+from requests.exceptions import ReadTimeout as RequestsReadTimeout
 
 
 class DeformException(Exception):

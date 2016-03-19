@@ -1,22 +1,20 @@
 # -*- coding: utf-8 -*-
-import os
 import hashlib
+import os
 
 from hamcrest import (
     assert_that,
-    equal_to,
     calling,
-    raises,
-    has_entry,
+    equal_to,
     has_entries,
+    has_entry,
+    raises
 )
-
 from pydeform.exceptions import NotFoundError, ValidationError
-
 from testutils import (
-    TestCase,
     DeformSessionProjectClientTestCaseMixin,
     DeformTokenProjectClientTestCaseMixin,
+    TestCase
 )
 
 

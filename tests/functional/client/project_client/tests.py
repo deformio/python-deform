@@ -1,17 +1,10 @@
 # -*- coding: utf-8 -*-
-from hamcrest import (
-    assert_that,
-    calling,
-    raises,
-    has_entry,
-)
-
+from hamcrest import assert_that, calling, has_entry, raises
 from pydeform.exceptions import AuthError
-
 from testutils import (
-    TestCase,
     DeformSessionProjectClientTestCaseMixin,
     DeformTokenProjectClientTestCaseMixin,
+    TestCase
 )
 
 

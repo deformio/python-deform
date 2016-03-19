@@ -2,7 +2,6 @@ import os
 
 from invoke import run, task, util
 
-
 API_REFERENCE_CONFIG = {
     'client': ['auth'],
     'session_client': [

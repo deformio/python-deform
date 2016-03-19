@@ -1,22 +1,14 @@
 # -*- coding: utf-8 -*-
-import unittest
-import os
 import json
+import os
+import unittest
 
 import requests
-from hamcrest import (
-    assert_that,
-    calling,
-    raises
-)
 
+from hamcrest import assert_that, calling, raises
 from pydeform import Client
+from pydeform.exceptions import ConnectionError, ReadTimeout
 from pydeform.utils import get_base_uri
-from pydeform.exceptions import (
-    ConnectionError,
-    ReadTimeout,
-)
-
 
 GLOBALS = {}
 

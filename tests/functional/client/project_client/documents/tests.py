@@ -1,17 +1,10 @@
 # -*- coding: utf-8 -*-
-from hamcrest import (
-    assert_that,
-    equal_to,
-    is_not,
-    contains_inanyorder,
-)
-
+from hamcrest import assert_that, contains_inanyorder, equal_to, is_not
 from pydeform.exceptions import NotFoundError
-
 from testutils import (
-    TestCase,
     DeformSessionProjectClientTestCaseMixin,
     DeformTokenProjectClientTestCaseMixin,
+    TestCase
 )
 
 

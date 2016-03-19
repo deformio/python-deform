@@ -1,15 +1,9 @@
 # -*- coding: utf-8 -*-
-from hamcrest import (
-    assert_that,
-    equal_to,
-    has_entry,
-    is_not,
-)
-
+from hamcrest import assert_that, equal_to, has_entry, is_not
 from testutils import (
-    TestCase,
     DeformSessionProjectClientTestCaseMixin,
     DeformTokenProjectClientTestCaseMixin,
+    TestCase
 )
 
 

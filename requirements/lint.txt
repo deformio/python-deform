@@ -1,5 +1,0 @@
-flake8==2.5.4
-pep8==1.7.0
-
-# Sort and lint imports
-isort==4.2.2

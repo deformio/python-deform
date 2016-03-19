@@ -1,15 +1,6 @@
 # -*- coding: utf-8 -*-
-from hamcrest import (
-    assert_that,
-    equal_to,
-)
-
-from pydeform.utils import (
-    uri_join,
-    get_base_uri,
-    flatten,
-)
-
+from hamcrest import assert_that, equal_to
+from pydeform.utils import flatten, get_base_uri, uri_join
 from testutils import TestCase
 
 

@@ -3,22 +3,20 @@ import requests
 
 from pydeform.auth import (
     get_session_http_auth_header,
-    get_token_http_auth_header,
-)
-from pydeform.utils import (
-    get_base_uri,
+    get_token_http_auth_header
 )
 from pydeform.resources import (
-    CurrentProjectInfoResource,
-    ProjectListResource,
-    ProjectOneResource,
-    NonAuthUserResource,
-    SessionUserResource,
     CollectionListResource,
     CollectionOneResource,
+    CurrentProjectInfoResource,
     DocumentListResource,
     DocumentOneResource,
+    NonAuthUserResource,
+    ProjectListResource,
+    ProjectOneResource,
+    SessionUserResource
 )
+from pydeform.utils import get_base_uri
 
 
 class Client(object):

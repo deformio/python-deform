@@ -2,15 +2,14 @@
 import datetime
 from collections import defaultdict
 
+from pydeform.exceptions import NotFoundError
 from pydeform.utils import (
-    uri_join,
+    do_http_request,
+    flatten,
     format_date,
     format_datetime,
-    flatten,
-    do_http_request,
+    uri_join
 )
-from pydeform.exceptions import NotFoundError
-
 
 PARAMS_DEFINITIONS = {
     'login_email': {
