@@ -25,17 +25,27 @@ def get_setting(name, required=True):
     if name in os.environ:
         try:
             return json.loads(str(os.environ[name]))
-        except ValueError as e:
-            raise ValueError("%s should be set in JSON format. Given %s" % (name, os.environ[name]))
+        except ValueError:
+            raise ValueError(
+                "%s should be set in JSON format. Given %s" % (
+                    name,
+                    os.environ[name]
+                )
+            )
     else:
         if required:
-            raise ValueError('You should provide "%s" environ for settings' % name.upper())
+            raise ValueError(
+                'You should provide "%s" environ for settings' % name.upper()
+            )
 
 CONFIG = {
     'DEFORM': {
         'HOST': get_setting('DEFORM_HOST'),
         'PORT': get_setting('DEFORM_PORT', required=False),
-        'API_BASE_PATH': get_setting('DEFORM_API_BASE_PATH', required=False) or '/api/',
+        'API_BASE_PATH': get_setting(
+            'DEFORM_API_BASE_PATH',
+            required=False
+        ) or '/api/',
         'SECURE': get_setting('DEFORM_SECURE'),
         'PROJECT': get_setting('DEFORM_PROJECT'),
         'PROJECT_NAME': get_setting('DEFORM_PROJECT_NAME'),
@@ -85,7 +95,7 @@ class DeformSessionAuthClientTestCaseMixin(DeformClientTestCaseMixin):
     def setUp(self):
         super(DeformSessionAuthClientTestCaseMixin, self).setUp()
 
-        if not 'deform_session_auth_client' in GLOBALS:
+        if 'deform_session_auth_client' not in GLOBALS:
             GLOBALS['deform_session_auth_client'] = self.deform_client.auth(
                 'session',
                 self.deform_client.user.login(
@@ -96,12 +106,16 @@ class DeformSessionAuthClientTestCaseMixin(DeformClientTestCaseMixin):
         self.deform_session_auth_client = GLOBALS['deform_session_auth_client']
 
 
-class DeformSessionProjectClientTestCaseMixin(DeformSessionAuthClientTestCaseMixin):
+class DeformSessionProjectClientTestCaseMixin(
+    DeformSessionAuthClientTestCaseMixin
+):
     def setUp(self):
         super(DeformSessionProjectClientTestCaseMixin, self).setUp()
 
-        self.deform_session_project_client = self.deform_session_auth_client.use_project(
-            self.CONFIG['DEFORM']['PROJECT']
+        self.deform_session_project_client = (
+            self.deform_session_auth_client.use_project(
+                self.CONFIG['DEFORM']['PROJECT']
+            )
         )
 
 
@@ -109,13 +123,15 @@ class DeformTokenProjectClientTestCaseMixin(DeformClientTestCaseMixin):
     def setUp(self):
         super(DeformTokenProjectClientTestCaseMixin, self).setUp()
 
-        if not 'deform_token_project_client' in GLOBALS:
+        if 'deform_token_project_client' not in GLOBALS:
             GLOBALS['deform_token_project_client'] = self.deform_client.auth(
                 auth_type='token',
                 auth_key=self.CONFIG['DEFORM']['PROJECT_TOKEN'],
                 project_id=self.CONFIG['DEFORM']['PROJECT']
             )
-        self.deform_token_project_client = GLOBALS['deform_token_project_client']
+        self.deform_token_project_client = GLOBALS[
+            'deform_token_project_client'
+        ]
 
 
 def check_timeout(func, kwargs={}):

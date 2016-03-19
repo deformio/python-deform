@@ -76,14 +76,18 @@ def do_http_request(requests_session,
         final_request_kwargs = request_kwargs
 
     try:
-        response = getattr(requests_session, method.lower())(**final_request_kwargs)
+        response = getattr(requests_session, method.lower())(
+            **final_request_kwargs
+        )
         if not response.ok and response.status_code not in ignore_error_codes:
             response.raise_for_status()
     except RequestException as e:
         error_class = None
         if e.response is not None:
             error_class = STATUS_CODE_ERROR_MAP.get(e.response.status_code)
-        error_class = error_class or REQUESTS_ERROR_MAP.get(type(e)) or HTTPError
+        error_class = (
+            error_class or REQUESTS_ERROR_MAP.get(type(e)) or HTTPError
+        )
         raise error_class(requests_error=e)
     return response
 

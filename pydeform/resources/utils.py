@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 import datetime
-from copy import deepcopy
 from collections import defaultdict
-from collections import namedtuple
 
 from pydeform.utils import (
     uri_join,
@@ -79,6 +77,7 @@ PARAMS_DEFINITIONS = {
         'dest': 'query_params',
     },
 }
+
 
 def get_params_by_destination(params, definitions):
     response = defaultdict(dict)
@@ -196,7 +195,7 @@ def iterate_by_pagination(method,
         }
     }
     page = 0
-    if not 'params' in request_kwargs:
+    if 'params' not in request_kwargs:
         request_kwargs['params'] = {}
     while True:
         if response_result.get('links', {}).get('next'):
@@ -209,7 +208,7 @@ def iterate_by_pagination(method,
                     requests_session=requests_session,
                     request_defaults=request_defaults,
                 )
-            except NotFoundError as e:
+            except NotFoundError:
                 break
             response_result = response.json()['result']
             for i in response_result['items']:

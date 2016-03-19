@@ -20,10 +20,14 @@ class HTTPError(DeformException):
         # todo: test me
         self.requests_error = requests_error
         if self.requests_error.response is not None:
-            message = self.requests_error.response.json().get('result', {}).get('message')
+            message = self.requests_error.response.json().get(
+                'result', {}
+            ).get('message')
             if message:
                 self.message = message
-            errors = self.requests_error.response.json().get('result', {}).get('errors')
+            errors = self.requests_error.response.json().get(
+                'result', {}
+            ).get('errors')
             if errors:
                 self.errors = errors
 
@@ -91,6 +95,6 @@ STATUS_CODE_ERROR_MAP = {
 
 REQUESTS_ERROR_MAP = {
     RequestsConnectionError: ConnectionError,
-    RequestsConnectTimeout: ConnectTimeout, # todo: test me
+    RequestsConnectTimeout: ConnectTimeout,  # todo: test me
     RequestsReadTimeout: ReadTimeout,
 }

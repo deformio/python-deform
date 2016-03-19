@@ -5,12 +5,8 @@ import types
 
 from hamcrest import (
     assert_that,
-    not_none,
     equal_to,
     instance_of,
-    calling,
-    raises,
-    starts_with,
     has_entry,
 )
 import responses
@@ -96,6 +92,9 @@ class ResourcesUtilesTest__get_url(TestCase):
         }
 
     def test_me(self):
+        expected = (
+            'https://chib.me/collections/_users/documents/someid/four/five/'
+        )
         assert_that(
             get_url(
                 base_uri=self.base_uri,
@@ -114,7 +113,7 @@ class ResourcesUtilesTest__get_url(TestCase):
                 },
                 definitions=self.definitions,
             ),
-            equal_to('https://chib.me/collections/_users/documents/someid/four/five/')
+            equal_to(expected)
         )
 
 
@@ -319,7 +318,9 @@ class ResourcesUtilesTest__get_payload(TestCase):
                     'name': 'gena'
                 },
                 'avatar': {
-                    'big': open(os.path.join(self.CONFIG['FILES_PATH'], '1.txt'))
+                    'big': open(
+                        os.path.join(self.CONFIG['FILES_PATH'], '1.txt')
+                    )
                 }
             }
         }

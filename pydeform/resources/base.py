@@ -20,7 +20,11 @@ class BaseResource(object):
     path = []
     methods = {}
 
-    def __init__(self, base_uri, auth_header, requests_session, request_defaults):
+    def __init__(self,
+                 base_uri,
+                 auth_header,
+                 requests_session,
+                 request_defaults):
         kwargs = {
             'base_uri': base_uri,
             'path': self.path,
@@ -83,7 +87,9 @@ class ResourceMethodBase(object):
                     requests_session=self.requests_session,
                     request_defaults=self.request_defaults,
                 )
-                return self._prepare_paginated_response(response.json()['result'])
+                return self._prepare_paginated_response(
+                    response.json()['result']
+                )
             else:
                 return iterate_by_pagination(
                     method=self.method,

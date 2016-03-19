@@ -1,35 +1,31 @@
 # -*- coding: utf-8 -*-
 from hamcrest import (
     assert_that,
-    not_none,
     equal_to,
     instance_of,
     calling,
     raises,
-    starts_with,
     has_entry,
     is_not,
-    empty
 )
 import responses
 
-from pydeform import six
 from pydeform.client import (
-    SessionAuthClient,
     ProjectClient,
 )
 from pydeform.utils import get_base_uri
 from pydeform.exceptions import AuthError
 
 from testutils import (
-    DeformClientTestCaseMixin,
     TestCase,
     DeformSessionAuthClientTestCaseMixin,
-    check_timeout
 )
 
 
-class SessionAuthClientTest__user(DeformSessionAuthClientTestCaseMixin, TestCase):
+class SessionAuthClientTest__user(
+    DeformSessionAuthClientTestCaseMixin,
+    TestCase
+):
     def test_get(self):
         response = self.deform_session_auth_client.user.get()
         assert_that(
@@ -56,7 +52,9 @@ class SessionAuthClientTest__user(DeformSessionAuthClientTestCaseMixin, TestCase
         with responses.RequestsMock() as rsps:
             rsps.add(
                 self.deform_session_auth_client.user.update.method.upper(),
-                self.deform_session_auth_client.user.update.get_context({})['url'],
+                self.deform_session_auth_client.user.update.get_context(
+                    {}
+                )['url'],
                 json={
                     'result': {
                         'email': self.CONFIG['DEFORM']['EMAIL']
@@ -67,7 +65,10 @@ class SessionAuthClientTest__user(DeformSessionAuthClientTestCaseMixin, TestCase
             self.deform_session_auth_client.user.update(data={'some': 'data'})
 
 
-class SessionAuthClientTest__projects(DeformSessionAuthClientTestCaseMixin, TestCase):
+class SessionAuthClientTest__projects(
+    DeformSessionAuthClientTestCaseMixin,
+    TestCase
+):
     def test_find_is_paginatable(self):
         assert_that(
             self.deform_session_auth_client.projects.find.is_paginatable,
@@ -128,7 +129,9 @@ class SessionAuthClientTest__projects(DeformSessionAuthClientTestCaseMixin, Test
 
     def test_count(self):
         response = self.deform_session_auth_client.projects.count()
-        expected = self.deform_session_auth_client.projects.find(per_page=1)['total']
+        expected = self.deform_session_auth_client.projects.find(
+            per_page=1
+        )['total']
         assert_that(response, equal_to(expected))
 
     def test_count__filter(self):
@@ -147,7 +150,10 @@ class SessionAuthClientTest__projects(DeformSessionAuthClientTestCaseMixin, Test
         assert_that(response, equal_to(1))
 
 
-class SessionAuthClientTest__project(DeformSessionAuthClientTestCaseMixin, TestCase):
+class SessionAuthClientTest__project(
+    DeformSessionAuthClientTestCaseMixin,
+    TestCase
+):
     def test_get(self):
         response = self.deform_session_auth_client.project.get(
             identity=self.CONFIG['DEFORM']['PROJECT']
@@ -182,7 +188,9 @@ class SessionAuthClientTest__project(DeformSessionAuthClientTestCaseMixin, TestC
     def test_create(self):
         responses.add(
             self.deform_session_auth_client.project.create.method.upper(),
-            self.deform_session_auth_client.project.create.get_context({})['url'],
+            self.deform_session_auth_client.project.create.get_context(
+                {}
+            )['url'],
             json={
                 'result': {
                     '_id': 'new-project',
@@ -202,7 +210,10 @@ class SessionAuthClientTest__project(DeformSessionAuthClientTestCaseMixin, TestC
         }))
 
 
-class SessionAuthClientTest__use_project(DeformSessionAuthClientTestCaseMixin, TestCase):
+class SessionAuthClientTest__use_project(
+    DeformSessionAuthClientTestCaseMixin,
+    TestCase
+):
     def test_me(self):
         response = self.deform_session_auth_client.use_project('some-project')
         assert_that(response, instance_of(ProjectClient))

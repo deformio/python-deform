@@ -10,7 +10,7 @@ from pydeform.utils import (
     flatten,
 )
 
-from testutils import DeformBaseURITestCaseMixin, TestCase
+from testutils import TestCase
 
 
 class Test__uri_join(TestCase):
@@ -77,6 +77,7 @@ class Test__uri_join(TestCase):
             equal_to('https://chib.me/blog')
         )
 
+
 class Test__get_base_uri(TestCase):
     def test_me(self):
         api_base_path = self.CONFIG['DEFORM']['API_BASE_PATH']
@@ -95,7 +96,10 @@ class Test__get_base_uri(TestCase):
                     'project': 'mysquare',
                     'api_base_path': api_base_path
                 },
-                'expected': uri_join('https://mysquare.deform.io/', api_base_path)
+                'expected': uri_join(
+                    'https://mysquare.deform.io/',
+                    api_base_path
+                )
             },
             {
                 'kwargs': {

@@ -4,16 +4,11 @@ import hashlib
 
 from hamcrest import (
     assert_that,
-    not_none,
     equal_to,
-    instance_of,
     calling,
     raises,
-    starts_with,
     has_entry,
     has_entries,
-    is_not,
-    contains
 )
 
 from pydeform.exceptions import NotFoundError, ValidationError
@@ -53,7 +48,9 @@ class ProjectClientTestBase__document(object):
 
     def test_get_not_existing_document(self):
         assert_that(
-            calling(getattr(self, self.project_client_attr).document.get).with_args(
+            calling(
+                getattr(self, self.project_client_attr).document.get
+            ).with_args(
                 identity='not_existing_document',
                 collection='_tokens'
             ),
@@ -151,7 +148,7 @@ class ProjectClientTestBase__document(object):
         except NotFoundError:
             pass
 
-        response = getattr(self, self.project_client_attr).document.create(
+        getattr(self, self.project_client_attr).document.create(
             collection='venues',
             data={
                 '_id': 'subway',
@@ -165,7 +162,9 @@ class ProjectClientTestBase__document(object):
         )
 
         assert_that(
-            calling(getattr(self, self.project_client_attr).document.get).with_args(
+            calling(
+                getattr(self, self.project_client_attr).document.get
+            ).with_args(
                 collection='venues',
                 identity='subway',
                 property=['comment', 'user', 'surname']
@@ -395,7 +394,9 @@ class ProjectClientTestBase__document(object):
         )
 
         assert_that(
-            calling(getattr(self, self.project_client_attr).document.save).with_args(
+            calling(
+                getattr(self, self.project_client_attr).document.save
+            ).with_args(
                 collection='venues',
                 data={
                     '_id': 'subway'
@@ -444,8 +445,12 @@ class ProjectClientTestBase__document(object):
                 }
             }
         )
-        text_file = open(os.path.join(self.CONFIG['FILES_PATH'], '1.txt'), 'rt')
-        image_file = open(os.path.join(self.CONFIG['FILES_PATH'], '1.png'), 'rb')
+        text_file = open(
+            os.path.join(self.CONFIG['FILES_PATH'], '1.txt'), 'rt'
+        )
+        image_file = open(
+            os.path.join(self.CONFIG['FILES_PATH'], '1.png'), 'rb'
+        )
 
         # test upload
         response = getattr(self, self.project_client_attr).document.save(
@@ -482,14 +487,20 @@ class ProjectClientTestBase__document(object):
         )
 
         # test download
-        info_content_response = getattr(self, self.project_client_attr).document.get(
+        info_content_response = getattr(
+            self,
+            self.project_client_attr
+        ).document.get(
             identity='subway',
             collection='venues',
             property=['info', 'content']
         )
         assert_that(info_content_response, equal_to(text_file_content))
 
-        logo_content_response = getattr(self, self.project_client_attr).document.get(
+        logo_content_response = getattr(
+            self,
+            self.project_client_attr
+        ).document.get(
             identity='subway',
             collection='venues',
             property=['logo', 'content']
@@ -505,7 +516,10 @@ class ProjectClientTestBase__document(object):
             collection='venues',
             property=['info'],
         )
-        assert_that(info_content_stream_response.read(), equal_to(text_file_content))
+        assert_that(
+            info_content_stream_response.read(),
+            equal_to(text_file_content)
+        )
 
         logo_content_stream_response = getattr(
             self,
@@ -515,16 +529,23 @@ class ProjectClientTestBase__document(object):
             collection='venues',
             property=['logo'],
         )
-        assert_that(logo_content_stream_response.read(), equal_to(image_file_content))
+        assert_that(
+            logo_content_stream_response.read(),
+            equal_to(image_file_content)
+        )
 
 
-class SessionProjectClientTest__document(ProjectClientTestBase__document,
-                                         DeformSessionProjectClientTestCaseMixin,
-                                         TestCase):
+class SessionProjectClientTest__document(
+    ProjectClientTestBase__document,
+    DeformSessionProjectClientTestCaseMixin,
+    TestCase
+):
     project_client_attr = 'deform_session_project_client'
 
 
-class TokenProjectClientTest__document(ProjectClientTestBase__document,
-                                       DeformTokenProjectClientTestCaseMixin,
-                                       TestCase):
+class TokenProjectClientTest__document(
+    ProjectClientTestBase__document,
+    DeformTokenProjectClientTestCaseMixin,
+    TestCase
+):
     project_client_attr = 'deform_token_project_client'

@@ -1,18 +1,9 @@
 # -*- coding: utf-8 -*-
 from hamcrest import (
     assert_that,
-    not_none,
     equal_to,
-    instance_of,
-    calling,
-    raises,
-    starts_with,
-    has_entry,
-    has_entries,
     is_not,
-    empty,
     contains_inanyorder,
-    contains
 )
 
 from pydeform.exceptions import NotFoundError
@@ -31,7 +22,9 @@ class ProjectClientTestBase__documents(object):
         super(ProjectClientTestBase__documents, self).setUp()
 
         try:
-            getattr(self, self.project_client_attr).documents.remove(collection='venues')
+            getattr(self, self.project_client_attr).documents.remove(
+                collection='venues'
+            )
         except NotFoundError:
             pass
 
@@ -59,7 +52,10 @@ class ProjectClientTestBase__documents(object):
 
     def test_find_is_paginatable(self):
         assert_that(
-            getattr(self, self.project_client_attr).documents.find.is_paginatable,
+            getattr(
+                self,
+                self.project_client_attr
+            ).documents.find.is_paginatable,
             equal_to(True)
         )
 
@@ -312,13 +308,17 @@ class ProjectClientTestBase__documents(object):
         assert_that(response[0], equal_to(self.documents['mcdonalds']))
 
 
-class SessionProjectClientTest__documents(ProjectClientTestBase__documents,
-                                          DeformSessionProjectClientTestCaseMixin,
-                                          TestCase):
+class SessionProjectClientTest__documents(
+    ProjectClientTestBase__documents,
+    DeformSessionProjectClientTestCaseMixin,
+    TestCase
+):
     project_client_attr = 'deform_session_project_client'
 
 
-class TokenProjectClientTest__documents(ProjectClientTestBase__documents,
-                                        DeformTokenProjectClientTestCaseMixin,
-                                        TestCase):
+class TokenProjectClientTest__documents(
+    ProjectClientTestBase__documents,
+    DeformTokenProjectClientTestCaseMixin,
+    TestCase
+):
     project_client_attr = 'deform_token_project_client'

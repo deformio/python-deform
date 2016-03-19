@@ -2,7 +2,6 @@
 from pydeform.resources.base import (
     BaseResource,
     ResourceMethodBase,
-    GetListResourceMethod,
     FindListResourceMethod,
     CountListResourceMethod,
     UpdateListResourceMethod,
@@ -62,7 +61,11 @@ class SessionUserResource(BaseResource):
 
     methods = {
         'get': GetResourceMethod,
-        'logout': type('SessionUserResourceLogout', (ResourceMethodBase,), {'action': 'logout'}),
+        'logout': type(
+            'SessionUserResourceLogout',
+            (ResourceMethodBase,),
+            {'action': 'logout'}
+        ),
         'update': UpdateResourceMethod
     }
 
@@ -124,7 +127,9 @@ class DocumentResourceMixin(object):
         return params
 
     def get_params_required(self):
-        params_required = super(DocumentResourceMixin, self).get_params_required()
+        params_required = super(
+            DocumentResourceMixin, self
+        ).get_params_required()
         params_required.append('collection')
         return params_required
 
@@ -133,22 +138,72 @@ class DocumentListResource(BaseResource):
     path = ['collections', '{collection}', 'documents']
 
     methods = {
-        'find': type('DocumentFindListResourceMethod', (DocumentResourceMixin, FindListResourceMethod), {}),
-        'count': type('DocumentFindListResourceMethod', (DocumentResourceMixin, CountListResourceMethod), {}),
-        'update': type('DocumentUpdateListResourceMethod', (DocumentResourceMixin, UpdateListResourceMethod), {}),
-        'upsert': type('DocumentUpsertListResourceMethod', (DocumentResourceMixin, UpsertListResourceMethod), {}),
-        'remove': type('DocumentRemoveListResourceMethod', (DocumentResourceMixin, RemoveListResourceMethod), {}),
+        'find': type(
+            'DocumentFindListResourceMethod',
+            (DocumentResourceMixin, FindListResourceMethod),
+            {}
+        ),
+        'count': type(
+            'DocumentFindListResourceMethod',
+            (DocumentResourceMixin, CountListResourceMethod),
+            {}
+        ),
+        'update': type(
+            'DocumentUpdateListResourceMethod',
+            (DocumentResourceMixin, UpdateListResourceMethod),
+            {}
+        ),
+        'upsert': type(
+            'DocumentUpsertListResourceMethod',
+            (DocumentResourceMixin, UpsertListResourceMethod),
+            {}
+        ),
+        'remove': type(
+            'DocumentRemoveListResourceMethod',
+            (DocumentResourceMixin, RemoveListResourceMethod),
+            {}
+        ),
     }
 
 
 class DocumentOneResource(BaseResource):
-    path = ['collections', '{collection}', 'documents', '{identity}', '{property}']
+    path = [
+        'collections',
+        '{collection}',
+        'documents',
+        '{identity}',
+        '{property}'
+    ]
 
     methods = {
-        'get': type('DocumentGetOneResourceMethod', (DocumentResourceMixin, GetOneResourceMethod), {}),
-        'get_file': type('DocumentGetOneResourceMethod', (DocumentResourceMixin, GetFileResourceMethod), {}),
-        'create': type('DocumentCreateOneResourceMethod', (DocumentResourceMixin, CreateOneResourceMethod), {}),
-        'save': type('DocumentSaveOneResourceMethod', (DocumentResourceMixin, SaveOneResourceMethod), {}),
-        'update': type('DocumentUpdateOneResourceMethod', (DocumentResourceMixin, UpdateOneResourceMethod), {}),
-        'remove': type('DocumentRemoveOneResourceMethod', (DocumentResourceMixin, RemoveOneResourceMethod), {}),
+        'get': type(
+            'DocumentGetOneResourceMethod',
+            (DocumentResourceMixin, GetOneResourceMethod),
+            {}
+        ),
+        'get_file': type(
+            'DocumentGetOneResourceMethod',
+            (DocumentResourceMixin, GetFileResourceMethod),
+            {}
+        ),
+        'create': type(
+            'DocumentCreateOneResourceMethod',
+            (DocumentResourceMixin, CreateOneResourceMethod),
+            {}
+        ),
+        'save': type(
+            'DocumentSaveOneResourceMethod',
+            (DocumentResourceMixin, SaveOneResourceMethod),
+            {}
+        ),
+        'update': type(
+            'DocumentUpdateOneResourceMethod',
+            (DocumentResourceMixin, UpdateOneResourceMethod),
+            {}
+        ),
+        'remove': type(
+            'DocumentRemoveOneResourceMethod',
+            (DocumentResourceMixin, RemoveOneResourceMethod),
+            {}
+        ),
     }

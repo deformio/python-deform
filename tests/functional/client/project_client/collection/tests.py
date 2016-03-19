@@ -1,16 +1,11 @@
 # -*- coding: utf-8 -*-
 from hamcrest import (
     assert_that,
-    not_none,
     equal_to,
-    instance_of,
     calling,
     raises,
-    starts_with,
     has_entry,
     has_entries,
-    is_not,
-    empty
 )
 
 from pydeform.exceptions import NotFoundError
@@ -26,7 +21,9 @@ class ProjectClientTestBase__collection(object):
     project_client_attr = None
 
     def test_get(self):
-        response = getattr(self, self.project_client_attr).collection.get(identity='_users')
+        response = getattr(self, self.project_client_attr).collection.get(
+            identity='_users'
+        )
         assert_that(
             response,
             has_entries({
@@ -38,7 +35,9 @@ class ProjectClientTestBase__collection(object):
 
     def test_get_not_existing_collection(self):
         assert_that(
-            calling(getattr(self, self.project_client_attr).collection.get).with_args(
+            calling(
+                getattr(self, self.project_client_attr).collection.get
+            ).with_args(
                 identity='not_existing_collection',
             ),
             raises(NotFoundError, '^Collection not found\.$')
@@ -59,7 +58,9 @@ class ProjectClientTestBase__collection(object):
 
     def test_get_not_existing_property(self):
         assert_that(
-            calling(getattr(self, self.project_client_attr).collection.get).with_args(
+            calling(
+                getattr(self, self.project_client_attr).collection.get
+            ).with_args(
                 identity='_users',
                 property=['schema', 'properties', 'sosisa']
             ),
@@ -68,7 +69,9 @@ class ProjectClientTestBase__collection(object):
 
     def test_create(self):
         try:
-            getattr(self, self.project_client_attr).collection.remove(identity='venues')
+            getattr(self, self.project_client_attr).collection.remove(
+                identity='venues'
+            )
         except NotFoundError:
             pass
 
@@ -89,7 +92,9 @@ class ProjectClientTestBase__collection(object):
 
     def test_save__with_identity(self):
         try:
-            getattr(self, self.project_client_attr).collection.remove(identity='venues')
+            getattr(self, self.project_client_attr).collection.remove(
+                identity='venues'
+            )
         except NotFoundError:
             pass
 
@@ -129,7 +134,9 @@ class ProjectClientTestBase__collection(object):
 
     def test_save__without_identity(self):
         try:
-            getattr(self, self.project_client_attr).collection.remove(identity='venues')
+            getattr(self, self.project_client_attr).collection.remove(
+                identity='venues'
+            )
         except NotFoundError:
             pass
 
@@ -169,7 +176,9 @@ class ProjectClientTestBase__collection(object):
 
     def test_save_property(self):
         try:
-            getattr(self, self.project_client_attr).collection.remove(identity='venues')
+            getattr(self, self.project_client_attr).collection.remove(
+                identity='venues'
+            )
         except NotFoundError:
             pass
 
@@ -210,7 +219,10 @@ class ProjectClientTestBase__collection(object):
             }
         )
         assert_that(response['created'], equal_to(False))
-        assert_that(response['result'], equal_to({'surname': {'type': 'string'}}))
+        assert_that(
+            response['result'],
+            equal_to({'surname': {'type': 'string'}})
+        )
 
         response = getattr(self, self.project_client_attr).collection.get(
             identity='venues',
@@ -227,7 +239,9 @@ class ProjectClientTestBase__collection(object):
 
     def test_update(self):
         try:
-            getattr(self, self.project_client_attr).collection.remove(identity='venues')
+            getattr(self, self.project_client_attr).collection.remove(
+                identity='venues'
+            )
         except NotFoundError:
             pass
 
@@ -268,13 +282,17 @@ class ProjectClientTestBase__collection(object):
                 'name': 'Venues'
             }
         )
-        response = getattr(self, self.project_client_attr).collection.remove(identity='venues')
+        response = getattr(self, self.project_client_attr).collection.remove(
+            identity='venues'
+        )
         assert_that(response, equal_to(None))
 
 
-class SessionProjectClientTest__collection(DeformSessionProjectClientTestCaseMixin,
-                                           ProjectClientTestBase__collection,
-                                           TestCase):
+class SessionProjectClientTest__collection(
+    DeformSessionProjectClientTestCaseMixin,
+    ProjectClientTestBase__collection,
+    TestCase
+):
     project_client_attr = 'deform_session_project_client'
 
 

@@ -1,15 +1,11 @@
 # -*- coding: utf-8 -*-
 from hamcrest import (
     assert_that,
-    not_none,
-    equal_to,
     instance_of,
     calling,
     raises,
     starts_with,
     has_entry,
-    is_not,
-    empty
 )
 import responses
 
@@ -150,7 +146,10 @@ class ClientTest__auth(DeformClientTestCaseMixin, TestCase):
                 auth_type='token',
                 auth_key='test'
             ),
-            raises(ValueError, '^You should provide project_id for token authentication$')
+            raises(
+                ValueError,
+                '^You should provide project_id for token authentication$'
+            )
         )
 
     def test_auth_by_token_with_project_id(self):

@@ -1,19 +1,10 @@
 # -*- coding: utf-8 -*-
 from hamcrest import (
     assert_that,
-    not_none,
     equal_to,
-    instance_of,
-    calling,
-    raises,
-    starts_with,
     has_entry,
-    has_entries,
     is_not,
-    empty
 )
-
-from pydeform.exceptions import NotFoundError
 
 from testutils import (
     TestCase,
@@ -30,7 +21,10 @@ class ProjectClientTestBase__collections(object):
 
     def test_find_is_paginatable(self):
         assert_that(
-            getattr(self, self.project_client_attr).collections.find.is_paginatable,
+            getattr(
+                self,
+                self.project_client_attr
+            ).collections.find.is_paginatable,
             equal_to(True)
         )
 
@@ -38,7 +32,7 @@ class ProjectClientTestBase__collections(object):
         response = getattr(self, self.project_client_attr).collections.find()
         response = self.convert_generator_to_list(response)
         users_collection = [i for i in response if i['_id'] == '_users']
-        assert_that(response, is_not(equal_to([])))
+        assert_that(users_collection, is_not(equal_to([])))
 
     def test_find__filter(self):
         response = getattr(self, self.project_client_attr).collections.find(
@@ -77,7 +71,9 @@ class ProjectClientTestBase__collections(object):
 
     def test_count(self):
         response = getattr(self, self.project_client_attr).collections.count()
-        expected = getattr(self, self.project_client_attr).collections.find(per_page=1)['total']
+        expected = getattr(self, self.project_client_attr).collections.find(
+            per_page=1
+        )['total']
         assert_that(response, equal_to(expected))
 
     def test_count__filter(self):
@@ -95,13 +91,17 @@ class ProjectClientTestBase__collections(object):
         assert_that(response, equal_to(1))
 
 
-class SessionProjectClientTest__collections(DeformSessionProjectClientTestCaseMixin,
-                                            ProjectClientTestBase__collections,
-                                            TestCase):
+class SessionProjectClientTest__collections(
+    DeformSessionProjectClientTestCaseMixin,
+    ProjectClientTestBase__collections,
+    TestCase
+):
     project_client_attr = 'deform_session_project_client'
 
 
-class TokenProjectClientTest__collections(DeformTokenProjectClientTestCaseMixin,
-                                          ProjectClientTestBase__collections,
-                                          TestCase):
+class TokenProjectClientTest__collections(
+    DeformTokenProjectClientTestCaseMixin,
+    ProjectClientTestBase__collections,
+    TestCase
+):
     project_client_attr = 'deform_token_project_client'

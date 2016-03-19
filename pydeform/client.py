@@ -2,13 +2,11 @@
 import requests
 
 from pydeform.auth import (
-    get_session_id,
     get_session_http_auth_header,
     get_token_http_auth_header,
 )
 from pydeform.utils import (
     get_base_uri,
-    uri_join,
 )
 from pydeform.resources import (
     CurrentProjectInfoResource,
@@ -62,7 +60,8 @@ class Client(object):
             )
         elif auth_type == 'token':
             if not project_id:
-                raise ValueError('You should provide project_id for token authentication')
+                msg = 'You should provide project_id for token authentication'
+                raise ValueError(msg)
             return ProjectClient(
                 base_uri=get_base_uri(
                     project=project_id,

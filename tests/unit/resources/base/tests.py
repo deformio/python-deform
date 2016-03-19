@@ -4,17 +4,14 @@ import types
 
 from hamcrest import (
     assert_that,
-    not_none,
     equal_to,
     instance_of,
     calling,
     raises,
-    starts_with,
     has_entry,
     has_entries,
 )
 import responses
-from mock import Mock
 
 from pydeform.utils import (
     uri_join,
@@ -144,7 +141,10 @@ class TestResourceMethodBase__get_context(TestCase):
             }
             uri_params_order = ['collection', 'identity']
 
-        instance = self.get_instance(ResourceMethod, path=['{collection}', '{identity}'])
+        instance = self.get_instance(
+            ResourceMethod,
+            path=['{collection}', '{identity}']
+        )
         assert_that(
             instance.get_context({
                 'identity': 100,
@@ -154,7 +154,10 @@ class TestResourceMethodBase__get_context(TestCase):
         )
 
         # let's change the order
-        instance = self.get_instance(ResourceMethod, path=['{identity}', '{collection}'])
+        instance = self.get_instance(
+            ResourceMethod,
+            path=['{identity}', '{collection}']
+        )
         assert_that(
             instance.get_context({
                 'identity': 100,
@@ -224,7 +227,9 @@ class TestResourceMethodBase__get_context(TestCase):
         data = {
             'user': {
                 'name': 'gena',
-                'avatar': open(os.path.join(self.CONFIG['FILES_PATH'], '1.txt'))
+                'avatar': open(
+                    os.path.join(self.CONFIG['FILES_PATH'], '1.txt')
+                )
             }
         }
         expected = flatten(data)
@@ -235,7 +240,6 @@ class TestResourceMethodBase__get_context(TestCase):
             }),
             has_entry('files', expected)
         )
-
 
 
 class TestResourceMethodBase__call(TestCase):
@@ -255,26 +259,6 @@ class TestResourceMethodBase__call(TestCase):
             request_defaults=self.request_defaults
         )
         return instance
-
-    @responses.activate
-    def test_should_raise_error_if_required_param_not_sent(self):
-        class ResourceMethod(ResourceMethodBase):
-            method = 'get'
-            params = {
-                'name': {
-                    'dest': 'query_params'
-                },
-                'surname': {
-                    'dest': 'query_params'
-                }
-            }
-            params_required = ['surname']
-
-        instance = self.get_instance(ResourceMethod)
-        assert_that(
-            calling(instance).with_args(name='gena'),
-            raises(ValueError, '^surname is required parameter$')
-        )
 
     @responses.activate
     def test_should_raise_error_if_required_param_not_sent(self):
@@ -393,7 +377,7 @@ class TestResourceMethodBase__call(TestCase):
         )
 
     @responses.activate
-    def test_should_return_page_if_paginatable_and_pagination_param_has_been_sent(self):
+    def test_should_return_page_if_paginatable_and_pagination_param_sent(self):
         class ResourceMethod(ResourceMethodBase):
             method = 'get'
             params = {
