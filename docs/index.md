@@ -5,6 +5,8 @@ This documentation contains all the information you need
 to get started using Deform with Python. You can find Deform's
 general documentation [here](http://deformio.github.io/docs/).
 
+[Source repository on Github](https://github.com/deformio/python-deform).
+
 Start by installing python client from pip:
 
 ```

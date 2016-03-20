@@ -21,4 +21,4 @@ script:
     - tox -e $TOX_ENV
 
 after_success:
-    - invoke deploy_docs
+    - invoke deploy-docs

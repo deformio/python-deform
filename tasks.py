@@ -21,7 +21,7 @@ API_REFERENCE_CONFIG = {
 }
 
 
-@task
+@task(name='deploy-docs')
 def deploy_docs():
     """
     Based on https://gist.github.com/domenic/ec8b0fc8ab45f39403dd

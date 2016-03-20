@@ -1,4 +1,6 @@
-Python client for [Deform.io](https://deform.io)
+Python client for [Deform.io](https://deform.io).
+
+[Client documentation](http://deformio.github.io/python-deform/).
 
 ## Tests
 
