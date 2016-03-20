@@ -1,0 +1,294 @@
+{
+    "docs": [
+        {
+            "location": "/", 
+            "text": "Deform.io python client Documentation\n\n\n\nDeform.io\n is a simple database as a service.\nThis documentation contains all the information you need\nto get started using Deform with Python. You can find Deform's\ngeneral documentation \nhere\n.\n\n\nSource repository on Github\n.\n\n\nStart by installing python client from pip:\n\n\n$ pip install python-deform\n\n\n\n\nLet's use the client:\n\n\nfrom pydeform import Client\n\nclient = Client('deform.io')", 
+            "title": "Home"
+        }, 
+        {
+            "location": "/api/client/", 
+            "text": "Client\n\n\nDeform.io python client class.\n\n\nParameters:\n\n\n\n\nhost\n - HTTP server host. E.g. \ndeform.io\n.\n\n\nport\n - HTTP server port. Default is \nNone\n.\n\n\nsecure\n - if \nTrue\n client will make secure request via \nhttps\n.\n   Default is \nTrue\n.\n\n\nrequests_session\n - python requests' \nSession\n\n   instance. Default is \nNone\n.\n\n\nrequest_defaults\n - python requests' \nrequest\n\n   defaults. Default is \nNone\n.\n\n\napi_base_path\n - HTTP server's api uri base path. Default is \n/api/\n.\n\n\n\n\nExample:\n\n\nclient = Client(host='deform.io')\n\n\n\n\nClient.\nauth\n()\n\n\nCreates authenticated client.\n\n\nParameters:\n\n\n\n\nauth_type\n - Authentication type. Use \nsession\n for auth\n  by session key. Use \ntoken\n for auth by token.\n\n\nauth_key\n - Authentication \nsession key\n or \ntoken\n.\n\n\nproject_id\n - Project identifier. Must be provided for\n  \ntoken\n authentication. Default is \nNone\n.\n\n\n\n\nReturns:\n\n\n\n\nInstance of \nSessionAuthClient\n if\n  \nauth_type\n is \nsession\n.\n\n\nInstance of \nProjectClient\n if\n  \nauth_type\n is \ntoken\n\n\n\n\nRaises:\n\n\n\n\nValueError: if \nproject_id\n parameter was not provided\n\n\n\n\nExamples:\n\n\nFor auth with \nsession\n you should obtain session key by\n\nClient.user.login\n providing\nyour account's email and password:\n\n\nclient = Client(host='deform.io')\nsession_client = client.auth(\n    'session',\n    client.user.login('email@example.com', 'password'),\n)\nprint session_client\n\npydeform.client.SessionAuthClient object at 0x10c585650\n\n\n\n\n\nAuthentication with \ntoken\n example:\n\n\nclient = Client(host='deform.io')\nsession_client = client.auth(\n  'token',\n  auth_key='token-value',\n  project_id='some-project',\n)\nprint session_client\n\npydeform.client.ProjectClient object at 0x11c585650\n\n\n\n\n\nClient.\nuser\n\n\nNon-auth user manipulation object.\n\n\nClient.user.\ncreate\n()\n\n\nCreates user.\n\n\nParameters:\n\n\n\n\npassword\n - User password (required).\n\n\nemail\n - User email (required).\n\n\n\n\nClient.user.\nlogin\n()\n\n\nLogin with email and password.\n\n\nReturns:\n    Session id\n\n\nParameters:\n\n\n\n\npassword\n - User password (required).\n\n\nemail\n - User email (required).\n\n\n\n\nClient.user.\nconfirm\n()\n\n\nEmail confirmation method.\n\n\nReturns:\n    Session id\n\n\nParameters:\n\n\n\n\ncode\n - Email confirmation code (required).\n\n\n\n\nSessionAuthClient\n\n\nSession auth client.\n\n\nYou should not initalize this client manually.\nUse \nClient.auth\n method with \nsession\n authentication.\n\n\nSessionAuthClient.\nuse_project\n()\n\n\nCreates an instance of \nProjectClient\n,\nproviding session authentication.\n\n\nParameters:\n\n\n\n\nproject_id\n - project identifier.\n\n\n\n\nReturns:\n\n\nInstance of \nProjectClient\n with\nsession authentication.\n\n\nExample:\n\n\nclient = Client('deform.io')\nsession_client = client.auth(\n    'session',\n    client.user.login('email@example.com', 'password')\n)\nsession_client.use_project('some-project-id')\n\n\n\n\nSessionAuthClient.\nproject\n\n\nOne project manipulation object\n\n\nSessionAuthClient.project.\ncreate\n()\n\n\nParameters:\n\n\n\n\ndata\n - Data (required).\n\n\nproperty\n - Work with specified property.\n\n\n\n\nSessionAuthClient.project.\nsave\n()\n\n\nParameters:\n\n\n\n\ndata\n - Data (required).\n\n\nproperty\n - Work with specified property.\n\n\nidentity\n - Identity.\n\n\n\n\nSessionAuthClient.project.\nget\n()\n\n\nParameters:\n\n\n\n\nidentity\n - Identity (required).\n\n\nproperty\n - Work with specified property.\n\n\n\n\nSessionAuthClient.\nprojects\n\n\nMany projects manipulation object\n\n\nSessionAuthClient.projects.\ncount\n()\n\n\nParameters:\n\n\n\n\nfilter\n - Filter query.\n\n\ntext\n - Full text search value.\n\n\n\n\nSessionAuthClient.projects.\nfind\n()\n\n\nParameters:\n\n\n\n\nfilter\n - Filter query.\n\n\ntext\n - Full text search value.\n\n\nper_page\n - None.\n\n\npage\n - None.\n\n\nsort\n - None.\n\n\n\n\nSessionAuthClient.\nuser\n\n\nAuthenticated by session user manipulation object\n\n\nSessionAuthClient.user.\nlogout\n()\n\n\nSessionAuthClient.user.\nupdate\n()\n\n\nParameters:\n\n\n\n\ndata\n - Data (required).\n\n\n\n\nSessionAuthClient.user.\nget\n()\n\n\nProjectClient\n\n\nProject client.\n\n\nYou should not initalize this client manually.\nUse \nClient.auth\n method with \ntoken\n authentication or\n\nSessionAuthClient.use_project\n method.\n\n\nProjectClient.\ncollection\n\n\nOne collection manupulation object\n\n\nProjectClient.collection.\ncreate\n()\n\n\nParameters:\n\n\n\n\ndata\n - Data (required).\n\n\nproperty\n - Work with specified property.\n\n\n\n\nProjectClient.collection.\nsave\n()\n\n\nParameters:\n\n\n\n\ndata\n - Data (required).\n\n\nproperty\n - Work with specified property.\n\n\nidentity\n - Identity.\n\n\n\n\nProjectClient.collection.\nupdate\n()\n\n\nParameters:\n\n\n\n\ndata\n - Data (required).\n\n\nidentity\n - Identity (required).\n\n\nproperty\n - Work with specified property.\n\n\n\n\nProjectClient.collection.\nremove\n()\n\n\nParameters:\n\n\n\n\nidentity\n - Identity (required).\n\n\nproperty\n - Work with specified property.\n\n\n\n\nProjectClient.collection.\nget\n()\n\n\nParameters:\n\n\n\n\nidentity\n - Identity (required).\n\n\nproperty\n - Work with specified property.\n\n\n\n\nProjectClient.\ncollections\n\n\nMany collections manupulation object\n\n\nProjectClient.collections.\ncount\n()\n\n\nParameters:\n\n\n\n\nfilter\n - Filter query.\n\n\ntext\n - Full text search value.\n\n\n\n\nProjectClient.collections.\nfind\n()\n\n\nParameters:\n\n\n\n\nfilter\n - Filter query.\n\n\ntext\n - Full text search value.\n\n\nper_page\n - None.\n\n\npage\n - None.\n\n\nsort\n - None.\n\n\n\n\nProjectClient.\ndocument\n\n\nOne document manupulation object\n\n\nProjectClient.document.\nget\n()\n\n\nParameters:\n\n\n\n\ncollection\n - Collection (required).\n\n\nidentity\n - Identity (required).\n\n\nfields\n - Return specified fields only.\n\n\nproperty\n - Work with specified property.\n\n\nfields_exclude\n - Return all but the excluded field.\n\n\n\n\nProjectClient.document.\ncreate\n()\n\n\nParameters:\n\n\n\n\ndata\n - Data (required).\n\n\ncollection\n - Collection (required).\n\n\nfields\n - Return specified fields only.\n\n\nproperty\n - Work with specified property.\n\n\nfields_exclude\n - Return all but the excluded field.\n\n\n\n\nProjectClient.document.\nupdate\n()\n\n\nParameters:\n\n\n\n\ncollection\n - Collection (required).\n\n\ndata\n - Data (required).\n\n\nidentity\n - Identity (required).\n\n\nfields\n - Return specified fields only.\n\n\nfields_exclude\n - Return all but the excluded field.\n\n\nproperty\n - Work with specified property.\n\n\n\n\nProjectClient.document.\nremove\n()\n\n\nParameters:\n\n\n\n\ncollection\n - Collection (required).\n\n\nidentity\n - Identity (required).\n\n\nfields\n - Return specified fields only.\n\n\nproperty\n - Work with specified property.\n\n\nfields_exclude\n - Return all but the excluded field.\n\n\n\n\nProjectClient.document.\nsave\n()\n\n\nParameters:\n\n\n\n\ncollection\n - Collection (required).\n\n\ndata\n - Data (required).\n\n\nfields\n - Return specified fields only.\n\n\nfields_exclude\n - Return all but the excluded field.\n\n\nproperty\n - Work with specified property.\n\n\nidentity\n - Identity.\n\n\n\n\nProjectClient.document.\nget_file\n()\n\n\nParameters:\n\n\n\n\ncollection\n - Collection (required).\n\n\nidentity\n - Identity (required).\n\n\nfields\n - Return specified fields only.\n\n\nproperty\n - Work with specified property.\n\n\nfields_exclude\n - Return all but the excluded field.\n\n\n\n\nProjectClient.\ndocuments\n\n\nMany documents manupulation object\n\n\nProjectClient.documents.\ncount\n()\n\n\nParameters:\n\n\n\n\ncollection\n - Collection (required).\n\n\nfilter\n - Filter query.\n\n\ntext\n - Full text search value.\n\n\nfields_exclude\n - Return all but the excluded field.\n\n\nfields\n - Return specified fields only.\n\n\n\n\nProjectClient.documents.\nupdate\n()\n\n\nParameters:\n\n\n\n\noperation\n - Update operation (required).\n\n\ncollection\n - Collection (required).\n\n\nfilter\n - Filter query.\n\n\nfields\n - Return specified fields only.\n\n\nfields_exclude\n - Return all but the excluded field.\n\n\n\n\nProjectClient.documents.\nfind\n()\n\n\nParameters:\n\n\n\n\ncollection\n - Collection (required).\n\n\nsort\n - None.\n\n\ntext\n - Full text search value.\n\n\nfields_exclude\n - Return all but the excluded field.\n\n\nfilter\n - Filter query.\n\n\nfields\n - Return specified fields only.\n\n\nper_page\n - None.\n\n\npage\n - None.\n\n\n\n\nProjectClient.documents.\nremove\n()\n\n\nParameters:\n\n\n\n\ncollection\n - Collection (required).\n\n\nfilter\n - Filter query.\n\n\nfields\n - Return specified fields only.\n\n\nfields_exclude\n - Return all but the excluded field.\n\n\n\n\nProjectClient.documents.\nupsert\n()\n\n\nParameters:\n\n\n\n\noperation\n - Update operation (required).\n\n\ncollection\n - Collection (required).\n\n\nfilter\n - Filter query.\n\n\nfields\n - Return specified fields only.\n\n\nfields_exclude\n - Return all but the excluded field.\n\n\n\n\nProjectClient.\ninfo\n\n\nCurrent project manupulation object\n\n\nProjectClient.info.\nget\n()", 
+            "title": "Client"
+        }, 
+        {
+            "location": "/api/client/#client", 
+            "text": "Deform.io python client class.  Parameters:   host  - HTTP server host. E.g.  deform.io .  port  - HTTP server port. Default is  None .  secure  - if  True  client will make secure request via  https .\n   Default is  True .  requests_session  - python requests'  Session \n   instance. Default is  None .  request_defaults  - python requests'  request \n   defaults. Default is  None .  api_base_path  - HTTP server's api uri base path. Default is  /api/ .   Example:  client = Client(host='deform.io')", 
+            "title": "Client"
+        }, 
+        {
+            "location": "/api/client/#clientauth", 
+            "text": "Creates authenticated client.  Parameters:   auth_type  - Authentication type. Use  session  for auth\n  by session key. Use  token  for auth by token.  auth_key  - Authentication  session key  or  token .  project_id  - Project identifier. Must be provided for\n   token  authentication. Default is  None .   Returns:   Instance of  SessionAuthClient  if\n   auth_type  is  session .  Instance of  ProjectClient  if\n   auth_type  is  token   Raises:   ValueError: if  project_id  parameter was not provided   Examples:  For auth with  session  you should obtain session key by Client.user.login  providing\nyour account's email and password:  client = Client(host='deform.io')\nsession_client = client.auth(\n    'session',\n    client.user.login('email@example.com', 'password'),\n)\nprint session_client pydeform.client.SessionAuthClient object at 0x10c585650   Authentication with  token  example:  client = Client(host='deform.io')\nsession_client = client.auth(\n  'token',\n  auth_key='token-value',\n  project_id='some-project',\n)\nprint session_client pydeform.client.ProjectClient object at 0x11c585650", 
+            "title": "Client.auth()"
+        }, 
+        {
+            "location": "/api/client/#clientuser", 
+            "text": "Non-auth user manipulation object.", 
+            "title": "Client.user"
+        }, 
+        {
+            "location": "/api/client/#clientusercreate", 
+            "text": "Creates user.  Parameters:   password  - User password (required).  email  - User email (required).", 
+            "title": "Client.user.create()"
+        }, 
+        {
+            "location": "/api/client/#clientuserlogin", 
+            "text": "Login with email and password.  Returns:\n    Session id  Parameters:   password  - User password (required).  email  - User email (required).", 
+            "title": "Client.user.login()"
+        }, 
+        {
+            "location": "/api/client/#clientuserconfirm", 
+            "text": "Email confirmation method.  Returns:\n    Session id  Parameters:   code  - Email confirmation code (required).", 
+            "title": "Client.user.confirm()"
+        }, 
+        {
+            "location": "/api/client/#sessionauthclient", 
+            "text": "Session auth client.  You should not initalize this client manually.\nUse  Client.auth  method with  session  authentication.", 
+            "title": "SessionAuthClient"
+        }, 
+        {
+            "location": "/api/client/#sessionauthclientuse_project", 
+            "text": "Creates an instance of  ProjectClient ,\nproviding session authentication.  Parameters:   project_id  - project identifier.   Returns:  Instance of  ProjectClient  with\nsession authentication.  Example:  client = Client('deform.io')\nsession_client = client.auth(\n    'session',\n    client.user.login('email@example.com', 'password')\n)\nsession_client.use_project('some-project-id')", 
+            "title": "SessionAuthClient.use_project()"
+        }, 
+        {
+            "location": "/api/client/#sessionauthclientproject", 
+            "text": "One project manipulation object", 
+            "title": "SessionAuthClient.project"
+        }, 
+        {
+            "location": "/api/client/#sessionauthclientprojectcreate", 
+            "text": "Parameters:   data  - Data (required).  property  - Work with specified property.", 
+            "title": "SessionAuthClient.project.create()"
+        }, 
+        {
+            "location": "/api/client/#sessionauthclientprojectsave", 
+            "text": "Parameters:   data  - Data (required).  property  - Work with specified property.  identity  - Identity.", 
+            "title": "SessionAuthClient.project.save()"
+        }, 
+        {
+            "location": "/api/client/#sessionauthclientprojectget", 
+            "text": "Parameters:   identity  - Identity (required).  property  - Work with specified property.", 
+            "title": "SessionAuthClient.project.get()"
+        }, 
+        {
+            "location": "/api/client/#sessionauthclientprojects", 
+            "text": "Many projects manipulation object", 
+            "title": "SessionAuthClient.projects"
+        }, 
+        {
+            "location": "/api/client/#sessionauthclientprojectscount", 
+            "text": "Parameters:   filter  - Filter query.  text  - Full text search value.", 
+            "title": "SessionAuthClient.projects.count()"
+        }, 
+        {
+            "location": "/api/client/#sessionauthclientprojectsfind", 
+            "text": "Parameters:   filter  - Filter query.  text  - Full text search value.  per_page  - None.  page  - None.  sort  - None.", 
+            "title": "SessionAuthClient.projects.find()"
+        }, 
+        {
+            "location": "/api/client/#sessionauthclientuser", 
+            "text": "Authenticated by session user manipulation object", 
+            "title": "SessionAuthClient.user"
+        }, 
+        {
+            "location": "/api/client/#sessionauthclientuserlogout", 
+            "text": "", 
+            "title": "SessionAuthClient.user.logout()"
+        }, 
+        {
+            "location": "/api/client/#sessionauthclientuserupdate", 
+            "text": "Parameters:   data  - Data (required).", 
+            "title": "SessionAuthClient.user.update()"
+        }, 
+        {
+            "location": "/api/client/#sessionauthclientuserget", 
+            "text": "", 
+            "title": "SessionAuthClient.user.get()"
+        }, 
+        {
+            "location": "/api/client/#projectclient", 
+            "text": "Project client.  You should not initalize this client manually.\nUse  Client.auth  method with  token  authentication or SessionAuthClient.use_project  method.", 
+            "title": "ProjectClient"
+        }, 
+        {
+            "location": "/api/client/#projectclientcollection", 
+            "text": "One collection manupulation object", 
+            "title": "ProjectClient.collection"
+        }, 
+        {
+            "location": "/api/client/#projectclientcollectioncreate", 
+            "text": "Parameters:   data  - Data (required).  property  - Work with specified property.", 
+            "title": "ProjectClient.collection.create()"
+        }, 
+        {
+            "location": "/api/client/#projectclientcollectionsave", 
+            "text": "Parameters:   data  - Data (required).  property  - Work with specified property.  identity  - Identity.", 
+            "title": "ProjectClient.collection.save()"
+        }, 
+        {
+            "location": "/api/client/#projectclientcollectionupdate", 
+            "text": "Parameters:   data  - Data (required).  identity  - Identity (required).  property  - Work with specified property.", 
+            "title": "ProjectClient.collection.update()"
+        }, 
+        {
+            "location": "/api/client/#projectclientcollectionremove", 
+            "text": "Parameters:   identity  - Identity (required).  property  - Work with specified property.", 
+            "title": "ProjectClient.collection.remove()"
+        }, 
+        {
+            "location": "/api/client/#projectclientcollectionget", 
+            "text": "Parameters:   identity  - Identity (required).  property  - Work with specified property.", 
+            "title": "ProjectClient.collection.get()"
+        }, 
+        {
+            "location": "/api/client/#projectclientcollections", 
+            "text": "Many collections manupulation object", 
+            "title": "ProjectClient.collections"
+        }, 
+        {
+            "location": "/api/client/#projectclientcollectionscount", 
+            "text": "Parameters:   filter  - Filter query.  text  - Full text search value.", 
+            "title": "ProjectClient.collections.count()"
+        }, 
+        {
+            "location": "/api/client/#projectclientcollectionsfind", 
+            "text": "Parameters:   filter  - Filter query.  text  - Full text search value.  per_page  - None.  page  - None.  sort  - None.", 
+            "title": "ProjectClient.collections.find()"
+        }, 
+        {
+            "location": "/api/client/#projectclientdocument", 
+            "text": "One document manupulation object", 
+            "title": "ProjectClient.document"
+        }, 
+        {
+            "location": "/api/client/#projectclientdocumentget", 
+            "text": "Parameters:   collection  - Collection (required).  identity  - Identity (required).  fields  - Return specified fields only.  property  - Work with specified property.  fields_exclude  - Return all but the excluded field.", 
+            "title": "ProjectClient.document.get()"
+        }, 
+        {
+            "location": "/api/client/#projectclientdocumentcreate", 
+            "text": "Parameters:   data  - Data (required).  collection  - Collection (required).  fields  - Return specified fields only.  property  - Work with specified property.  fields_exclude  - Return all but the excluded field.", 
+            "title": "ProjectClient.document.create()"
+        }, 
+        {
+            "location": "/api/client/#projectclientdocumentupdate", 
+            "text": "Parameters:   collection  - Collection (required).  data  - Data (required).  identity  - Identity (required).  fields  - Return specified fields only.  fields_exclude  - Return all but the excluded field.  property  - Work with specified property.", 
+            "title": "ProjectClient.document.update()"
+        }, 
+        {
+            "location": "/api/client/#projectclientdocumentremove", 
+            "text": "Parameters:   collection  - Collection (required).  identity  - Identity (required).  fields  - Return specified fields only.  property  - Work with specified property.  fields_exclude  - Return all but the excluded field.", 
+            "title": "ProjectClient.document.remove()"
+        }, 
+        {
+            "location": "/api/client/#projectclientdocumentsave", 
+            "text": "Parameters:   collection  - Collection (required).  data  - Data (required).  fields  - Return specified fields only.  fields_exclude  - Return all but the excluded field.  property  - Work with specified property.  identity  - Identity.", 
+            "title": "ProjectClient.document.save()"
+        }, 
+        {
+            "location": "/api/client/#projectclientdocumentget_file", 
+            "text": "Parameters:   collection  - Collection (required).  identity  - Identity (required).  fields  - Return specified fields only.  property  - Work with specified property.  fields_exclude  - Return all but the excluded field.", 
+            "title": "ProjectClient.document.get_file()"
+        }, 
+        {
+            "location": "/api/client/#projectclientdocuments", 
+            "text": "Many documents manupulation object", 
+            "title": "ProjectClient.documents"
+        }, 
+        {
+            "location": "/api/client/#projectclientdocumentscount", 
+            "text": "Parameters:   collection  - Collection (required).  filter  - Filter query.  text  - Full text search value.  fields_exclude  - Return all but the excluded field.  fields  - Return specified fields only.", 
+            "title": "ProjectClient.documents.count()"
+        }, 
+        {
+            "location": "/api/client/#projectclientdocumentsupdate", 
+            "text": "Parameters:   operation  - Update operation (required).  collection  - Collection (required).  filter  - Filter query.  fields  - Return specified fields only.  fields_exclude  - Return all but the excluded field.", 
+            "title": "ProjectClient.documents.update()"
+        }, 
+        {
+            "location": "/api/client/#projectclientdocumentsfind", 
+            "text": "Parameters:   collection  - Collection (required).  sort  - None.  text  - Full text search value.  fields_exclude  - Return all but the excluded field.  filter  - Filter query.  fields  - Return specified fields only.  per_page  - None.  page  - None.", 
+            "title": "ProjectClient.documents.find()"
+        }, 
+        {
+            "location": "/api/client/#projectclientdocumentsremove", 
+            "text": "Parameters:   collection  - Collection (required).  filter  - Filter query.  fields  - Return specified fields only.  fields_exclude  - Return all but the excluded field.", 
+            "title": "ProjectClient.documents.remove()"
+        }, 
+        {
+            "location": "/api/client/#projectclientdocumentsupsert", 
+            "text": "Parameters:   operation  - Update operation (required).  collection  - Collection (required).  filter  - Filter query.  fields  - Return specified fields only.  fields_exclude  - Return all but the excluded field.", 
+            "title": "ProjectClient.documents.upsert()"
+        }, 
+        {
+            "location": "/api/client/#projectclientinfo", 
+            "text": "Current project manupulation object", 
+            "title": "ProjectClient.info"
+        }, 
+        {
+            "location": "/api/client/#projectclientinfoget", 
+            "text": "", 
+            "title": "ProjectClient.info.get()"
+        }, 
+        {
+            "location": "/api/exceptions/", 
+            "text": "DeformException\n\n\nBases: \nException\n\n\nBase Deform.io exception.\n\n\nCould be used for catching all Deform.io specific exception.\n\n\ntry:\n    deform_client.collections.find()\nexcept DeformException as e:\n    print 'Deform.io specific exception raised'\n\n\n\n\nHTTPError\n\n\nBases: \nDeformException\n\n\nBase exception for errors produced at the HTTP layer.\n\n\nThese types of exceptions containes additional parameters:\n\n\n\n\nrequests_error\n - original \nrequests exception\n.\n\n\nerrors\n - list of errors.\n\n\n\n\nAuthError\n\n\nBases: \nHTTPError\n\n\nErrors due to invalid authentication credentials.\n\n\nConflictError\n\n\nBases: \nHTTPError\n\n\nConnectTimeout\n\n\nBases: \nConnectionError\n, \nTimeout\n\n\nThe request timed out while trying to connect to the remote server.\nRequests that produced this error are safe to retry.\n\n\nConnectionError\n\n\nBases: \nHTTPError\n\n\nA Connection error occurred.\n\n\nForbiddenError\n\n\nBases: \nHTTPError\n\n\nNotFoundError\n\n\nBases: \nHTTPError\n\n\nReadTimeout\n\n\nBases: \nTimeout\n\n\nThe server did not send any data in the allotted amount of time.\n\n\nTimeout\n\n\nBases: \nHTTPError\n\n\nThe request timed out.\nCatching this error will catch both\n\nConnectTimeout\n and\n\nReadTimeout\n errors.\n\n\nValidationError\n\n\nBases: \nHTTPError", 
+            "title": "Exceptions"
+        }, 
+        {
+            "location": "/api/exceptions/#deformexception", 
+            "text": "Bases:  Exception  Base Deform.io exception.  Could be used for catching all Deform.io specific exception.  try:\n    deform_client.collections.find()\nexcept DeformException as e:\n    print 'Deform.io specific exception raised'", 
+            "title": "DeformException"
+        }, 
+        {
+            "location": "/api/exceptions/#httperror", 
+            "text": "Bases:  DeformException  Base exception for errors produced at the HTTP layer.  These types of exceptions containes additional parameters:   requests_error  - original  requests exception .  errors  - list of errors.", 
+            "title": "HTTPError"
+        }, 
+        {
+            "location": "/api/exceptions/#autherror", 
+            "text": "Bases:  HTTPError  Errors due to invalid authentication credentials.", 
+            "title": "AuthError"
+        }, 
+        {
+            "location": "/api/exceptions/#conflicterror", 
+            "text": "Bases:  HTTPError", 
+            "title": "ConflictError"
+        }, 
+        {
+            "location": "/api/exceptions/#connecttimeout", 
+            "text": "Bases:  ConnectionError ,  Timeout  The request timed out while trying to connect to the remote server.\nRequests that produced this error are safe to retry.", 
+            "title": "ConnectTimeout"
+        }, 
+        {
+            "location": "/api/exceptions/#connectionerror", 
+            "text": "Bases:  HTTPError  A Connection error occurred.", 
+            "title": "ConnectionError"
+        }, 
+        {
+            "location": "/api/exceptions/#forbiddenerror", 
+            "text": "Bases:  HTTPError", 
+            "title": "ForbiddenError"
+        }, 
+        {
+            "location": "/api/exceptions/#notfounderror", 
+            "text": "Bases:  HTTPError", 
+            "title": "NotFoundError"
+        }, 
+        {
+            "location": "/api/exceptions/#readtimeout", 
+            "text": "Bases:  Timeout  The server did not send any data in the allotted amount of time.", 
+            "title": "ReadTimeout"
+        }, 
+        {
+            "location": "/api/exceptions/#timeout", 
+            "text": "Bases:  HTTPError  The request timed out.\nCatching this error will catch both ConnectTimeout  and ReadTimeout  errors.", 
+            "title": "Timeout"
+        }, 
+        {
+            "location": "/api/exceptions/#validationerror", 
+            "text": "Bases:  HTTPError", 
+            "title": "ValidationError"
+        }
+    ]
+}
