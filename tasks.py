@@ -1,4 +1,5 @@
 import os
+from multiprocessing import Process
 
 from invoke import run, task, util
 
@@ -43,24 +44,28 @@ def deploy_docs():
         )
 
 
+@task(name='serve-docs')
+def autobuild_docs():
+    generate_api_reference()
+
+    target_cmd = (
+        'watchmedo shell-command -R -c '
+        '"invoke generate-api-reference" pydeform docs'
+    )
+    p = Process(target=run, args=(target_cmd,))
+    p.daemon = True
+    p.start()
+
+    run('mkdocs serve')
+
+
 @task(name='generate-api-reference')
 def generate_api_reference():
-    pass
-    # config = {
-    #     'host': os.environ['DEFORM_HOST'],
-    #     'secure': os.environ['DEFORM_SECURE']
-    # }
-    #
-    # from pydeform import Client
-    # client = Client(
-    #     host=config['host'],
-    #     secure=config['secure']
-    # )
-    # session_client = client.auth('session', 'noop')
-    # project_client = session_client.use_project('noop')
-    # print session_client.user.get.__doc__
+    from docs.generator import generate_api_reference
+    print 'Generating API reference'
+    generate_api_reference()
 
 
-@task(name='serve-docs')
-def serve_docs():
-    run('mkdocs serve')
+# @task(name='serve-docs')
+# def serve_docs():
+#     run('mkdocs serve')

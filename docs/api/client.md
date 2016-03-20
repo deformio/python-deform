@@ -1,1 +1,0 @@
-polina *sosisa*

@@ -5,12 +5,30 @@ from requests.exceptions import ReadTimeout as RequestsReadTimeout
 
 
 class DeformException(Exception):
-    """Base Deform.io exception"""
+    """Base Deform.io exception.
+
+    Could be used for catching all Deform.io specific exception.
+
+    ```python
+    try:
+        deform_client.collections.find()
+    except DeformException as e:
+        print 'Deform.io specific exception raised'
+    ```
+    """
     message = 'Deform error'
 
 
 class HTTPError(DeformException):
-    """Errors produced at the HTTP layer."""
+    """Base exception for errors produced at the HTTP layer.
+
+    These types of exceptions containes additional parameters:
+
+    * `requests_error` - original [requests exception][requests-exception].
+    * `errors` - list of errors.
+
+    [requests-exception]: http://docs.python-requests.org/en/master/api/#exceptions
+    """
     message = 'Http error'
     errors = []
 
@@ -65,8 +83,8 @@ class ConnectionError(HTTPError):
 class Timeout(HTTPError):
     """The request timed out.
     Catching this error will catch both
-    :exc:`~pydeform.exceptions.ConnectTimeout` and
-    :exc:`~pydeform.exceptions.ReadTimeout` errors.
+    [ConnectTimeout](#connecttimeout) and
+    [ReadTimeout](#readtimeout) errors.
     """
     message = 'Timeout'
 

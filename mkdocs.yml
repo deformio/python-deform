@@ -3,8 +3,12 @@ theme: readthedocs
 markdown_extensions:
     - markdown_include.include
     - admonition
+    - toc:
+        anchorlink: True
 pages:
 - Home: index.md
 - Installation: installation.md
 - Tutorial: tutorial.md
-- API Reference: api/index.md
+- API Reference:
+    - api/client.md
+    - api/exceptions.md
