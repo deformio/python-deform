@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import datetime
-import urllib
 from copy import deepcopy
 
 from requests.exceptions import RequestException
@@ -10,6 +9,7 @@ from pydeform.exceptions import (
     STATUS_CODE_ERROR_MAP,
     HTTPError
 )
+from pydeform.six.moves.urllib.parse import quote_plus
 
 
 def get_base_uri(host,
@@ -38,7 +38,7 @@ def uri_join(*parts):
         base_bit = None
     response = '/'.join(
         [
-            urllib.quote_plus(str(i).strip('/'))
+            quote_plus(str(i).strip('/'))
             for i in parts
         ]
     )

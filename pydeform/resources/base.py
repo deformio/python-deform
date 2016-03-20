@@ -159,9 +159,13 @@ class ResourceMethodBase(object):
                 definitions=params_definitions,
             ),
         }
+        delete_keys = []
         for key, value in context.items():
             if not value:
-                del context[key]
+                delete_keys.append(key)
+        for key in delete_keys:
+            del context[key]
+
         payload = get_payload(
             params_by_destination.get('payload'),
             definitions=params_definitions

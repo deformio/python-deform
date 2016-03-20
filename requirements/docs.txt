@@ -1,3 +1,4 @@
+-r main.txt
 mkdocs==0.15.3
 markdown-include==0.5.1
 invoke==0.12.2

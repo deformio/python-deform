@@ -29,7 +29,7 @@ class HTTPError(DeformException):
 
     [requests-exception]: http://docs.python-requests.org/en/master/api/#exceptions
     """  # noqa
-    message = 'Http error'
+    message = 'HTTP error'
     errors = []
 
     def __init__(self, requests_error):

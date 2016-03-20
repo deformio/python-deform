@@ -90,3 +90,8 @@ Add new tag version for commit:
 Push to master with tags:
 
     $ git push origin master --tags
+
+
+## Todo:
+
+* Python 3 support

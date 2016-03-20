@@ -3,6 +3,7 @@ import datetime
 from collections import defaultdict
 
 from pydeform.exceptions import NotFoundError
+from pydeform.six import PY2
 from pydeform.utils import (
     do_http_request,
     flatten,
@@ -77,6 +78,12 @@ PARAMS_DEFINITIONS = {
     },
 }
 
+if PY2:
+    FILE_TYPE = file
+else:
+    from io import IOBase
+    FILE_TYPE = IOBase
+
 
 def get_params_by_destination(params, definitions):
     response = defaultdict(dict)
@@ -143,7 +150,7 @@ def get_payload(params, definitions):
     if params_has_files:
         final_data = flatten(final_data)
         for key, value in final_data.items():
-            if not isinstance(value, file):
+            if not isinstance(value, FILE_TYPE):
                 final_data[key] = (None, value)
     else:
         final_data = {
@@ -178,7 +185,7 @@ def prepare_payload(data):
             if with_files and not items_with_files:
                 items_with_files = True
         return items_with_files, dict(items)
-    elif isinstance(data, file):
+    elif isinstance(data, FILE_TYPE):
         return True, data
     else:
         return False, data
