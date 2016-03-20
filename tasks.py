@@ -1,5 +1,5 @@
 import os
-from multiprocessing import Process
+import threading
 
 from invoke import run, task, util
 
@@ -27,7 +27,7 @@ def deploy_docs():
     Based on https://gist.github.com/domenic/ec8b0fc8ab45f39403dd
     """
     run('rm -rf ./site/')
-    run('mkdocs build')
+    build_docs()
     with util.cd('./site/'):
         run('git init')
         run('echo ".*pyc" > .gitignore')
@@ -44,15 +44,21 @@ def deploy_docs():
         )
 
 
+@task(name='build-docs')
+def build_docs():
+    generate_api_reference()
+    run('mkdocs build')
+
+
 @task(name='serve-docs')
-def autobuild_docs():
+def serve_docs():
     generate_api_reference()
 
     target_cmd = (
         'watchmedo shell-command -R -c '
         '"invoke generate-api-reference" pydeform docs'
     )
-    p = Process(target=run, args=(target_cmd,))
+    p = threading.Thread(target=run, args=(target_cmd,))
     p.daemon = True
     p.start()
 
@@ -64,8 +70,3 @@ def generate_api_reference():
     from docs.generator import generate_api_reference
     print 'Generating API reference'
     generate_api_reference()
-
-
-# @task(name='serve-docs')
-# def serve_docs():
-#     run('mkdocs serve')

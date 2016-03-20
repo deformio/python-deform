@@ -1,2 +1,2 @@
 [flake8]
-exclude=pydeform/six.py
+exclude=pydeform/six.py,docs/generator.py,site/

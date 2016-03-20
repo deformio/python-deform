@@ -1,4 +1,4 @@
-site_name: Deform python client
+site_name: Deform.io python client
 theme: readthedocs
 markdown_extensions:
     - markdown_include.include
@@ -7,8 +7,6 @@ markdown_extensions:
         anchorlink: True
 pages:
 - Home: index.md
-- Installation: installation.md
-- Tutorial: tutorial.md
 - API Reference:
     - api/client.md
     - api/exceptions.md

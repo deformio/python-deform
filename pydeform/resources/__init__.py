@@ -20,6 +20,7 @@ from pydeform.resources.utils import PARAMS_DEFINITIONS
 
 
 class NonAuthUserResourceCreateMethod(ResourceMethodBase):
+    """Creates user."""
     method = 'post'
     params = {
         'email': PARAMS_DEFINITIONS['login_email'],
@@ -29,6 +30,11 @@ class NonAuthUserResourceCreateMethod(ResourceMethodBase):
 
 
 class NonAuthUserResourceLoginMethod(ResourceMethodBase):
+    """Login with email and password.
+
+    Returns:
+        Session id
+    """
     action = 'login'
     params = {
         'email': PARAMS_DEFINITIONS['login_email'],
@@ -39,6 +45,11 @@ class NonAuthUserResourceLoginMethod(ResourceMethodBase):
 
 
 class NonAuthUserResourceConfirmMethod(ResourceMethodBase):
+    """Email confirmation method.
+
+    Returns:
+        Session id
+    """
     action = 'confirm'
     params = {
         'code': PARAMS_DEFINITIONS['confirm_code'],
@@ -47,6 +58,7 @@ class NonAuthUserResourceConfirmMethod(ResourceMethodBase):
 
 
 class NonAuthUserResource(BaseResource):
+    """Non-auth user manipulation object."""
     path = ['user']
 
     methods = {
@@ -57,6 +69,7 @@ class NonAuthUserResource(BaseResource):
 
 
 class SessionUserResource(BaseResource):
+    """Authenticated by session user manipulation object"""
     path = ['user']
 
     methods = {
@@ -71,6 +84,7 @@ class SessionUserResource(BaseResource):
 
 
 class ProjectListResource(BaseResource):
+    """Many projects manipulation object"""
     path = ['user', 'projects']
 
     methods = {
@@ -80,6 +94,7 @@ class ProjectListResource(BaseResource):
 
 
 class ProjectOneResource(BaseResource):
+    """One project manipulation object"""
     path = ['user', 'projects', '{identity}']
 
     methods = {
@@ -90,6 +105,7 @@ class ProjectOneResource(BaseResource):
 
 
 class CurrentProjectInfoResource(BaseResource):
+    """Current project manupulation object"""
     path = ['info']
 
     methods = {
@@ -98,6 +114,7 @@ class CurrentProjectInfoResource(BaseResource):
 
 
 class CollectionListResource(BaseResource):
+    """Many collections manupulation object"""
     path = ['collections']
 
     methods = {
@@ -107,6 +124,7 @@ class CollectionListResource(BaseResource):
 
 
 class CollectionOneResource(BaseResource):
+    """One collection manupulation object"""
     path = ['collections', '{identity}', '{property}']
 
     methods = {
@@ -135,6 +153,7 @@ class DocumentResourceMixin(object):
 
 
 class DocumentListResource(BaseResource):
+    """Many documents manupulation object"""
     path = ['collections', '{collection}', 'documents']
 
     methods = {
@@ -167,6 +186,7 @@ class DocumentListResource(BaseResource):
 
 
 class DocumentOneResource(BaseResource):
+    """One document manupulation object"""
     path = [
         'collections',
         '{collection}',

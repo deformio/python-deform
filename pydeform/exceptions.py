@@ -28,7 +28,7 @@ class HTTPError(DeformException):
     * `errors` - list of errors.
 
     [requests-exception]: http://docs.python-requests.org/en/master/api/#exceptions
-    """
+    """  # noqa
     message = 'Http error'
     errors = []
 
