@@ -78,8 +78,8 @@ class Client(object):
                 api_base_path=self.api_base_path
             ),
             auth_header=None,
-            requests_session=requests_session,
-            request_defaults=request_defaults
+            requests_session=self.requests_session,
+            request_defaults=self.request_defaults
         )
 
     def auth(self, auth_type, auth_key, project_id=None):
