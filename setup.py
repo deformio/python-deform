@@ -59,6 +59,9 @@ setup(
     description='Python client for Deform.io',
     author='Gennady Chibisov',
     author_email='web-chib@ya.ru',
+    install_requires=[
+        'requests[security]>=2.9.1'
+    ],
     packages=get_packages('pydeform'),
     package_data=get_package_data('pydeform'),
 )

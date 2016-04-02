@@ -83,17 +83,6 @@ print session_client
 Non-auth user manipulation object.
 
 
-### Client.user.**create**()
-
-Creates user.
-
-
-Parameters:
-
-
-* `password` - User password (required).
-* `email` - User email (required).
-
 ### Client.user.**login**()
 
 Login with email and password.
@@ -105,8 +94,19 @@ Returns:
 Parameters:
 
 
-* `password` - User password (required).
 * `email` - User email (required).
+* `password` - User password (required).
+
+### Client.user.**create**()
+
+Creates user.
+
+
+Parameters:
+
+
+* `email` - User email (required).
+* `password` - User password (required).
 
 ### Client.user.**confirm**()
 
@@ -162,6 +162,17 @@ session_client.use_project('some-project-id')
 One project manipulation object
 
 
+### SessionAuthClient.project.**get**()
+
+
+
+
+Parameters:
+
+
+* `identity` - Identity (required).
+* `property` - Work with specified property.
+
 ### SessionAuthClient.project.**create**()
 
 
@@ -182,10 +193,15 @@ Parameters:
 
 
 * `data` - Data (required).
-* `property` - Work with specified property.
 * `identity` - Identity.
+* `property` - Work with specified property.
 
-### SessionAuthClient.project.**get**()
+### SessionAuthClient.**projects**
+
+Many projects manipulation object
+
+
+### SessionAuthClient.projects.**find**()
 
 
 
@@ -193,13 +209,11 @@ Parameters:
 Parameters:
 
 
-* `identity` - Identity (required).
-* `property` - Work with specified property.
-
-### SessionAuthClient.**projects**
-
-Many projects manipulation object
-
+* `sort` - None.
+* `page` - None.
+* `filter` - Filter query.
+* `text` - Full text search value.
+* `per_page` - None.
 
 ### SessionAuthClient.projects.**count**()
 
@@ -212,23 +226,14 @@ Parameters:
 * `filter` - Filter query.
 * `text` - Full text search value.
 
-### SessionAuthClient.projects.**find**()
-
-
-
-
-Parameters:
-
-
-* `filter` - Filter query.
-* `text` - Full text search value.
-* `per_page` - None.
-* `page` - None.
-* `sort` - None.
-
 ### SessionAuthClient.**user**
 
 Authenticated by session user manipulation object
+
+
+### SessionAuthClient.user.**get**()
+
+
 
 
 ### SessionAuthClient.user.**logout**()
@@ -245,11 +250,6 @@ Parameters:
 
 
 * `data` - Data (required).
-
-### SessionAuthClient.user.**get**()
-
-
-
 
 
 
@@ -268,6 +268,17 @@ Use [Client.auth](#clientauth) method with ``token`` authentication or
 
 One collection manupulation object
 
+
+### ProjectClient.collection.**get**()
+
+
+
+
+Parameters:
+
+
+* `identity` - Identity (required).
+* `property` - Work with specified property.
 
 ### ProjectClient.collection.**create**()
 
@@ -289,8 +300,8 @@ Parameters:
 
 
 * `data` - Data (required).
-* `property` - Work with specified property.
 * `identity` - Identity.
+* `property` - Work with specified property.
 
 ### ProjectClient.collection.**update**()
 
@@ -315,7 +326,12 @@ Parameters:
 * `identity` - Identity (required).
 * `property` - Work with specified property.
 
-### ProjectClient.collection.**get**()
+### ProjectClient.**collections**
+
+Many collections manupulation object
+
+
+### ProjectClient.collections.**find**()
 
 
 
@@ -323,13 +339,11 @@ Parameters:
 Parameters:
 
 
-* `identity` - Identity (required).
-* `property` - Work with specified property.
-
-### ProjectClient.**collections**
-
-Many collections manupulation object
-
+* `sort` - None.
+* `page` - None.
+* `filter` - Filter query.
+* `text` - Full text search value.
+* `per_page` - None.
 
 ### ProjectClient.collections.**count**()
 
@@ -341,20 +355,6 @@ Parameters:
 
 * `filter` - Filter query.
 * `text` - Full text search value.
-
-### ProjectClient.collections.**find**()
-
-
-
-
-Parameters:
-
-
-* `filter` - Filter query.
-* `text` - Full text search value.
-* `per_page` - None.
-* `page` - None.
-* `sort` - None.
 
 ### ProjectClient.**document**
 
@@ -369,11 +369,40 @@ One document manupulation object
 Parameters:
 
 
-* `collection` - Collection (required).
 * `identity` - Identity (required).
+* `collection` - Collection (required).
+* `fields_exclude` - Return all but the excluded field.
+* `property` - Work with specified property.
 * `fields` - Return specified fields only.
+
+### ProjectClient.document.**get_file**()
+
+
+
+
+Parameters:
+
+
+* `identity` - Identity (required).
+* `collection` - Collection (required).
+* `fields_exclude` - Return all but the excluded field.
+* `property` - Work with specified property.
+* `fields` - Return specified fields only.
+
+### ProjectClient.document.**save**()
+
+
+
+
+Parameters:
+
+
+* `data` - Data (required).
+* `collection` - Collection (required).
 * `property` - Work with specified property.
 * `fields_exclude` - Return all but the excluded field.
+* `fields` - Return specified fields only.
+* `identity` - Identity.
 
 ### ProjectClient.document.**create**()
 
@@ -385,9 +414,9 @@ Parameters:
 
 * `data` - Data (required).
 * `collection` - Collection (required).
-* `fields` - Return specified fields only.
-* `property` - Work with specified property.
 * `fields_exclude` - Return all but the excluded field.
+* `property` - Work with specified property.
+* `fields` - Return specified fields only.
 
 ### ProjectClient.document.**update**()
 
@@ -397,12 +426,12 @@ Parameters:
 Parameters:
 
 
-* `collection` - Collection (required).
 * `data` - Data (required).
+* `collection` - Collection (required).
 * `identity` - Identity (required).
-* `fields` - Return specified fields only.
-* `fields_exclude` - Return all but the excluded field.
 * `property` - Work with specified property.
+* `fields_exclude` - Return all but the excluded field.
+* `fields` - Return specified fields only.
 
 ### ProjectClient.document.**remove**()
 
@@ -412,47 +441,18 @@ Parameters:
 Parameters:
 
 
-* `collection` - Collection (required).
 * `identity` - Identity (required).
-* `fields` - Return specified fields only.
-* `property` - Work with specified property.
-* `fields_exclude` - Return all but the excluded field.
-
-### ProjectClient.document.**save**()
-
-
-
-
-Parameters:
-
-
 * `collection` - Collection (required).
-* `data` - Data (required).
-* `fields` - Return specified fields only.
 * `fields_exclude` - Return all but the excluded field.
 * `property` - Work with specified property.
-* `identity` - Identity.
-
-### ProjectClient.document.**get_file**()
-
-
-
-
-Parameters:
-
-
-* `collection` - Collection (required).
-* `identity` - Identity (required).
 * `fields` - Return specified fields only.
-* `property` - Work with specified property.
-* `fields_exclude` - Return all but the excluded field.
 
 ### ProjectClient.**documents**
 
 Many documents manupulation object
 
 
-### ProjectClient.documents.**count**()
+### ProjectClient.documents.**find**()
 
 
 
@@ -462,7 +462,24 @@ Parameters:
 
 * `collection` - Collection (required).
 * `filter` - Filter query.
+* `per_page` - None.
+* `sort` - None.
+* `page` - None.
+* `fields_exclude` - Return all but the excluded field.
+* `fields` - Return specified fields only.
 * `text` - Full text search value.
+
+### ProjectClient.documents.**upsert**()
+
+
+
+
+Parameters:
+
+
+* `operation` - Update operation (required).
+* `collection` - Collection (required).
+* `filter` - Filter query.
 * `fields_exclude` - Return all but the excluded field.
 * `fields` - Return specified fields only.
 
@@ -477,10 +494,10 @@ Parameters:
 * `operation` - Update operation (required).
 * `collection` - Collection (required).
 * `filter` - Filter query.
-* `fields` - Return specified fields only.
 * `fields_exclude` - Return all but the excluded field.
+* `fields` - Return specified fields only.
 
-### ProjectClient.documents.**find**()
+### ProjectClient.documents.**count**()
 
 
 
@@ -489,13 +506,10 @@ Parameters:
 
 
 * `collection` - Collection (required).
-* `sort` - None.
-* `text` - Full text search value.
 * `fields_exclude` - Return all but the excluded field.
 * `filter` - Filter query.
+* `text` - Full text search value.
 * `fields` - Return specified fields only.
-* `per_page` - None.
-* `page` - None.
 
 ### ProjectClient.documents.**remove**()
 
@@ -506,23 +520,9 @@ Parameters:
 
 
 * `collection` - Collection (required).
+* `fields_exclude` - Return all but the excluded field.
 * `filter` - Filter query.
 * `fields` - Return specified fields only.
-* `fields_exclude` - Return all but the excluded field.
-
-### ProjectClient.documents.**upsert**()
-
-
-
-
-Parameters:
-
-
-* `operation` - Update operation (required).
-* `collection` - Collection (required).
-* `filter` - Filter query.
-* `fields` - Return specified fields only.
-* `fields_exclude` - Return all but the excluded field.
 
 ### ProjectClient.**info**
 
