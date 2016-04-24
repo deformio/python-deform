@@ -16,13 +16,13 @@ next command will fail:
 
 You can send variables with command:
 
-    $ DEFORM_HOST='"deform.chib.me"' tox
+    $ DEFORM_HOST='"deform.io"' tox
 
 The more convenient way would be to create a `.test_config` file a save data there.
-This file is ignored by git and won't be commeted.
+This file is ignored by git and won't be commited.
 
     $ cat .test_config
-    DEFORM_HOST='"deform.chib.me"'
+    DEFORM_HOST='"deform.io"'
     DEFORM_EMAIL='"email@example.ru"'
     DEFORM_PASSWORD='"hello"'
     ...
