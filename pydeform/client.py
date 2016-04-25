@@ -114,7 +114,10 @@ class Client(object):
         client = Client(host='deform.io')
         session_client = client.auth(
             'session',
-            client.user.login('email@example.com', 'password'),
+            client.user.login(
+                email='email@example.com',
+                password='password'
+            ),
         )
         print session_client
         <pydeform.client.SessionAuthClient object at 0x10c585650>
