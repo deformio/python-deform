@@ -69,12 +69,15 @@ PARAMS_DEFINITIONS = {
     },
     'page': {
         'dest': 'query_params',
+        'page': 'Page number'
     },
     'per_page': {
         'dest': 'query_params',
+        'page': 'Items per page'
     },
     'sort': {
         'dest': 'query_params',
+        'page': 'Sort by property'
     },
 }
 
@@ -148,10 +151,15 @@ def get_payload(params, definitions):
             final_data = prepared_data
 
     if params_has_files:
-        final_data = flatten(final_data)
-        for key, value in final_data.items():
-            if not isinstance(value, FILE_TYPE):
-                final_data[key] = (None, value)
+        if isinstance(final_data, FILE_TYPE):
+            final_data = {
+                'file': final_data
+            }
+        else:
+            final_data = flatten(final_data)
+            for key, value in final_data.items():
+                if not isinstance(value, FILE_TYPE):
+                    final_data[key] = (None, value)
     else:
         final_data = {
             'payload': final_data

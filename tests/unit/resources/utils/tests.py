@@ -321,6 +321,21 @@ class ResourcesUtilesTest__get_payload(TestCase):
             })
         )
 
+    def test_params_with_root_file(self):
+        file_object = open(
+            os.path.join(self.CONFIG['FILES_PATH'], '1.txt')
+        )
+        params = {
+            'data': file_object
+        }
+        assert_that(
+            get_payload(params, self.definitions),
+            equal_to({
+                'type': 'files',
+                'data': {'file': file_object}
+            })
+        )
+
 
 class ResourcesUtilesTest__iterate_by_pagination(TestCase):
     def setUp(self):

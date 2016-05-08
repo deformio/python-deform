@@ -167,7 +167,7 @@ class ProjectClientTestBase__document(object):
                 identity='subway',
                 property=['comment', 'user', 'surname']
             ),
-            raises(NotFoundError, '^Property surname does not exist$')
+            raises(NotFoundError, '^Document property not found\.$')
         )
 
     def test_save__with_identity(self):
@@ -529,6 +529,90 @@ class ProjectClientTestBase__document(object):
         )
         assert_that(
             logo_content_stream_response.read(),
+            equal_to(image_file_content)
+        )
+
+    def test_file_upload_directly_to_files_collection(self):
+        getattr(self, self.project_client_attr).documents.remove(
+            collection='_files'
+        )
+
+        text_file = open(
+            os.path.join(self.CONFIG['FILES_PATH'], '1.txt'), 'rt'
+        )
+        image_file = open(
+            os.path.join(self.CONFIG['FILES_PATH'], '1.png'), 'rb'
+        )
+
+        # test upload text file
+        response = getattr(self, self.project_client_attr).document.save(
+            identity='text_file',
+            collection='_files',
+            data=text_file
+        )
+        text_file_result = response['result']
+
+        text_file.seek(0)
+        text_file_content = text_file.read()
+
+        assert_that(
+            text_file_result,
+            has_entries({
+                '_id': 'text_file',
+                'collection_id': '_files',
+                'content_type': 'text/plain',
+                'document_id': '',
+                'name': '1.txt',
+                'md5': hashlib.md5(text_file_content).hexdigest()
+            })
+        )
+
+        # test upload binary file
+        response = getattr(self, self.project_client_attr).document.save(
+            identity='image_file',
+            collection='_files',
+            data=image_file
+        )
+        text_file_result = response['result']
+
+        image_file.seek(0)
+        image_file_content = image_file.read()
+
+        assert_that(
+            text_file_result,
+            has_entries({
+                '_id': 'image_file',
+                'collection_id': '_files',
+                'content_type': 'image/png',
+                'document_id': '',
+                'name': '1.png',
+                'md5': hashlib.md5(image_file_content).hexdigest()
+            })
+        )
+
+        # test getting text file object
+        text_file_content_stream_response = getattr(
+            self,
+            self.project_client_attr
+        ).document.get_file(
+            identity='text_file',
+            collection='_files'
+        )
+        assert_that(
+            text_file_content_stream_response.read(),
+            equal_to(text_file_content)
+        )
+
+        # test getting image file object
+        image_file_content_stream_response = getattr(
+            self,
+            self.project_client_attr
+        ).document.get_file(
+            identity='image_file',
+            collection='_files'
+        )
+        assert_that(
+            image_file_content_stream_response.read(),
             equal_to(image_file_content)
         )
 

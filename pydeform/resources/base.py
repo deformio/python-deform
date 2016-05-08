@@ -283,7 +283,6 @@ class GetFileResourceMethod(GetOneResourceMethod):
 class CreateOneResourceMethod(ResourceMethodBase):
     method = 'post'
     params = {
-        'property': PARAMS_DEFINITIONS['property'],
         'data': PARAMS_DEFINITIONS['data'],
     }
     params_required = ['data']
