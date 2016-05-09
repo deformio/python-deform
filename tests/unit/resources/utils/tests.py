@@ -410,9 +410,9 @@ class ResourcesUtilesTest__iterate_by_pagination(TestCase):
             3
         ]
         page_2_results = [
-            1,
-            2,
-            3
+            4,
+            5,
+            6
         ]
         responses.add(
             self.method,
@@ -451,12 +451,16 @@ class ResourcesUtilesTest__iterate_by_pagination(TestCase):
         )
 
     @responses.activate
-    def test_one_page_not_found(self):
+    def test_one_page_no_items(self):
         responses.add(
             self.method,
             self.url,
-            json={'not': 'found'},
-            status=404
+            json={
+                'result': {
+                    'links': {},
+                    'items': []
+                }
+            }
         )
 
         response = iterate_by_pagination(
@@ -471,46 +475,7 @@ class ResourcesUtilesTest__iterate_by_pagination(TestCase):
         )
 
     @responses.activate
-    def test_second_page_not_found(self):
-        page_1_results = [
-            1,
-            2,
-            3
-        ]
-        responses.add(
-            self.method,
-            self.url + '?page=1',
-            json={
-                'result': {
-                    'links': {
-                        'next': 'http://next/blablabla'
-                    },
-                    'items': page_1_results
-                }
-            },
-            match_querystring=True
-        )
-        responses.add(
-            self.method,
-            self.url + '?page=2',
-            json={'not': 'found'},
-            status=404,
-            match_querystring=True
-        )
-
-        response = iterate_by_pagination(
-            method=self.method,
-            request_kwargs=self.request_kwargs,
-            requests_session=self.requests_session,
-            request_defaults=self.request_defaults
-        )
-        assert_that(
-            self.get_list_from_generator(response),
-            equal_to(page_1_results)
-        )
-
-    @responses.activate
-    def test_second_page_is_empty(self):
+    def test_second_page_no_items(self):
         page_1_results = [
             1,
             2,

@@ -215,17 +215,17 @@ def iterate_by_pagination(method,
         if response_result.get('links', {}).get('next'):
             page += 1
             request_kwargs['params']['page'] = page
-            try:
-                response = do_http_request(
-                    method=method,
-                    request_kwargs=request_kwargs,
-                    requests_session=requests_session,
-                    request_defaults=request_defaults,
-                )
-            except NotFoundError:
-                break
+            response = do_http_request(
+                method=method,
+                request_kwargs=request_kwargs,
+                requests_session=requests_session,
+                request_defaults=request_defaults,
+            )
             response_result = response.json()['result']
-            for i in response_result['items']:
-                yield i
+            if response_result['items']:
+                for i in response_result['items']:
+                    yield i
+            else:
+                break
         else:
             break

@@ -1,5 +1,12 @@
 # -*- coding: utf-8 -*-
-from hamcrest import assert_that, contains_inanyorder, equal_to, is_not
+from hamcrest import (
+    assert_that,
+    calling,
+    contains_inanyorder,
+    equal_to,
+    is_not,
+    raises
+)
 from pydeform.exceptions import NotFoundError
 from testutils import (
     DeformSessionProjectClientTestCaseMixin,
@@ -51,6 +58,23 @@ class ProjectClientTestBase__documents(object):
             ).documents.find.is_paginatable,
             equal_to(True)
         )
+
+    def test_find__with_not_existing_collection(self):
+        try:
+            getattr(self, self.project_client_attr).collection.remove(
+                identity='venues'
+            )
+        except NotFoundError:
+            pass
+
+        try:
+            [i for i in getattr(self, self.project_client_attr).documents.find(collection='venues')]
+        except NotFoundError as e:
+            assert_that(str(e), equal_to('Collection not found.'))
+        else:
+            raise Exception(
+                'NotFoundError should be raised for not existing collection'
+            )
 
     def test_find(self):
         response = getattr(self, self.project_client_attr).documents.find(

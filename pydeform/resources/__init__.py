@@ -152,6 +152,17 @@ class DocumentResourceMixin(object):
         return params_required
 
 
+class DocumentRemoveOneResourceMethod(DocumentResourceMixin,
+                                      RemoveOneResourceMethod):
+    def get_params_definitions(self):
+        params = super(
+            DocumentRemoveOneResourceMethod,
+            self
+        ).get_params_definitions()
+        params.pop('property')
+        return params
+
+
 class DocumentListResource(BaseResource):
     """Many documents manupulation object"""
     path = ['collections', '{collection}', 'documents']
@@ -221,9 +232,5 @@ class DocumentOneResource(BaseResource):
             (DocumentResourceMixin, UpdateOneResourceMethod),
             {}
         ),
-        'remove': type(
-            'DocumentRemoveOneResourceMethod',
-            (DocumentResourceMixin, RemoveOneResourceMethod),
-            {}
-        ),
+        'remove': DocumentRemoveOneResourceMethod
     }
