@@ -258,7 +258,7 @@ class ProjectClientTestBase__documents(object):
             }
         )
         assert_that(response['updated'], equal_to(1))
-        assert_that(response['upsertedId'], equal_to(None))
+        assert_that('upsertedId' in response, equal_to(False))
         response = getattr(self, self.project_client_attr).documents.find(
             collection='venues'
         )
@@ -281,8 +281,8 @@ class ProjectClientTestBase__documents(object):
                 }
             }
         )
-        assert_that(response['updated'], equal_to(0))
-        assert_that(response['upsertedId'], is_not(equal_to(None)))
+        assert_that('updated' in response, equal_to(False))
+        assert_that(response.get('upsertedId'), is_not(equal_to(None)))
         upserted_id = response['upsertedId']
         response = getattr(self, self.project_client_attr).documents.find(
             collection='venues'

@@ -51,7 +51,16 @@ class HTTPError(DeformException):
         return self.__repr__()
 
     def __repr__(self):
-        return self.message
+        error = self.message
+        if self.errors:
+            error = '%s:\n%s' % (
+                error,
+                '\n'.join([
+                    '* "%s" - %s' % (i['property'], i['message'])
+                    for i in self.errors
+                ])
+            )
+        return error
 
 
 class AuthError(HTTPError):
