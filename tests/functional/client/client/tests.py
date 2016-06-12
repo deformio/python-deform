@@ -46,9 +46,7 @@ class ClientTest__user(DeformClientTestCaseMixin, TestCase):
                 self.deform_client.user.create.method.upper(),
                 self.deform_client.user.create.get_context({})['url'],
                 json={
-                    'result': {
-                        'message': 'Check your email for confirmation code'
-                    }
+                    'message': 'Check your email for confirmation code'
                 },
                 status=201
             )
@@ -77,9 +75,7 @@ class ClientTest__user(DeformClientTestCaseMixin, TestCase):
                 self.deform_client.user.confirm.method.upper(),
                 self.deform_client.user.confirm.get_context({})['url'],
                 json={
-                    'result': {
-                        'sessionId': session_id
-                    }
+                    'sessionId': session_id
                 },
                 status=200
             )
@@ -105,9 +101,7 @@ class ClientTest__user(DeformClientTestCaseMixin, TestCase):
                 self.deform_client.user.confirm.method.upper(),
                 self.deform_client.user.confirm.get_context({})['url'],
                 json={
-                    'result': {
-                        'message': 'User already exists.'
-                    }
+                    'message': 'User already exists.'
                 },
                 status=409
             )

@@ -203,10 +203,8 @@ class TestResourceMethodBase__get_context(TestCase):
             has_entry(
                 'json',
                 {
-                    'payload': {
-                        'user': {
-                            'name': 'gena'
-                        }
+                    'user': {
+                        'name': 'gena'
                     }
                 }
             )
@@ -287,9 +285,7 @@ class TestResourceMethodBase__call(TestCase):
             self.method,
             self.base_uri,
             json={
-                'result': {
-                    'age': 26
-                }
+                'age': 26
             }
         )
 
@@ -337,12 +333,10 @@ class TestResourceMethodBase__call(TestCase):
             self.method,
             self.base_uri + '?page=1&name=gena&surname=chibisov',
             json={
-                'result': {
-                    'links': {
-                        'next': 'http://next'
-                    },
-                    'items': page_1_result
-                }
+                'links': {
+                    'next': 'http://next'
+                },
+                'items': page_1_result
             },
             match_querystring=True
         )
@@ -350,9 +344,7 @@ class TestResourceMethodBase__call(TestCase):
             self.method,
             self.base_uri + '?page=2&name=gena&surname=chibisov',
             json={
-                'result': {
-                    'items': page_2_result
-                }
+                'items': page_2_result
             },
             match_querystring=True
         )
@@ -388,12 +380,10 @@ class TestResourceMethodBase__call(TestCase):
             self.method,
             self.base_uri + '?page=1&name=gena&surname=chibisov',
             json={
-                'result': {
-                    'links': {
-                        'next': 'http://next'
-                    },
-                    'items': page_1_result
-                }
+                'links': {
+                    'next': 'http://next'
+                },
+                'items': page_1_result
             },
             match_querystring=True
         )
@@ -401,14 +391,12 @@ class TestResourceMethodBase__call(TestCase):
             self.method,
             self.base_uri + '?page=2&name=gena&surname=chibisov',
             json={
-                'result': {
-                    'page': 2,
-                    'pages': 10,
-                    'per_page': 20,
-                    'total': 30,
-                    'items': page_2_result,
-                    'another_key_that_should_not_be_in_response': 'noooooo'
-                }
+                'page': 2,
+                'pages': 10,
+                'per_page': 20,
+                'total': 30,
+                'items': page_2_result,
+                'another_key_that_should_not_be_in_response': 'noooooo'
             },
             match_querystring=True
         )
@@ -431,14 +419,12 @@ class TestResourceMethodBase__call(TestCase):
             self.method,
             self.base_uri + '?name=gena&surname=chibisov&per_page=33',
             json={
-                'result': {
-                    'page': 2,
-                    'pages': 10,
-                    'per_page': 20,
-                    'total': 30,
-                    'items': per_page_result,
-                    'another_key_that_should_not_be_in_response': 'noooooo'
-                }
+                'page': 2,
+                'pages': 10,
+                'per_page': 20,
+                'total': 30,
+                'items': per_page_result,
+                'another_key_that_should_not_be_in_response': 'noooooo'
             },
             match_querystring=True
         )
@@ -459,14 +445,12 @@ class TestResourceMethodBase__call(TestCase):
             self.method,
             self.base_uri + '?page=5&name=gena&surname=chibisov&per_page=33',
             json={
-                'result': {
-                    'page': 2,
-                    'pages': 10,
-                    'per_page': 20,
-                    'total': 30,
-                    'items': page_and_per_page_result,
-                    'another_key_that_should_not_be_in_response': 'noooooo'
-                }
+                'page': 2,
+                'pages': 10,
+                'per_page': 20,
+                'total': 30,
+                'items': page_and_per_page_result,
+                'another_key_that_should_not_be_in_response': 'noooooo'
             },
             match_querystring=True
         )
@@ -490,9 +474,7 @@ class TestResourceMethodBase__call(TestCase):
         responses.add(
             'PUT',
             self.base_uri,
-            json={
-                'result': 'world',
-            },
+            json='world',
             status=201
         )
         instance = self.get_instance(ResourceMethod)
@@ -509,9 +491,7 @@ class TestResourceMethodBase__call(TestCase):
         responses.add(
             'PUT',
             self.base_uri,
-            json={
-                'result': 'world',
-            },
+            json='world',
             status=200
         )
         assert_that(

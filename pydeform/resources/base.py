@@ -85,7 +85,7 @@ class ResourceMethodBase(object):
                     request_defaults=self.request_defaults,
                 )
                 return self._prepare_paginated_response(
-                    response.json()['result']
+                    response.json()
                 )
             else:
                 return iterate_by_pagination(
@@ -106,7 +106,7 @@ class ResourceMethodBase(object):
 
             if response.content:
                 try:
-                    result = response.json()['result']
+                    result = response.json()
                     if self.result_property:
                         result = result[self.result_property]
                 except ValueError:
@@ -234,7 +234,7 @@ class CountListResourceMethod(ResourceMethodBase):
             request_defaults=self.request_defaults,
         )
         response = response.json()
-        return response['result']['total']
+        return response['total']
 
 
 class UpdateListResourceMethod(ResourceMethodBase):

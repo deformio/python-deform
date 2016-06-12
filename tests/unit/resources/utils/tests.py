@@ -264,9 +264,7 @@ class ResourcesUtilesTest__get_payload(TestCase):
             get_payload({'data': {'some': 'value'}}, self.definitions),
             equal_to({
                 'type': 'json',
-                'data': {
-                    'payload': {'some': 'value'}
-                }
+                'data': {'some': 'value'}
             })
         )
 
@@ -286,13 +284,11 @@ class ResourcesUtilesTest__get_payload(TestCase):
             equal_to({
                 'type': 'json',
                 'data': {
-                    'payload': {
-                        'filter': {
-                            'some': 'value',
-                        },
-                        'text': {
-                            'another_some': 'another_value',
-                        }
+                    'filter': {
+                        'some': 'value',
+                    },
+                    'text': {
+                        'another_some': 'another_value',
                     }
                 }
             })
@@ -356,10 +352,8 @@ class ResourcesUtilesTest__iterate_by_pagination(TestCase):
             self.method,
             self.url,
             json={
-                'result': {
-                    'links': {},
-                    'items': []
-                }
+                'links': {},
+                'items': []
             }
         )
 
@@ -384,10 +378,8 @@ class ResourcesUtilesTest__iterate_by_pagination(TestCase):
             self.method,
             self.url,
             json={
-                'result': {
-                    'links': {},
-                    'items': results
-                }
+                'links': {},
+                'items': results
             }
         )
 
@@ -418,12 +410,10 @@ class ResourcesUtilesTest__iterate_by_pagination(TestCase):
             self.method,
             self.url + '?page=1',
             json={
-                'result': {
-                    'links': {
-                        'next': 'http://next/blablabla'
-                    },
-                    'items': page_1_results
-                }
+                'links': {
+                    'next': 'http://next/blablabla'
+                },
+                'items': page_1_results
             },
             match_querystring=True
         )
@@ -431,10 +421,8 @@ class ResourcesUtilesTest__iterate_by_pagination(TestCase):
             self.method,
             self.url + '?page=2',
             json={
-                'result': {
-                    'links': {},
-                    'items': page_2_results
-                }
+                'links': {},
+                'items': page_2_results
             },
             match_querystring=True
         )
@@ -456,10 +444,8 @@ class ResourcesUtilesTest__iterate_by_pagination(TestCase):
             self.method,
             self.url,
             json={
-                'result': {
-                    'links': {},
-                    'items': []
-                }
+                'links': {},
+                'items': []
             }
         )
 
@@ -485,12 +471,10 @@ class ResourcesUtilesTest__iterate_by_pagination(TestCase):
             self.method,
             self.url + '?page=1',
             json={
-                'result': {
-                    'links': {
-                        'next': 'http://next/blablabla'
-                    },
-                    'items': page_1_results
-                }
+                'links': {
+                    'next': 'http://next/blablabla'
+                },
+                'items': page_1_results
             },
             match_querystring=True
         )
@@ -498,10 +482,8 @@ class ResourcesUtilesTest__iterate_by_pagination(TestCase):
             self.method,
             self.url + '?page=2',
             json={
-                'result': {
-                    'links': {},
-                    'items': []
-                }
+                'links': {},
+                'items': []
             },
             match_querystring=True
         )

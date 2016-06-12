@@ -160,10 +160,7 @@ def get_payload(params, definitions):
             for key, value in final_data.items():
                 if not isinstance(value, FILE_TYPE):
                     final_data[key] = (None, value)
-    else:
-        final_data = {
-            'payload': final_data
-        }
+
     return {
         'type': 'files' if with_files else 'json',
         'data': final_data
@@ -221,7 +218,7 @@ def iterate_by_pagination(method,
                 requests_session=requests_session,
                 request_defaults=request_defaults,
             )
-            response_result = response.json()['result']
+            response_result = response.json()
             if response_result['items']:
                 for i in response_result['items']:
                     yield i

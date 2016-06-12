@@ -185,10 +185,8 @@ class SessionAuthClientTest__project(
                 {}
             )['url'],
             json={
-                'result': {
-                    '_id': 'new-project',
-                    'name': 'New project'
-                }
+                '_id': 'new-project',
+                'name': 'New project'
             },
             status=201
         )
