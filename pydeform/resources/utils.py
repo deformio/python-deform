@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import datetime
 from collections import defaultdict
+import json
 
 from pydeform.exceptions import NotFoundError
 from pydeform.six import PY2
@@ -159,7 +160,7 @@ def get_payload(params, definitions):
             final_data = flatten(final_data)
             for key, value in final_data.items():
                 if not isinstance(value, FILE_TYPE):
-                    final_data[key] = (None, value)
+                    final_data[key] = (None, json.dumps(value))
 
     return {
         'type': 'files' if with_files else 'json',

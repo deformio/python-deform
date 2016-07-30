@@ -18,5 +18,11 @@ Let's use the client:
 ```python
 from pydeform import Client
 
-client = Client('deform.io')
+client = Client().auth('token', '<token>', '<project_id>')
+
+# get collections
+client.collections.find()
+
+# get documents in collection
+client.documents.find(collection='venues')
 ```

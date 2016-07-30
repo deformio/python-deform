@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import types
+import json
 
 import responses
 from hamcrest import (
@@ -220,7 +221,10 @@ class TestResourceMethodBase__get_context(TestCase):
             }
         }
         expected = flatten(data)
-        expected['user.name'] = (None, expected['user.name'])
+        expected['user.name'] = (
+            None, 
+            json.dumps(expected['user.name'])
+        )
         assert_that(
             instance.get_context({
                 'data': data,

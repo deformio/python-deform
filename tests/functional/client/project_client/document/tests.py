@@ -16,6 +16,7 @@ from testutils import (
     DeformTokenProjectClientTestCaseMixin,
     TestCase
 )
+from unittest import skip
 
 
 class ProjectClientTestBase__document(object):
@@ -97,6 +98,35 @@ class ProjectClientTestBase__document(object):
             response,
             has_entries({
                 '_id': 'subway',
+                'name': 'Subway'
+            })
+        )
+
+    @skip('https://github.com/deformio/python-deform/issues/11')
+    def test_get_document_with_id_containing_slash(self):
+        try:
+            getattr(self, self.project_client_attr).document.remove(
+                collection='venues',
+                identity='sub/way'
+            )
+        except NotFoundError:
+            pass
+
+        getattr(self, self.project_client_attr).document.create(
+            collection='venues',
+            data={
+                '_id': 'sub/way',
+                'name': 'Subway'
+            }
+        )
+        response = getattr(self, self.project_client_attr).document.get(
+            identity='sub/way',
+            collection='venues'
+        )
+        assert_that(
+            response,
+            has_entries({
+                '_id': 'sub/way',
                 'name': 'Subway'
             })
         )
@@ -431,6 +461,12 @@ class ProjectClientTestBase__document(object):
                             'type': 'string',
                             'required': True
                         },
+                        'phones': {
+                            'type': 'array',
+                            'items': {
+                                'type': 'number'
+                            }
+                        },
                         'info': {
                             'type': 'file',
                             'required': True
@@ -456,6 +492,7 @@ class ProjectClientTestBase__document(object):
             collection='venues',
             data={
                 'name': 'subway',
+                'phones': [1234, 5678],
                 'info': text_file,
                 'logo': image_file,
             }
@@ -471,6 +508,7 @@ class ProjectClientTestBase__document(object):
             result,
             has_entries({
                 'name': 'subway',
+                'phones': [1234, 5678],
                 'info': has_entries({
                     'name': '1.txt',
                     'content_type': 'text/plain',

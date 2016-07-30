@@ -415,7 +415,6 @@ Parameters:
 * `collection` - Collection (required).
 * `identity` - Identity (required).
 * `fields` - Return specified fields only.
-* `property` - Work with specified property.
 * `fields_exclude` - Return all but the excluded field.
 
 ### ProjectClient.document.**save**()

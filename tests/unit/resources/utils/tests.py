@@ -2,6 +2,7 @@
 import datetime
 import os
 import types
+import json
 
 import responses
 from hamcrest import assert_that, equal_to, has_entry, instance_of
@@ -308,7 +309,10 @@ class ResourcesUtilesTest__get_payload(TestCase):
             }
         }
         expected_data = flatten(prepare_payload(params['data'])[1])
-        expected_data['user.name'] = (None, expected_data['user.name'])
+        expected_data['user.name'] = (
+            None, 
+            json.dumps(expected_data['user.name'])
+        )
         assert_that(
             get_payload(params, self.definitions),
             equal_to({
