@@ -10,8 +10,8 @@ install:
 
 env:
     - TOX_ENV=py27
-    - TOX_ENV=py3.4
-    - TOX_ENV=py3.5
+    # - TOX_ENV=py3.4
+    # - TOX_ENV=py3.5
     global:
     - GH_REF: github.com/deformio/python-deform.git
     - EMAIL: web-chib@ya.ru
