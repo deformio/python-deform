@@ -127,12 +127,12 @@ class Client(object):
 
         ```python
         client = Client(host='deform.io')
-        session_client = client.auth(
+        token_client = client.auth(
           'token',
           auth_key='token-value',
           project_id='some-project',
         )
-        print session_client
+        print token_client
         <pydeform.client.ProjectClient object at 0x11c585650>
         ```
 
